@@ -1,0 +1,9 @@
+apiVersion: xl/v1
+kind: Import
+metadata:
+ imports:
+   - digitalai-deploy/infrastructure.yaml
+   - digitalai-deploy/environment.yaml
+   - digitalai-deploy/applications.yaml
+   - digitalai-deploy/deployment.yaml
+   - digitalai-deploy/deployment-cr.yaml
