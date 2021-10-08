@@ -1,0 +1,10 @@
+apiVersion: xl-deploy/v1
+kind: Environments
+spec:
+  - name: kubernetes-envs
+    type: core.Directory
+    children:
+    - name: xld
+      type: udm.Environment
+      members:
+      - ~Infrastructure/k8s-infra/xld/default

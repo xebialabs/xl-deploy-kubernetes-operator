@@ -1,0 +1,541 @@
+apiVersion: xldocp.digital.ai/v1alpha1
+kind: DigitalaiDeployOcp
+metadata:
+  name: dai-ocp-xld
+spec:
+  AdminPassword: admin
+  HealthPeriodScans: 10
+  HealthProbeFailureThreshold: 12
+  HealthProbes: true
+  HealthProbesLivenessTimeout: 60
+  HealthProbesReadinessTimeout: 60
+  ImagePullPolicy: Always
+  ImageRepository: xebialabs/xl-deploy
+  ImageTag: "10.2"
+  KeystorePassphrase: <Provide store pass for the keystore>
+  Persistence:
+    AccessMode: ReadWriteOnce
+    Annotations: {}
+    Enabled: true
+    # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
+    StorageClass: < provide the storageClass for DAI-DEPLOY>
+    XldMasterPvcSize: 10Gi
+    XldWorkerPvcSize: 10Gi
+  # https://docs.xebialabs.com/v.9.8/deploy/how-to/update-the-xl-deploy-digital-certificate/#get-started
+  # Convert repository-keystore.jceks files content to base64
+  # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
+  RepositoryKeystore: <Provide repositoryKeystore in base64 encoded form>
+  UseExistingDB:
+    Enabled: false
+    # If you want to use an existing database, set 'postgresql.install' to 'false' and 'UseExistingDB.Enabled' to 'true'.
+    # Uncomment the following lines and provide the values.
+    # XL_DB_PASSWORD:
+    # XL_DB_URL:
+    # XL_DB_USERNAME:
+  UseExistingMQ:
+    Enabled: false
+    # If you want to use a existing Message Queue, change the "rabbitmq.install to false"
+    # Set 'UseExistingMQ.Enabled' to 'true'.Uncomment the following lines and provide the values.
+    # XLD_TASK_QUEUE_DRIVER_CLASS_NAME:
+    # XLD_TASK_QUEUE_PASSWORD:
+    # XLD_TASK_QUEUE_URL:
+    # XLD_TASK_QUEUE_USERNAME:
+  XldMasterCount: 3
+  XldWorkerCount: 3
+  affinity: {}
+  nodeSelector: {}
+  oidc:
+    enabled: false
+    accessTokenUri: null
+    clientId: null
+    clientSecret: null
+    issuer: null
+    keyRetrievalUri: null
+    logoutUri: null
+    postLogoutRedirectUri: null
+    redirectUri: null
+    rolesClaimName: null
+    userAuthorizationUri: null
+    userNameClaimName: null
+  postgresql:
+    affinity: {}
+    audit:
+      clientMinMessages: error
+      logConnections: false
+      logDisconnections: false
+      logHostname: false
+      logLinePrefix: ""
+      logTimezone: ""
+      pgAuditLog: ""
+      pgAuditLogCatalog: "off"
+    common:
+      exampleValue: common-chart
+      global:
+        postgresql: {}
+    commonAnnotations: {}
+    containerSecurityContext:
+      enabled: false
+      runAsUser: 1001
+    customLivenessProbe: {}
+    customReadinessProbe: {}
+    extraDeploy: []
+    extraEnv: []
+    global:
+      postgresql: {}
+    image:
+      debug: false
+      pullPolicy: IfNotPresent
+      registry: docker.io
+      repository: bitnami/postgresql
+      tag: 11.9.0-debian-10-r48
+    initdbScriptsSecret: postgresql-init-sql-xld
+    install: true
+    ldap:
+      baseDN: ""
+      bindDN: ""
+      enabled: false
+      port: ""
+      prefix: ""
+      scheme: ""
+      search_attr: ""
+      search_filter: ""
+      server: ""
+      suffix: ""
+      tls: false
+      url: ""
+    livenessProbe:
+      enabled: true
+      failureThreshold: 6
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    master:
+      affinity: {}
+      annotations: {}
+      extraInitContainers: []
+      extraVolumeMounts: []
+      extraVolumes: []
+      labels: {}
+      nodeSelector: {}
+      podAnnotations: {}
+      podLabels: {}
+      priorityClassName: ""
+      service: {}
+      sidecars: []
+      tolerations: []
+    masterAsStandBy:
+      enabled: false
+    metrics:
+      enabled: false
+      extraEnvVars: {}
+      image:
+        pullPolicy: IfNotPresent
+        registry: docker.io
+        repository: bitnami/postgres-exporter
+        tag: 0.8.0-debian-10-r242
+      livenessProbe:
+        enabled: true
+        failureThreshold: 6
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 5
+      prometheusRule:
+        additionalLabels: {}
+        enabled: false
+        namespace: ""
+        rules: []
+      readinessProbe:
+        enabled: true
+        failureThreshold: 6
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 5
+      securityContext:
+        enabled: false
+        runAsUser: 1001
+      service:
+        annotations:
+          prometheus.io/port: "9187"
+          prometheus.io/scrape: "true"
+        type: ClusterIP
+      serviceMonitor:
+        additionalLabels: {}
+        enabled: false
+    networkPolicy:
+      allowExternal: true
+      enabled: false
+      explicitNamespacesSelector: {}
+    nodeSelector: {}
+    persistence:
+      accessModes:
+      - ReadWriteOnce
+      annotations: {}
+      enabled: true
+      existingClaim: null
+      mountPath: /bitnami/postgresql
+      size: 50Gi
+      # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
+      storageClass: <Provode Storage Class to be defined as PostgreSQL>
+      subPath: ""
+    postgresqlDataDir: /bitnami/postgresql/data
+    postgresqlDbUserConnectionLimit: null
+    postgresqlExtendedConf:
+      listenAddresses: '''*'''
+      maxConnections: "500"
+    postgresqlMaxConnections: null
+    postgresqlPassword: postgres
+    postgresqlPghbaRemoveFilters: null
+    postgresqlPostgresConnectionLimit: null
+    postgresqlSharedPreloadLibraries: pgaudit
+    postgresqlStatementTimeout: null
+    postgresqlTcpKeepalivesCount: null
+    postgresqlTcpKeepalivesIdle: null
+    postgresqlTcpKeepalivesInterval: null
+    postgresqlUsername: postgres
+    psp:
+      create: false
+    rbac:
+      create: false
+    readinessProbe:
+      enabled: true
+      failureThreshold: 6
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    replication:
+      applicationName: my_application
+      enabled: false
+      numSynchronousReplicas: 0
+      password: repl_password
+      slaveReplicas: 1
+      synchronousCommit: "off"
+      user: repl_user
+    resources:
+      requests:
+        cpu: 250m
+        memory: 256Mi
+    securityContext:
+      enabled: true
+      fsGroup: 1001
+    service:
+      annotations: {}
+      port: 5432
+      type: ClusterIP
+    serviceAccount:
+      enabled: false
+    shmVolume:
+      chmod:
+        enabled: false
+      enabled: true
+    slave:
+      affinity: {}
+      annotations: {}
+      extraInitContainers: |
+        # - name: do-something
+        #   image: busybox
+        #   command: ['do', 'something']
+      extraVolumeMounts: []
+      extraVolumes: []
+      labels: {}
+      nodeSelector: {}
+      persistence:
+        enabled: true
+      podAnnotations: {}
+      podLabels: {}
+      priorityClassName: ""
+      resources: {}
+      service: {}
+      sidecars: []
+      tolerations: []
+    tls:
+      certFilename: ""
+      certKeyFilename: ""
+      certificatesSecret: ""
+      enabled: false
+      preferServerCiphers: true
+    tolerations: []
+    updateStrategy:
+      type: RollingUpdate
+    volumePermissions:
+      enabled: false
+      image:
+        pullPolicy: Always
+        registry: docker.io
+        repository: bitnami/minideb
+        tag: buster
+      securityContext:
+        runAsUser: auto
+  rabbitmq:
+    advancedConfiguration: ""
+    affinity: {}
+    auth:
+      erlangCookie: DEPLOYRABBITMQCLUSTER
+      password: guest
+      tls:
+        caCertificate: ""
+        enabled: false
+        failIfNoPeerCert: true
+        serverCertificate: ""
+        serverKey: ""
+        sslOptionsVerify: verify_peer
+      username: guest
+    clusterDomain: cluster.local
+    clustering:
+      addressType: hostname
+      forceBoot: false
+      rebalance: false
+    common:
+      exampleValue: common-chart
+      global: {}
+    configuration: |-
+      ## Username and password
+      default_user = {{ .Values.auth.username }}
+      default_pass = CHANGEME
+      ## Clustering
+      cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
+      cluster_formation.k8s.host = kubernetes.default.svc.{{ .Values.clusterDomain }}
+      cluster_formation.node_cleanup.interval = 10
+      cluster_formation.node_cleanup.only_log_warning = true
+      cluster_partition_handling = autoheal
+      # queue master locator
+      queue_master_locator = min-masters
+      # enable guest user
+      loopback_users.guest = false
+      {{ tpl .Values.extraConfiguration . }}
+      {{- if .Values.auth.tls.enabled }}
+      ssl_options.verify = {{ .Values.auth.tls.sslOptionsVerify }}
+      listeners.ssl.default = {{ .Values.service.tlsPort }}
+      ssl_options.fail_if_no_peer_cert = {{ .Values.auth.tls.failIfNoPeerCert }}
+      ssl_options.cacertfile = /opt/bitnami/rabbitmq/certs/ca_certificate.pem
+      ssl_options.certfile = /opt/bitnami/rabbitmq/certs/server_certificate.pem
+      ssl_options.keyfile = /opt/bitnami/rabbitmq/certs/server_key.pem
+      {{- end }}
+      {{- if .Values.ldap.enabled }}
+      auth_backends.1 = rabbit_auth_backend_ldap
+      auth_backends.2 = internal
+      {{- range $index, $server := .Values.ldap.servers }}
+      auth_ldap.servers.{{ add $index 1 }} = {{ $server }}
+      {{- end }}
+      auth_ldap.port = {{ .Values.ldap.port }}
+      auth_ldap.user_dn_pattern = {{ .Values.ldap.user_dn_pattern  }}
+      {{- if .Values.ldap.tls.enabled }}
+      auth_ldap.use_ssl = true
+      {{- end }}
+      {{- end }}
+      {{- if .Values.metrics.enabled }}
+      ## Prometheus metrics
+      prometheus.tcp.port = 9419
+      {{- end }}
+      {{- if .Values.memoryHighWatermark.enabled }}
+      ## Memory Threshold
+      total_memory_available_override_value = {{ include "rabbitmq.toBytes" .Values.resources.limits.memory }}
+      vm_memory_high_watermark.{{ .Values.memoryHighWatermark.type }} = {{ .Values.memoryHighWatermark.value }}
+      {{- end }}
+    containerSecurityContext: {}
+    customLivenessProbe: {}
+    customReadinessProbe: {}
+    customStartupProbe: {}
+    extraConfiguration: |
+      load_definitions = /app/xld-load_definition.json
+    extraContainerPorts: []
+    extraEnvVars: []
+    extraPlugins: rabbitmq_jms_topic_exchange
+    extraSecrets:
+      xld-load-definition:
+        xld-load_definition.json: |
+          {
+          "users": [
+            {
+                "name": "{{ .Values.auth.username }}",
+                "password": "{{ .Values.auth.password }}",
+                "tags": "administrator"
+            }
+            ],
+          "vhosts": [
+            {
+              "name": "/"
+            }
+            ],
+            "permissions": [
+            {
+              "user": "{{ .Values.auth.username }}",
+              "vhost": "/",
+              "configure": ".*",
+              "write": ".*",
+              "read": ".*"
+            }
+            ],
+          "global_parameters": [
+            {
+              "name": "cluster_name",
+              "value": ""
+            }
+            ],
+           "policies": [
+              {
+                "name": "ha-all",
+                "apply-to": "all",
+                "pattern": ".*",
+                "vhost": "/",
+                "definition": {
+                  "ha-mode": "all",
+                  "ha-sync-mode": "automatic",
+                  "ha-sync-batch-size": 1
+                }
+              }
+            ]
+          }
+    extraVolumeMounts: []
+    extraVolumes: []
+    global: {}
+    image:
+      debug: false
+      pullPolicy: IfNotPresent
+      registry: docker.io
+      repository: bitnami/rabbitmq
+      tag: 3.8.9-debian-10-r64
+    ingress:
+      annotations: {}
+      certManager: false
+      enabled: false
+      hostname: rabbitmq.local
+      path: /
+      secrets: []
+      tls: false
+    initContainers: {}
+    install: true
+    ldap:
+      enabled: false
+      port: "389"
+      servers: []
+      tls:
+        enabled: false
+      user_dn_pattern: cn=${username},dc=example,dc=org
+    livenessProbe:
+      enabled: true
+      failureThreshold: 6
+      initialDelaySeconds: 120
+      periodSeconds: 30
+      successThreshold: 1
+      timeoutSeconds: 20
+    loadDefinition:
+      enabled: true
+      existingSecret: xld-load-definition
+    logs: '-'
+    memoryHighWatermark:
+      enabled: false
+      type: relative
+      value: 0.4
+    metrics:
+      enabled: false
+      plugins: rabbitmq_prometheus
+      podAnnotations:
+        prometheus.io/port: '{{ .Values.service.metricsPort }}'
+        prometheus.io/scrape: "true"
+      prometheusRule:
+        additionalLabels: {}
+        enabled: false
+        namespace: ""
+        rules: []
+      serviceMonitor:
+        additionalLabels: {}
+        enabled: false
+        honorLabels: false
+        interval: 30s
+    networkPolicy:
+      allowExternal: true
+      enabled: false
+    nodeAffinityPreset:
+      key: ""
+      type: ""
+      values: []
+    nodeSelector: {}
+    pdb:
+      create: false
+      minAvailable: 1
+    persistence:
+      accessMode: ReadWriteOnce
+      enabled: true
+      selector: {}
+      size: 8Gi
+      # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
+      storageClass: <Storage Class to be defined as RabbitMQ>
+      volumes: null
+    plugins: rabbitmq_management rabbitmq_peer_discovery_k8s
+    podAffinityPreset: ""
+    podAnnotations: {}
+    podAntiAffinityPreset: soft
+    podLabels: {}
+    podManagementPolicy: OrderedReady
+    podSecurityContext:
+      fsGroup: 1001
+      runAsUser: 1001
+    priorityClassName: ""
+    rbac:
+      create: true
+    readinessProbe:
+      enabled: true
+      failureThreshold: 3
+      initialDelaySeconds: 10
+      periodSeconds: 30
+      successThreshold: 1
+      timeoutSeconds: 20
+    replicaCount: 3
+    resources:
+      limits: {}
+      requests: {}
+    service:
+      annotations: {}
+      distPort: 25672
+      distPortName: dist
+      epmdPortName: epmd
+      externalTrafficPolicy: Cluster
+      extraPorts: []
+      labels: {}
+      managerPort: 15672
+      managerPortName: http-stats
+      metricsPort: 9419
+      metricsPortName: metrics
+      port: 5672
+      portName: amqp
+      tlsPort: 5671
+      tlsPortName: amqp-ssl
+      type: ClusterIP
+    serviceAccount:
+      create: true
+    sidecars: {}
+    statefulsetLabels: {}
+    terminationGracePeriodSeconds: 120
+    tolerations: []
+    ulimitNofiles: "65536"
+    updateStrategyType: RollingUpdate
+    volumePermissions:
+      enabled: true
+      image:
+        pullPolicy: Always
+        pullSecrets: []
+        registry: docker.io
+        repository: bitnami/minideb
+        tag: buster
+      resources:
+        limits: {}
+        requests: {}
+  resources: {}
+  route:
+    Enabled: true
+    annotations:
+      haproxy.router.openshift.io/cookie_name: SESSION_XLD
+      haproxy.router.openshift.io/disable_cookies: "false"
+      haproxy.router.openshift.io/rewrite-target: /
+    hosts:
+    - <Provode DNS name for accessing UI of Digital.ai Deploy>
+    path: /
+  satellite:
+    Enabled: false
+  tolerations: []
+  # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
+  xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>

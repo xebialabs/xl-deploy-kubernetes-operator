@@ -1,0 +1,26 @@
+apiVersion: xl-deploy/v1
+kind: Infrastructure
+spec:
+  - name: k8s-infra
+    type: core.Directory
+    children:
+    - name: xld
+      type: k8s.Master
+      apiServerURL: < Update using server info from the kubeconfig file >
+      skipTLS: true
+      debug: true
+      caCert: |-
+        <certificate-authority-data in base64 decoded>
+        -----BEGIN CERTIFICATE-----
+        
+        -----END CERTIFICATE-----
+      isEKS: true
+      useGlobal: true
+      regionName: < Update using  region info from the kubeconfig file
+      clusterName: <Update using cluster-name field from the kubeconfig file>
+      accessKey: <Update the AWS accessKey details >
+      accessSecret: <Update the AWS accessSecret details >
+      children:
+        - name: default
+          type: k8s.Namespace
+          namespaceName: default
