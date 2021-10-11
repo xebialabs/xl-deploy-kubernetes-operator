@@ -1,0 +1,15 @@
+apiVersion: xl-deploy/v1
+kind: Infrastructure
+spec:
+  - name: k8s-infra
+    type: core.Directory
+    children:
+    - name: xld
+      type: openshift.Server
+      serverUrl: < The URL of the OpenShift cluster >
+      openshiftToken: < The authentication token to connect to OpenShift cluster >
+      verifyCertificates: false
+      children:
+        - name: default
+          type: openshift.Project
+          projectName: default
