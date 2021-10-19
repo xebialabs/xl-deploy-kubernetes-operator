@@ -11,7 +11,9 @@ spec:
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
   ImageRepository: xebialabs/xl-deploy
-  ImageTag: "10.2"
+  ImageTag: "10.3"
+  # Secrets must be manually created in the namespace
+  # ImagePullSecret: xlDeploy
   K8sSetup:
     Platform: AzureAKS
   KeystorePassphrase: <Provide store pass for the keystore>
