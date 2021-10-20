@@ -1,0 +1,5 @@
+apiVersion: xl-deploy/v1
+kind: Deployment
+spec:
+  package: Applications/xld-operator-app/1.0.0
+  environment: Environments/kubernetes-envs/xld
