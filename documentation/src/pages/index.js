@@ -17,7 +17,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro">
-            Deploy Kubernetes Helm Chart Tutorial
+            Deploy Kubernetes Operator Tutorial
           </Link>
         </div>
       </div>

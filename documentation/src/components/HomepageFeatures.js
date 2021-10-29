@@ -8,7 +8,7 @@ const FeatureList = [
     Svg: require('../../static/img/1.svg').default,
     description: (
       <>
-          Deploy Kubernetes Helm Chart was designed from the ground up to be easy in use to spin up
+          Deploy Kubernetes Operator was designed from the ground up to be easy in use to spin up
         Deploy cluster setup.
       </>
     ),
@@ -18,7 +18,7 @@ const FeatureList = [
     Svg: require('../../static/img/2.svg').default,
     description: (
       <>
-          Deploy Kubernetes Helm Chart takes a burden of configuring the setup for you.
+          Deploy Kubernetes Operator takes a burden of configuring the setup for you.
       </>
     ),
   },
