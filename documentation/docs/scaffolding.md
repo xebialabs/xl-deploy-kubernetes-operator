@@ -23,7 +23,7 @@ git clone git@github.com:xebialabs/xl-deploy-kubernetes-helm-chart.git
 ```
 cd xl-deploy-kubernetes-helm-chart
 ```
-5. Remove the values file for HAProxy as we will generate the scaffolding with NIGIX support
+5. Remove the values file for HAProxy as we will generate the scaffolding with NGINX support
 ```    
 rm -f values-haproxy.yaml
 ```
@@ -63,7 +63,7 @@ operator-sdk init --domain digital.ai --plugins=helm
 ```
 operator-sdk create api --group=xld --version=v1alpha1 --helm-chart=xld.tgz
 ```
-15. We now need to generate the operator controller image. Export one variable to create the image along with tag
+15. We now need to generate the operator controller image. Export one variable to create the image along with a tag:
 ```
 export OPERATOR_IMG="docker.io/xldevdocker/deploy-operator:1.0.0"
 ```
