@@ -23,7 +23,7 @@ drwxr-xr-x   3 bnechyporenko  staff      96 Nov  1 09:41 helm-charts
 -rw-r--r--   1 bnechyporenko  staff  214732 Nov  1 09:36 xld.tgz
 ```
 * Create some folder where you can copy and configure the setup. For example `xld-operator-setup`. 
-* Copy `config` folder to `xld-operator-setup`. You need only the next 10 files, the rest you can remove:
+* Copy `config` folder to `xld-operator-setup`. You need only the next 11 files, the rest you can remove:
 
 |Name|Path|
 | :---: | :---: |
@@ -37,6 +37,7 @@ drwxr-xr-x   3 bnechyporenko  staff      96 Nov  1 09:41 helm-charts
 |leader-election-rolebinding.yaml|config/rbac/leader_election_role_binding.yaml|
 |manager-rolebinding.yaml|config/rbac/role_binding.yaml|
 |proxy-rolebinding.yaml|config/rbac/auth_proxy_role_binding.yaml|
+|daideploy_cr.yaml|config/samles/xld_v1alpha1_digitalaideploy.yaml|
 
 That mapping has to be applied in `applications.yaml` file. There you can find 10 references to a file, which initially
 points to a template. Example:
@@ -121,5 +122,64 @@ Copy it from scaffolding folder (you can find it in `config/samples` folder) to 
 ** Change StorageClass to what you have. For example, you can use 'standard', in case of using local file system. 
 It depends [how you configured it](https://xebialabs.github.io/xl-deploy-kubernetes-helm-chart/docs/installing-storage-class). 
 ** Define your license in `xldLicense` field, by converting `deployit-license.lic` file's content to base64.
+** Change namespaces in all yaml files to "default", instead of "system"
+** Change for all `kind: ServiceAccount` the name to `default`.
+** Replace the content of `manager_auth_proxy_patch.yaml` to:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: xld-operator-controller-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  template:
+    metadata:
+      labels:
+        control-plane: controller-manager
+    spec:
+      containers:
+        - name: kube-rbac-proxy
+          image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
+          args:
+            - "--secure-listen-address=0.0.0.0:8443"
+            - "--upstream=http://127.0.0.1:8080/"
+            - "--logtostderr=true"
+            - "--v=10"
+          ports:
+            - containerPort: 8443
+              name: https
+        - name: manager
+          args:
+            - "--health-probe-bind-address=:8081"
+            - "--metrics-bind-address=127.0.0.1:8080"
+            - "--leader-elect"
+            - "--leader-election-id=xld-operator-controller-manager"
+          image: xebialabs/deploy-operator:1.2.0
+          livenessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 100m
+              memory: 90Mi
+            requests:
+              cpu: 100m
+              memory: 60Mi
+      terminationGracePeriodSeconds: 10
+``` 
 ** Now you are ready to run the complete configuration with:
 `xl apply -v -f digital-ai.yaml`
