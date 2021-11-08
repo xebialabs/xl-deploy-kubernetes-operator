@@ -44,16 +44,16 @@ points to a template. Example:
 
 `file: !file "kubernetes/template/manager-rolebinding.yaml"`
 
-* Next step is to configure locally Deploy. Make sure, that you have installed Kubernetes plugin. 
-* First we will manually create infrastructure CI in Deploy to make sure, that provided values are working against a local
+- Next step is to configure locally Deploy. Make sure, that you have installed Kubernetes plugin. 
+- First we will manually create infrastructure CI in Deploy to make sure, that provided values are working against a local
  cluster. I will describe how to do it for a `minikube`, so if you are using something else, some technical details can 
  be a bit different, but the idea is the same. 
-** Start creating CI with type k8s.Master ![k8s master ci creation](./pics/k8smaster-ci-creation.png)
-** Fill in `API server URL` field:
+  - Start creating CI with type k8s.Master ![k8s master ci creation](./pics/k8smaster-ci-creation.png)
+  - Fill in `API server URL` field:
 ![api server url](./pics/api-server-url.png)
 The command to get your server API:
 ![k8s cluster info](./pics/k8s-cluster-info.png)
-** Next 3 fields are regarding the certifications. Therefore we have first to find the place where they are located. As 
+  - Next 3 fields are regarding the certifications. Therefore we have first to find the place where they are located. As 
 it depends on which profile is activated. Check it with a command `minikube profile`. For example for me, the active profile
 is `minikube`, and my certificates are located at:
 
@@ -105,26 +105,24 @@ we will use a control task "Check Connection".
 If everything configured correctly, you should see something like this: 
 ![k8s-successful-connection](./pics/k8s-successful-connection.png)
 
-* After this success we are ready to fill in the next Yaml file `infrastructure.yaml`
+- After this success we are ready to fill in the next Yaml file `infrastructure.yaml`
 Fill in here these 4 fields: `apiServerURL`, `caCert`, `tlsCert` and `tlsPrivateKey`. 
 
-* Next step is to verify that no mistakes happened during copy-pasting to `infrastructure.yaml`. For that we need to use
+- Next step is to verify that no mistakes happened during copy-pasting to `infrastructure.yaml`. For that we need to use
 [As Code](https://docs.xebialabs.com/v.10.2/deploy/concept/get-started-with-devops-as-code/) feature
  of Deploy to create CIs with help of [XL CLI](https://docs.xebialabs.com/v.10.2/deploy/how-to/install-the-xl-cli/). 
  Please check [XL CLI](https://docs.xebialabs.com/v.10.2/deploy/how-to/install-the-xl-cli/) how to install it.
  Run `xl apply -f infrastructure.yaml` by being in the same directory, or specify the full path to the file. In case you 
  have non-default URL, you have to add this parameter: `--xl-deploy-url YOUR_XL_DEPLOY_URL`
  
-* Next thing to tailor few parameters in `xld_v1alpha1_digitalaideploy.yaml`. 
-Copy it from scaffolding folder (you can find it in `config/samples` folder) to a root of `xld-operator-setup` folder.
-
-** Define or comment  `KeystorePassphrase` and `RepositoryKeystore`
-** Change StorageClass to what you have. For example, you can use 'standard', in case of using local file system. 
+- Next thing to tailor few parameters in `xld_v1alpha1_digitalaideploy.yaml`. Copy it from scaffolding folder (you can find it in `config/samples` folder) to a root of `xld-operator-setup` folder.
+  - Define or comment  `KeystorePassphrase` and `RepositoryKeystore`
+  - Change StorageClass to what you have. For example, you can use 'standard', in case of using local file system. 
 It depends [how you configured it](https://xebialabs.github.io/xl-deploy-kubernetes-helm-chart/docs/installing-storage-class). 
-** Define your license in `xldLicense` field, by converting `deployit-license.lic` file's content to base64.
-** Change namespaces in all yaml files to "default", instead of "system"
-** Change for all `kind: ServiceAccount` the name to `default`.
-** Replace the content of `manager_auth_proxy_patch.yaml` to:
+  - Define your license in `xldLicense` field, by converting `deployit-license.lic` file's content to base64.
+  - Change namespaces in all yaml files to "default", instead of "system"
+  - Change for all `kind: ServiceAccount` the name to `default`.
+  - Replace the content of `manager_auth_proxy_patch.yaml` to:
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -181,5 +179,6 @@ spec:
               memory: 60Mi
       terminationGracePeriodSeconds: 10
 ``` 
-** Now you are ready to run the complete configuration with:
+
+- Now you are ready to run the complete configuration with:
 `xl apply -v -f digital-ai.yaml`
