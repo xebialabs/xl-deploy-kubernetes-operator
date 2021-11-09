@@ -72,3 +72,36 @@ Full documentation can be found by this link:
     ```
     make docker-build docker-push IMG=$OPERATOR_IMG
     ```
+
+### At this stage there could be 2 scenarios:
+Scenario 1: You are regenerating the scaffolding due to some changes in underlying helm charts.
+Scenario 2: You are generating the scaffolding for the first time.
+
+We would disscuss both the scenarios one by one.
+
+### Scenario 1:
+
+1. Clone the **xl-deploy-kubernetes-operator** GitHub repository 
+    ```
+    git clone git@github.com:xebialabs/xl-deploy-kubernetes-operator.git
+    ```
+
+2. Go to the directory available for your Kubernetes platform. Lets assume we are doing it for Kubernetes on-premise cluster.
+    ```
+    cd xl-deploy-kubernetes-operator/deploy-operator-onprem
+    ```
+
+3. Replace the existing custom resource (CR) file with the newly generated custom resource (CR) file. Substitue the '<PATH>' with actual path from the generated files using operator-sdk binary.
+    ```
+    cp <PATH>/xld/config/samples/xld_v1alpha1_digitalaideploy.yaml digitalai-deploy/kubernetes/daideploy_cr.yaml
+    ```
+> The custom resource (CR) file is same what you have as values.yaml in helm repository.
+4. Check the git diff for the CR file and keep only the changes you have done in values.yaml of the helm repository. Save the changes.
+> Changes done in any other file than values.yaml in helm charts will be encapsulated within the operator controller manager image.
+5. Update the operator controller manager deployment to point to the new operator controller manager image.
+    - Open the deployment file: 'digitalai-deploy/kubernetes/template/deployment.yaml'.
+    - Under the spces.containers section navigate to the container named 'manager'.
+    - Change the 'image' to the image and tag generated in previous steps.
+    - Save and exit.
+
+6. Finally commit and push your changes after reviewing it using git diff command.
