@@ -5,6 +5,34 @@ sidebar_position: 1
 # On Premises
 
 Here you will find a recipe of manual actions how to set up k8s cluster for Deploy locally with help of an operator. 
+It will be described how to do it on `minikube`. If you use another tool, you might need to do it a bit differently.
+First of all you have to run `minikube` as VM. 
+
+Example:
+```shell script
+minikube start --driver=virtualbox -p k120 --kubernetes-version=v1.20.0
+```
+
+If you already had installed minikube as docker based, first you might have to clean it up with:
+```shell script
+minikube stop; minikube delete &&
+docker stop $(docker ps -aq) &&
+rm -rf ~/.kube ~/.minikube &&
+sudo rm -rf /usr/local/bin/localkube /usr/local/bin/minikube &&
+launchctl stop '*kubelet*.mount' &&
+launchctl stop localkube.service &&
+launchctl disable localkube.service &&
+sudo rm -rf /etc/kubernetes/ &&
+docker system prune -af --volumes
+```  
+
+Next you have to define a resolvable hostname, for example like:
+```text
+192.168.59.101 k120
+```
+where `192.168.59.101` you have to change with the result of `minikube -p k120 ip` 
+
+Then you can use `k120` as a hostname for k8s cluster.
 
 * Go through the process of [scaffolding](../scaffolding.md).
 After following these instructions, you'll get on your filesystem the next structure:
@@ -120,6 +148,8 @@ Fill in here these 4 fields: `apiServerURL`, `caCert`, `tlsCert` and `tlsPrivate
   - Change StorageClass to what you have. For example, you can use 'standard', in case of using local file system. 
 It depends [how you configured it](https://xebialabs.github.io/xl-deploy-kubernetes-helm-chart/docs/installing-storage-class). 
   - Define your license in `xldLicense` field, by converting `deployit-license.lic` file's content to base64.
+  - Define `RepositoryKeystore` as `zs7OzgAAAAIAAAABAAAAAwAWZGVwbG95aXQtcGFzc3N3b3JkLWtleQAAAX0FGMZRrO0ABXNyADNjb20uc3VuLmNyeXB0by5wcm92aWRlci5TZWFsZWRPYmplY3RGb3JLZXlQcm90ZWN0b3LNV8pZ5zC7UwIAAHhyABlqYXZheC5jcnlwdG8uU2VhbGVkT2JqZWN0PjY9psO3VHACAARbAA1lbmNvZGVkUGFyYW1zdAACW0JbABBlbmNyeXB0ZWRDb250ZW50cQB+AAJMAAlwYXJhbXNBbGd0ABJMamF2YS9sYW5nL1N0cmluZztMAAdzZWFsQWxncQB+AAN4cHVyAAJbQqzzF/gGCFTgAgAAeHAAAAARMA8ECHAyz3pefALRAgMDDUB1cQB+AAUAAACQb6Y2JUQqkd5PtdwIAKEWNiVMcTnIS85U7FsvOb+b+xfOCV8+disezZCQ2f4F6YVGRO++u+NXd0YNDn/eXwge4w7i4ewNBydpMSTpVJieJA3nhh7mvUktatsAV+H7EcGYeMPx/cAlkqyFUHuiGz9p1ft3pxmxey2Uyt/FiBgAiV2hZAj14vGdSoRsMH8qN5ECdAAWUEJFV2l0aE1ENUFuZFRyaXBsZURFU3QAFlBCRVdpdGhNRDVBbmRUcmlwbGVERVO9rqwVmysM6czWLFdUj1+Xh1hxHQ==`. (It's a working dummy example, you are free to use what you wish)
+  - Define `KeystorePassphrase` as `deployit`. (It's a working dummy example, you are free to use what you wish)
   - Change namespaces in all yaml files to "default", instead of "system"
   - Change for all `kind: ServiceAccount` the name to `default`.
   - Replace the content of `manager_auth_proxy_patch.yaml` to:
@@ -182,3 +212,24 @@ spec:
 
 - Now you are ready to run the complete configuration with:
 `xl apply -v -f digital-ai.yaml`
+
+### Uninstall
+
+* Perform undeploy of operator in Deploy
+* Remove manually all other CIs left in Deploy
+* Clean PVCs manually
+
+First you have to check what PVC were created
+```shell script
+bnechyporenko@Bogdan-Nechyporenko k120 % kubectl get pvc
+NAME                                         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+data-dai-xld-postgresql-0                    Bound    pvc-225272f8-f690-40fd-be5f-98d28c874e17   50Gi       RWO            standard       23m
+data-dai-xld-rabbitmq-0                      Bound    pvc-b0580680-e119-41f9-961b-ab344170a654   8Gi        RWO            standard       23m
+data-dir-dai-xld-digitalai-deploy-master-0   Bound    pvc-1bfb745b-b451-4103-881c-3e9995033203   10Gi       RWO            standard       23m
+data-dir-dai-xld-digitalai-deploy-worker-0   Bound    pvc-a1ee162a-da5f-4eb9-8346-5ef3e006861f   10Gi       RWO            standard       23m
+```
+
+Afterwards, remove it like that:
+```shell script
+bnechyporenko@Bogdan-Nechyporenko k120 % kubectl delete pvc data-dai-xld-postgresql-0 data-dai-xld-rabbitmq-0 data-dir-dai-xld-digitalai-deploy-master-0 data-dir-dai-xld-digitalai-deploy-worker-0
+```
