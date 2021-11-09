@@ -6,12 +6,6 @@ sidebar_position: 1
 
 Here you will find a recipe of manual actions how to set up k8s cluster for Deploy locally with help of an operator. 
 It will be described how to do it on `minikube`. If you use another tool, you might need to do it a bit differently.
-First of all you have to run `minikube` as VM. 
-
-Example:
-```shell script
-minikube start --driver=virtualbox -p k120 --kubernetes-version=v1.20.0
-```
 
 If you already had installed minikube as docker based, first you might have to clean it up with:
 ```shell script
@@ -25,6 +19,20 @@ launchctl disable localkube.service &&
 sudo rm -rf /etc/kubernetes/ &&
 docker system prune -af --volumes
 ```  
+
+First of all you have to run `minikube` as VM. 
+
+Example:
+```shell script
+minikube start --driver=virtualbox -p k120 --kubernetes-version=v1.20.0
+```
+
+We will need Ingress, so we have to install addons to enable it, as it doesn't come with a default setup:
+
+```shell script
+minikube addons enable ingress
+minikube addons enable ingress-dns
+```
 
 Next you have to define a resolvable hostname in `/etc/hosts`, for example like:
 ```text
