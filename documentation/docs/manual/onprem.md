@@ -26,7 +26,7 @@ sudo rm -rf /etc/kubernetes/ &&
 docker system prune -af --volumes
 ```  
 
-Next you have to define a resolvable hostname, for example like:
+Next you have to define a resolvable hostname in `/etc/hosts`, for example like:
 ```text
 192.168.59.101 k120
 ```
