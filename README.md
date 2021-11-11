@@ -143,7 +143,7 @@ We would disscuss both the scenarios one by one.
     ```
 6. Copy the files responsible to spin operator controller manager pod and making sure that it has required access to Kubernetes cluster. Copy the files to digitalai-deploy/kubernetes/template folder.
     ```
-    cp <PATH>/xld/config/crd/bases/xld.my.domain_xldeployhelmcharts.yaml digitalai-deploy/kubernetes/template/custom-resource-definition.yaml
+    cp <PATH>/xld/config/crd/bases/xld.digital.ai_digitalaideploys.yaml digitalai-deploy/kubernetes/template/custom-resource-definition.yaml
     cp <PATH>/xld/config/rbac/auth_proxy_role.yaml digitalai-deploy/kubernetes/template/cluster-role-digital-proxy-role.yaml
     cp <PATH>/xld/config/rbac/role.yaml digitalai-deploy/kubernetes/template/cluster-role-manager-role.yaml
     cp <PATH>/xld/config/rbac/auth_proxy_client_clusterrole.yaml digitalai-deploy/kubernetes/template/cluster-role-metrics-reader.yaml
