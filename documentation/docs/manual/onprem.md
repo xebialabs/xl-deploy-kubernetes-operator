@@ -221,6 +221,27 @@ spec:
 - Now you are ready to run the complete configuration with:
 `xl apply -v -f digital-ai.yaml`
 
+- Troubleshooting
+    - Scenario 1:
+       - Run **`kubectl get all`** returns only the Operator control manager pods which are deployed on the Kubernetes cluster. No other pods are deployed.
+    Then verify the operator control pod logs **`kubectl logs --follow pod/xld-operator-controller-manager-7ccc778f55-nfhl5 -c manger`** to identify the error in the cr file.
+     If the below error is observed, then remove enabled: true from podSecurityContext tag in xld_v1alpha1_digitalaideploy.yaml.
+     
+    ![k8s-podSecurity-error](./pics/k8s-podSecurity-error.png)
+    
+    - Scenario 2:
+        - Step 1: Run **`kubectl get all`** returns the pods, when the below error is observed in master pod, execute step 2 below.
+        
+        ![k8s-master-pod-error](./pics/k8s-master-pod-error.png)
+        - Step 2: Run **`kubectl describe pod/digitalaideploy-sample-digitalai-deploy-master-0`** command to identify the issue in container creation. when the below error is observed, then define RepositoryKeystore and KeystorePassphrase xld_v1alpha1_digitalaideploy.yaml.
+        
+        ![k8s-master-pod-describe](./pics/k8s-master-pod-describe.png)
+    - Scenario 3:
+       - Run **`kubectl get all`** and if you see pod/digitalaideploy-sample-nginx-ingress-controller-default-bav88kd pod is failing again and again,
+     check the pod logs **`kubectl logs --follow pod/digitalaideploy-sample-nginx-ingress-controller-default-bav88kd`** for error, and when the below error is observed, update the path to `/` for livenessProbe and readinessProbe of nginx-ingress-controller in xld_v1alpha1_digitalaideploy.yaml.
+     
+    ![k8s-nginxController-default-error](./pics/k8s-nginxController-default-error.png)
+
 ### Uninstall
 
 * Perform undeploy of operator in Deploy
