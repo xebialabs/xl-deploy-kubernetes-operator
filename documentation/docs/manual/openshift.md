@@ -70,6 +70,14 @@ The most important points which are missing there:
 
 ![OpenShift EFS Access Point](./pics/openshift-efs-access-point.png)
 
+When configured all properly, all pods have to be up and running
+
+![OpenShift state](./pics/openshift-cluster-state.png)
+
+and server accessed by the provided host in the configuration
+
+![Openshift Cluster UI](./pics/openshift-cluster-ui.png)
+
 # Troubleshooting
 
 In some cases you can face with issues in PostreSQL and have no actual error logs. 
