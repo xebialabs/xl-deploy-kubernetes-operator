@@ -51,7 +51,7 @@ Also very important thing, when IdP is created, you have to create a user with t
 When all configuration is done, and you deployed the Operator, you can interact with the cluster with help of `oc`.
 Just instead of `kubectl` will be `oc`.
 
-# How to configure AWS EFS
+## How to configure AWS EFS
 
 This is [the article](https://docs.openshift.com/container-platform/4.2/storage/persistent_storage/persistent-storage-efs.html) to start the configuration from.
 The most important points which are missing there:
@@ -100,7 +100,7 @@ and server accessed by the provided host in the configuration
 
 ![Openshift Cluster UI](./pics/openshift-cluster-ui.png)
 
-# Troubleshooting
+## Troubleshooting
 
 In some cases you can face with issues in PostreSQL and have no actual error logs. 
 To overcome it, you have to enable debug mode for it. You can do it by enabling debug to `true` in values:
