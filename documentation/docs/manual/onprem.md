@@ -241,6 +241,14 @@ spec:
      check the pod logs **`kubectl logs --follow pod/digitalaideploy-sample-nginx-ingress-controller-default-bav88kd`** for error, and when the below error is observed, update the path to `/` for livenessProbe and readinessProbe of nginx-ingress-controller in xld_v1alpha1_digitalaideploy.yaml.
      
     ![k8s-nginxController-default-error](./pics/k8s-nginxController-default-error.png)
+    - Scenario 4:
+       - Run **`kubectl get all`** and if your master and worker instance is not starting.
+         - Change the `XldMasterPvcSize: 2Gi` and `XldWorkerPvcSize: 2Gi` in xld_v1alpha1_digitalaideploy.yaml.
+         - Verify number of cpus and memory allocated for kubernetes using below command, and if necessary increase the memory and cpus as part of minikube startup `minikube start --driver=docker --kubernetes-version=v1.20.0 -p k120 --cpus=4 --memory=15600MB`
+```shell script
+  [sishwarya@localhost deploy-operator-onprem] $ kubectl get node k120 -o jsonpath='{.status.capacity}'
+        {"cpu":"8","ephemeral-storage":"51175Mi","hugepages-1Gi":"0","hugepages-2Mi":"0","memory":"32301572Ki","pods":"110"}
+```
 
 ### Uninstall
 
