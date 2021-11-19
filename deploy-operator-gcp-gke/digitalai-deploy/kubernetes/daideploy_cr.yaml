@@ -11,7 +11,7 @@ spec:
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
   ImageRepository: xebialabs/xl-deploy
-  ImageTag: "10.2"
+  ImageTag: "10.3.3"
   K8sSetup:
     Platform: GoogleGKE
   KeystorePassphrase: <Provide store pass for the keystore>
