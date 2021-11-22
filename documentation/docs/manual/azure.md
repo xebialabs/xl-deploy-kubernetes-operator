@@ -1,0 +1,211 @@
+---
+sidebar_position: 2
+---
+
+# Azure
+
+Here it will described how to install manually Deploy k8s cluster with help of operator to Azure.
+
+* First of all you should install [Azure CLI locally](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+* Use kubernetes walkthrough with `az` to setup k8s cluster: [Deploy an Azure Kubernetes Service cluster using the Azure CLI](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough) as alternative use [GUI alternative](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal)
+  * Check first Prerequisites to [Sign in with Azure CLI](https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli)
+
+## Create the cluster
+
+Here are basic steps to setup k8s cluster.
+
+Create a resource group
+```shell
+❯ az group create --name xld-operator-group --location germanywestcentral
+{
+  "id": "/subscriptions/.../resourceGroups/xld-operator-group",
+  "location": "germanywestcentral",
+  "managedBy": null,
+  "name": "xld-operator-group",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+Create new TLS private key (in other way it is using default key from SSL config)
+```shell
+ssh-keygen -f ssh-key-xld-operator-cluster -N "" -m pem
+```
+This will create new private and public key files. We will use public file `ssh-key-xld-operator-cluster.pub` in the next step.   
+
+Create an AKS cluster
+
+```shell
+❯ az aks create --resource-group xld-operator-group  --name xld-operator-cluster --node-count 1 --enable-addons monitoring --ssh-key-value ssh-key-xld-operator-cluster.pub
+AAD role propagation done[############################################]  100.0000%{
+  "aadProfile": null,
+  ...
+  "sku": {
+    "name": "Basic",
+    "tier": "Free"
+  },
+  "tags": null,
+  "type": "Microsoft.ContainerService/ManagedClusters",
+  "windowsProfile": null
+}
+```
+
+:::tip
+
+If you need to scale number of replicas 1 default node will not be enough (default node-vm-size is `Standard_DS2_v2` with 7GiB and 2vCPU), 
+so use `--node-count 2` or `--node-vm-size Standard_DS3_v2` with 14GiB and 4vCPU.
+
+:::
+
+Result on the Azure Portal dashboard:
+![aks-xld-operator-cluster](./pics/aks-xld-operator-cluster.png)
+
+Connect to the cluster
+```shell
+❯ az aks get-credentials --resource-group xld-operator-group --name xld-operator-cluster
+Merged "xld-operator-cluster" as current context in /Users/vpugar/.kube/config
+```
+
+Check if your cluster is fully functional
+```shell
+❯ kubectl get node
+NAME                                STATUS   ROLES   AGE     VERSION
+aks-nodepool1-32131366-vmss000000   Ready    agent   6h36m   v1.20.9
+```
+
+You can take now the keys and URL and update `deploy-operator-azure-aks/digitalai-deploy/infrastructure.yaml`. Following are mappings:
+
+|Field name|Path to the cert|
+| :---: | :---: |
+|apiServerURL|~/.kube/config:clusters\[name=xld-operator-cluster\].cluster.server|
+|caCert|~/.kube/config:clusters\[name=xld-operator-cluster\].cluster.certificate-authority-data|
+|tlsCert|~/.kube/config:users\[name=clusterUser_xld-operator-group_xld-operator-cluster\].user.client-certificate-data|
+|tlsPrivateKey|~/.kube/config:users\[name=clusterUser_xld-operator-group_xld-operator-cluster\].user.client-key-data|
+
+You can use base64 encoded values from the `~/.kube/config`, as is, in that case, from the `infrastructure.yaml`, just remove header/footer lines with `-----` that under that specific key value that you are replacing.
+
+## Storage class
+
+Get default storage class
+```shell
+❯ kubectl get storageclass
+NAME                PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+azurefile           kubernetes.io/azure-file   Delete          Immediate              true                   6h36m
+azurefile-premium   kubernetes.io/azure-file   Delete          Immediate              true                   6h36m
+default (default)   kubernetes.io/azure-disk   Delete          WaitForFirstConsumer   true                   6h36m
+managed-premium     kubernetes.io/azure-disk   Delete          WaitForFirstConsumer   true                   6h36m
+```
+It should be used `default`, so update all occurrences of storageClass in the `xld_v1alpha_digitaldeploy.yaml` to `default` value.
+
+### Azure Files Dynamic 
+
+storageClass `default` is not good enough for the database setup and other shared folders' requirement, so in that case
+there are multiple ways to create shared data-volumes, here are options:
+- [Azure Disk Dynamic](https://docs.microsoft.com/en-us/azure/aks/azure-disks-dynamic-pv) (can be used by only one node)
+- [Azure Files Dynamic](https://docs.microsoft.com/en-us/azure/aks/azure-files-dynamic-pv) 
+- [Azure Files Static](https://docs.microsoft.com/en-us/azure/aks/azure-files-volume) 
+- [NFS server Static](https://docs.microsoft.com/en-us/azure/aks/azure-nfs-volume) (NFS Server onto a Virtual Machine)
+- and others, see [Storage options for applications in Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/concepts-storage)
+
+**Following was tested with Azure Files Dynamic**
+
+Create a file named `azure-file-sc.yaml`:
+```yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: xld-operator-azurefile
+provisioner: kubernetes.io/azure-file
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+  - uid=0
+  - gid=0
+  - mfsymlinks
+  - cache=strict
+  - actimeo=30
+parameters:
+  skuName: Standard_LRS
+```
+Using Standard_LRS - standard locally redundant storage (LRS).
+
+Apply it
+```shell
+❯ kubectl apply -f azure-file-sc.yaml
+storageclass.storage.k8s.io/xld-operator-azurefile created
+```
+
+The `xld-operator-azurefile` storage class must be marked only the default annotation so that PersistentVolumeClaim objects (without a StorageClass specified) will trigger dynamic provisioning.
+```shell
+❯ kubectl patch storageclass xld-operator-azurefile -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+storageclass.storage.k8s.io/xld-operator-azurefile patched
+❯ kubectl patch storageclass default -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+storageclass.storage.k8s.io/default patched
+```
+
+Previous setup `xld-operator-azurefile` will not work correctly with PostgreSQL. This is because PostgreSQL requires hard links in the Azure File directory, and since Azure File does not support hard links the pod fails to start.
+So we need additional storageClass with Azure disk. Create a file named `azure-disk-sc.yaml`:
+```yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: xld-operator-azuredisk
+provisioner: kubernetes.io/azure-disk
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  storageaccounttype: Standard_LRS
+```
+
+Apply it
+```shell
+❯ kubectl apply -f azure-disk-sc.yaml
+storageclass.storage.k8s.io/xld-operator-azuredisk created
+```
+
+Check storage class, it should be something like this:
+```shell
+❯ kubectl get storageclass
+NAME                               PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+azurefile                          kubernetes.io/azure-file   Delete          Immediate              true                   49m
+azurefile-premium                  kubernetes.io/azure-file   Delete          Immediate              true                   49m
+default                            kubernetes.io/azure-disk   Delete          WaitForFirstConsumer   true                   49m
+managed-premium                    kubernetes.io/azure-disk   Delete          WaitForFirstConsumer   true                   49m
+xld-operator-azuredisk             kubernetes.io/azure-disk   Delete          WaitForFirstConsumer   false                  4m56s
+xld-operator-azurefile (default)   kubernetes.io/azure-file   Delete          Immediate              false                  29m
+```
+
+It should be used now as storageClass `xld-operator-azurefile`. 
+So update all occurrences of storageClass in the `xld_v1alpha_digitaldeploy.yaml` to `xld-operator-azurefile` value, 
+except one under 
+- `spec.postgresql.common.global.storageClass`
+- `spec.postgresql.global.storageClass`
+- `spec.postgresql.persitence.storageClass`
+
+there should be `xld-operator-azuredisk`.
+
+## Start operator
+
+Run following command
+```shell
+xl apply -v -f digital-ai.yaml 
+```
+
+The final result on Azure Portal, all should be running (running all with 1 replica) with list of pods and services :
+![aks-pods](./pics/aks-pods.png)
+![aks-services](./pics/aks-services.png)
+
+### Troubleshouting
+There are possible problems during deployment:
+- if deployment fails because not matching namespace, just remove nemaspeace from the yaml file 
+  - for example during `Create Service controller-manager-metrics-service`. Just remove namespace from the xld-operator-setup/config/rbac/auth-proxy-service.yaml
+
+## Delete the cluster
+
+Clean up your unnecessary resources, use the az group delete command to remove the resource group, container service, and all related resources.
+```shell
+❯ az group delete --name xld-operator-group --yes --no-wait
+```
