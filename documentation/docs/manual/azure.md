@@ -1,13 +1,13 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 # Azure
 
-Here it will described how to install manually Deploy k8s cluster with help of operator to Azure.
+Here it will be described how to install manually Deploy k8s cluster with help of operator to Azure.
 
-* First of all you should install [Azure CLI locally](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-* Use kubernetes walkthrough with `az` to setup k8s cluster: [Deploy an Azure Kubernetes Service cluster using the Azure CLI](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough) as alternative use [GUI alternative](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal)
+* You should install [Azure CLI locally](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+* Use kubernetes walkthrough, in the next section with `az` to setup k8s cluster. Here are more detailed description: [Deploy an Azure Kubernetes Service cluster using the Azure CLI](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough) as alternative use [GUI alternative](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal)
   * Check first Prerequisites to [Sign in with Azure CLI](https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli)
 
 ## Create the cluster
