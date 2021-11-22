@@ -12,10 +12,8 @@ spec:
   ImagePullPolicy: Always
   ImageRepository: xebialabs/xl-deploy
   ImageTag: "10.3.3"
-  # Secrets must be manually created in the namespace
-  # ImagePullSecret: xlDeploy
   K8sSetup:
-    Platform: AWSEKS
+    Platform: GoogleGKE
   KeystorePassphrase: <Provide store pass for the keystore>
   Persistence:
     AccessMode: ReadWriteOnce
