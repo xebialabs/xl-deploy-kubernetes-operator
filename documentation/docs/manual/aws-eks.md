@@ -20,7 +20,7 @@ Here it will described how to install manually Deploy k8s cluster with help of o
 
 * [Configure AWS CLI locally](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
     
-* (optional) [Create VPC and Subnets](https://docs.aws.amazon.com/eks/latest/userguide/create-public-private-vpc.html). We can also use the available vpc.
+* Use existing VPC or optionally [Create VPC and Subnets](https://docs.aws.amazon.com/eks/latest/userguide/create-public-private-vpc.html).
     ![Create VPC](./pics/aws-eks-vpc.png)
     
 * Create [AWS EKS cluster role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html)
@@ -36,7 +36,7 @@ Here it will described how to install manually Deploy k8s cluster with help of o
 * Create [node group](https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html).    
 
 
-* Configure the connection details.
+* Configure the connection details as part of your local aws setup.
     ```shell script
     [sishwarya@localhost aws] $ rm -rf ~/.kube/config (optional)
     
@@ -83,7 +83,7 @@ Here it will described how to install manually Deploy k8s cluster with help of o
             ```
     - Verify updated configmap `kubectl describe configmap -n kube-system aws-auth`.
 
-* Update the infrastructure.yaml and  ran xl apply -f infrastructure.yaml and validate the connection by doing check connection in xl-deploy env.
+* Update the infrastructure.yaml and  run xl apply -f infrastructure.yaml and validate the connection by performing check connection in xl-deploy env.
 
     ![infra](./pics/aws-eks-infra.png)
  
@@ -132,7 +132,8 @@ Here it will described how to install manually Deploy k8s cluster with help of o
 
 * Go through the process of [scaffolding](../scaffolding.md).
     - Update the xld_v1alpha1_digitalaideploy.yaml file
-        - Change StorageClass to what you have. For example, you can use 'gp2', in case of using local file system.
+        - Change StorageClass to what you have. For example, you can use 'gp2', in case of using aws local file system.
+            It depends [how you configured it](https://xebialabs.github.io/xl-deploy-kubernetes-helm-chart/docs/installing-storage-class). 
         - ingress service type: LoadBalancer.
         - Change the ingress hosts - Replace it with the domain registered in the previous step.
             eg:
@@ -174,6 +175,7 @@ kubernetes                                                        ClusterIP     
     ![Deploy login](./pics/aws-eks-deploylogin.png)
 
 
+  
 ## Troubleshooting
    - Unauthorized error. Go to your AWS SSO commad line, to verify the access and secret key.
         ```shell script
@@ -188,3 +190,19 @@ kubernetes                                                        ClusterIP     
                           export AWS_SESSION_TOKEN="IQoJb3JpZXXXXXXX"
                           source ~/.bashrc
             ```
+   - After [Configuring EFS] (https://xebialabs.github.io/xl-deploy-kubernetes-helm-chart/docs/installing-storage-class), if pod not initialized yet and 
+     if the below error observed on a pod describe.
+     
+     ![efs mount error](./pics/aws-efs-mount-error.png)
+    
+        - Go to EFS and select the file System created and go to network tab and copy the security group.
+        
+        ![efs network](./pics/aws-efs-network.png)
+        
+        - Go To EC2 and select security group and verify the in bound rules, modify and verify.
+        
+        ![ec2 security](./pics/aws-ec2-security.png)
+        
+        ![aws efs](./pics/aws-efs.png)
+        
+           
