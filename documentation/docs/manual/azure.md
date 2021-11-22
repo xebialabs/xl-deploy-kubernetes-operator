@@ -110,7 +110,7 @@ there are multiple ways to create shared data-volumes, here are options:
 - [NFS server Static](https://docs.microsoft.com/en-us/azure/aks/azure-nfs-volume) (NFS Server onto a Virtual Machine)
 - and others, see [Storage options for applications in Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/concepts-storage)
 
-**Following was tested with Azure Files Dynamic**
+**Following was tested with Azure Files and Disk Dynamic**
 
 Create a file named `azure-file-sc.yaml`:
 ```yaml
