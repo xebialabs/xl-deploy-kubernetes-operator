@@ -36,7 +36,15 @@ ssh-keygen -f ssh-key-xld-operator-cluster -N "" -m pem
 ```
 This will create new private and public key files. We will use public file `ssh-key-xld-operator-cluster.pub` in the next step.   
 
-Create an AKS cluster
+### Create an AKS cluster
+
+Check available k8s versions, if default one is 1.20.x it is OK, 
+in other case in next step during cluster creation use option `--kubernetes-version` with available 1.20.x version as value:
+```shell
+az aks get-versions --location germanywestcentral
+```
+
+Create an AKS cluster 
 
 ```shell
 ❯ az aks create --resource-group xld-operator-group  --name xld-operator-cluster --node-count 1 --enable-addons monitoring --ssh-key-value ssh-key-xld-operator-cluster.pub
