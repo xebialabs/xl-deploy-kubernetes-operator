@@ -195,11 +195,82 @@ except one under
 
 there should be `xld-operator-azuredisk`.
 
+## Setting up Azure DNS
+
+Here we will setup Azure DNS. For setting up details check [Apply a DNS label to the service](https://docs.microsoft.com/en-us/azure/aks/static-ip#apply-a-dns-label-to-the-service).
+
+The final URL will be in the following example: [http://xld-operator123.germanywestcentral.cloudapp.azure.com/xl-deploy/#/explorer](http://xld-operator123.germanywestcentral.cloudapp.azure.com/xl-deploy/#/explorer)
+
+Update `xld_v1alpha_digitaldeploy.yaml` on following places:
+- `spec.ingress.hosts` update first element to `xld-operator123.germanywestcentral.cloudapp.azure.com`
+- `spec.nginx-ingress-controller.service.annotations` add annotation: `service.beta.kubernetes.io/azure-dns-label-name: xld-operator123`
+
+After successful startup of the operator, check following:
+
+```shell
+❯ kubectl get ing
+NAME                                      CLASS    HOSTS                                                   ADDRESS   PORTS   AGE
+digitalaideploy-sample-digitalai-deploy   <none>   xld-operator123.germanywestcentral.cloudapp.azure.com             80      15m
+```
+
+and (here check for the events, events need to be both here):
+```shell
+❯ kubectl describe service digitalaideploy-sample-nginx-ingress-controller
+Name:                     digitalaideploy-sample-nginx-ingress-controller
+Namespace:                default
+Labels:                   app.kubernetes.io/component=controller
+                          app.kubernetes.io/instance=digitalaideploy-sample
+                          app.kubernetes.io/managed-by=Helm
+                          app.kubernetes.io/name=nginx-ingress-controller
+                          helm.sh/chart=nginx-ingress-controller-7.4.2
+Annotations:              meta.helm.sh/release-name: digitalaideploy-sample
+                          meta.helm.sh/release-namespace: default
+                          service.beta.kubernetes.io/azure-dns-label-name: xld-operator123
+Selector:                 app.kubernetes.io/component=controller,app.kubernetes.io/instance=digitalaideploy-sample,app.kubernetes.io/name=nginx-ingress-controller
+Type:                     LoadBalancer
+IP Families:              <none>
+IP:                       10.0.212.10
+IPs:                      10.0.212.10
+LoadBalancer Ingress:     20.79.230.4
+Port:                     http  80/TCP
+TargetPort:               http/TCP
+NodePort:                 http  30834/TCP
+Endpoints:                10.244.1.10:80
+Port:                     https  443/TCP
+TargetPort:               https/TCP
+NodePort:                 https  31593/TCP
+Endpoints:                10.244.1.10:443
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:
+  Type    Reason                Age   From                Message
+  ----    ------                ----  ----                -------
+  Normal  EnsuringLoadBalancer  16m   service-controller  Ensuring load balancer
+  Normal  EnsuredLoadBalancer   16m   service-controller  Ensured load balancer
+```
+
 ## Start operator
 
 Run following command
 ```shell
 xl apply -v -f digital-ai.yaml 
+```
+
+Check services in shell:
+```shell
+❯ kubectl get services
+NAME                                                              TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                                 AGE
+controller-manager-metrics-service                                ClusterIP      10.0.104.207   <none>        8443/TCP                                4m37s
+digitalaideploy-sample-digitalai-deploy-lb                        ClusterIP      10.0.243.11    <none>        4516/TCP                                3m25s
+digitalaideploy-sample-digitalai-deploy-master                    ClusterIP      None           <none>        8180/TCP                                3m25s
+digitalaideploy-sample-digitalai-deploy-worker                    ClusterIP      None           <none>        8180/TCP                                3m25s
+digitalaideploy-sample-nginx-ingress-controller                   LoadBalancer   10.0.212.10    20.79.230.4   80:30834/TCP,443:31593/TCP              3m25s
+digitalaideploy-sample-nginx-ingress-controller-default-backend   ClusterIP      10.0.104.158   <none>        80/TCP                                  3m25s
+digitalaideploy-sample-postgresql                                 ClusterIP      10.0.15.27     <none>        5432/TCP                                3m25s
+digitalaideploy-sample-postgresql-headless                        ClusterIP      None           <none>        5432/TCP                                3m25s
+digitalaideploy-sample-rabbitmq                                   ClusterIP      10.0.31.132    <none>        5672/TCP,4369/TCP,25672/TCP,15672/TCP   3m25s
+digitalaideploy-sample-rabbitmq-headless                          ClusterIP      None           <none>        4369/TCP,5672/TCP,25672/TCP,15672/TCP   3m25s
+kubernetes                                                        ClusterIP      10.0.0.1       <none>        443/TCP                                 3h3m
 ```
 
 The final result on Azure Portal, all should be running (running all with 1 replica) with list of pods and services :
