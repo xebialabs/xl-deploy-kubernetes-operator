@@ -177,7 +177,7 @@ kubernetes                                                        ClusterIP     
 
   
 ## Troubleshooting
-   - Unauthorized error. Go to your AWS SSO commad line, to verify the access and secret key.
+   - Unauthorized error. Go to your AWS SSO command line, to verify the access and secret key.
         ```shell script
             [sishwarya@localhost bin] $ kubectl describe configmap -n kube-system aws-auth
             error: You must be logged in to the server (Unauthorized)
@@ -204,5 +204,3 @@ kubernetes                                                        ClusterIP     
         ![ec2 security](./pics/aws-ec2-security.png)
         
         ![aws efs](./pics/aws-efs.png)
-        
-           
