@@ -30,8 +30,8 @@ minikube start --driver=virtualbox -p k120 --kubernetes-version=v1.20.0
 We will need Ingress, so we have to install addons to enable it, as it doesn't come with a default setup:
 
 ```shell script
-minikube addons enable ingress
-minikube addons enable ingress-dns
+minikube addons enable ingress -p k120
+minikube addons enable ingress-dns -p k120
 ```
 
 Next you have to define a resolvable hostname in `/etc/hosts`, for example like:
@@ -73,10 +73,9 @@ drwxr-xr-x   3 bnechyporenko  staff      96 Nov  1 09:41 helm-charts
 |leader-election-rolebinding.yaml|config/rbac/leader_election_role_binding.yaml|
 |manager-rolebinding.yaml|config/rbac/role_binding.yaml|
 |proxy-rolebinding.yaml|config/rbac/auth_proxy_role_binding.yaml|
-|daideploy_cr.yaml|config/samles/xld_v1alpha1_digitalaideploy.yaml|
+|daideploy_cr.yaml|config/samples/xld_v1alpha1_digitalaideploy.yaml|
 
-That mapping has to be applied in `applications.yaml` file. There you can find 10 references to a file, which initially
-points to a template. Example:
+That mapping has to be applied in `applications.yaml` file. There you can find 10 references to a file, which initially points to a template (paths needs to be relative). Example:
 
 `file: !file "kubernetes/template/manager-rolebinding.yaml"`
 
