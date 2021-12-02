@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Azure
+# Azure AKS
 
 Here it will be described how to install manually Deploy k8s cluster with help of operator to Azure.
 
