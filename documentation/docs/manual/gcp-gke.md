@@ -121,6 +121,20 @@ The final result on GCP console, all should be running (running all with 1 maste
 
 ![gke-ingress](./pics/gke-ingress.png)
 
+### Troubleshouting
+
+If you work for longer period on the same cluster, token that is used is possible to expire. Use following 2 commands to get new token:
+- first one to get new context for the cluster:
+```shell
+❯ gcloud beta container --account "user@gmail.com" --project "apollo-playground" --zone "us-central1-a" clusters get-credentials "gcp-gke-test-cluster"
+```
+- second one to get access token value:
+```shell
+❯ gcloud auth application-default print-access-token
+```
+
+With new access token value update in the xl-deploy that used for operator deployment, on CI `Infrastructure/k8s-infra/xld` property `token`.
+
 ## Setting up Google Cloud Endpoints to use Google's DNS
 
 Here we will setup Google Cloud Endpoints. For setting up details check [Deploying the Endpoints configuration](https://cloud.google.com/endpoints/docs/openapi/deploy-endpoints-config)
@@ -172,20 +186,6 @@ To manage your API, go to: https://console.cloud.google.com/endpoints/api/gcp-gk
 
 After creation check the GCP console:
 ![gke-endpoints](./pics/gke-endpoints.png)
-
-### Troubleshouting
-
-If you work for longer period on the same cluster, token that is used is possible to expire. Use following 2 commands to get new token:
-- first one to get new context for the cluster:
-```shell
-❯ gcloud beta container --account "user@gmail.com" --project "apollo-playground" --zone "us-central1-a" clusters get-credentials "gcp-gke-test-cluster"
-```
-- second one to get access token value:
-```shell
-❯ gcloud auth application-default print-access-token
-```
-
-With new access token value update in the xl-deploy that used for operator deployment, on CI `Infrastructure/k8s-infra/xld` property `token`.
 
 ## Delete the cluster
 
