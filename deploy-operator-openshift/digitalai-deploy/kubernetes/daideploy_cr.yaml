@@ -89,7 +89,7 @@ spec:
       pullPolicy: IfNotPresent
       registry: docker.io
       repository: bitnami/postgresql
-      tag: 11.9.0-debian-10-r48
+      tag: 11.13.0-debian-10-r73
     initdbScriptsSecret: postgresql-init-sql-xld
     install: true
     ldap:
@@ -135,7 +135,7 @@ spec:
         pullPolicy: IfNotPresent
         registry: docker.io
         repository: bitnami/postgres-exporter
-        tag: 0.8.0-debian-10-r242
+        tag: 0.10.0-debian-10-r101
       livenessProbe:
         enabled: true
         failureThreshold: 6
@@ -151,6 +151,10 @@ spec:
       readinessProbe:
         enabled: true
         failureThreshold: 6
+        httpGet:
+          path: /healthz
+          port: http
+          scheme: HTTP
         initialDelaySeconds: 5
         periodSeconds: 10
         successThreshold: 1
@@ -183,11 +187,8 @@ spec:
       storageClass: <Provode Storage Class to be defined for PostgreSQL>
       subPath: ""
     postgresqlDataDir: /bitnami/postgresql/data
-    postgresqlDbUserConnectionLimit: null
-    postgresqlExtendedConf:
-      listenAddresses: '''*'''
-      maxConnections: "500"
-    postgresqlMaxConnections: null
+    postgresqlDbUserConnectionLimit: null    
+    postgresqlMaxConnections: 500
     postgresqlPassword: postgres
     postgresqlPghbaRemoveFilters: null
     postgresqlPostgresConnectionLimit: null
@@ -399,7 +400,7 @@ spec:
       pullPolicy: IfNotPresent
       registry: docker.io
       repository: bitnami/rabbitmq
-      tag: 3.8.9-debian-10-r64
+      tag: 3.9.8-debian-10-r6
     ingress:
       annotations: {}
       certManager: false
@@ -541,3 +542,16 @@ spec:
   tolerations: []
   # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
   xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
+  CentralConfigEncryptKey: <Provide the encryption key to be used for central configuration>
+  centralConfiguration:
+    replicas: 1
+    image:
+      repository: xebialabs/central-configuration
+      tag: 10.4.0
+      pullPolicy: "Always"
+      #    pullSecret:
+    persistence:
+      enabled: true
+      storageClass: < provide the storageClass for DAI-DEPLOY>
+      annotations: { }
+      pvcSize: 500M 
