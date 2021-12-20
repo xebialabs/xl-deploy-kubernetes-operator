@@ -264,12 +264,12 @@ spec:
         pullSecrets: []
         registry: docker.io
         repository: bitnami/nginx
-        tag: 1.19.6-debian-10-r44
+        tag: 1.21.3-debian-10-r48
       livenessProbe:
         enabled: true
         failureThreshold: 3
         httpGet:
-          path: /
+          path: /healthz
           port: http
           scheme: HTTP
         initialDelaySeconds: 30
@@ -296,7 +296,7 @@ spec:
         enabled: true
         failureThreshold: 6
         httpGet:
-          path: /
+          path: /healthz
           port: http
           scheme: HTTP
         initialDelaySeconds: 0
@@ -330,7 +330,7 @@ spec:
       pullSecrets: []
       registry: docker.io
       repository: bitnami/nginx-ingress-controller
-      tag: 0.43.0-debian-10-r34
+      tag: 1.0.4-debian-10-r13
     ingressClass: nginx
     initContainers: {}
     install: true
@@ -483,7 +483,7 @@ spec:
       pullPolicy: IfNotPresent
       registry: docker.io
       repository: bitnami/postgresql
-      tag: 11.9.0-debian-10-r48
+      tag: 11.13.0-debian-10-r73
     initdbScriptsSecret: postgresql-init-sql-xld
     install: true
     ldap:
@@ -529,7 +529,7 @@ spec:
         pullPolicy: IfNotPresent
         registry: docker.io
         repository: bitnami/postgres-exporter
-        tag: 0.8.0-debian-10-r242
+        tag: 0.10.0-debian-10-r101
       livenessProbe:
         enabled: true
         failureThreshold: 6
@@ -577,11 +577,7 @@ spec:
       storageClass: <Provode Storage Class to be defined for PostgreSQL>
       subPath: ""
     postgresqlDataDir: /bitnami/postgresql/data
-    postgresqlDbUserConnectionLimit: null
-    postgresqlExtendedConf:
-      listenAddresses: '''*'''
-      maxConnections: "500"
-    postgresqlMaxConnections: null
+    postgresqlMaxConnections: 500
     postgresqlPassword: postgres
     postgresqlPghbaRemoveFilters: null
     postgresqlPostgresConnectionLimit: null
@@ -792,7 +788,7 @@ spec:
       pullPolicy: IfNotPresent
       registry: docker.io
       repository: bitnami/rabbitmq
-      tag: 3.8.11-debian-10-r0
+      tag: 3.9.8-debian-10-r6
     ingress:
       annotations: {}
       certManager: false
@@ -925,3 +921,16 @@ spec:
   tolerations: []
   # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
   xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
+  CentralConfigEncryptKey:
+  centralConfiguration:
+    replicas: 1
+    image:
+      repository: xebialabsunsupported/central-configuration
+      tag: 10.4.0-1210.113
+      pullPolicy: "Always"
+      #    pullSecret:
+    persistence:
+      enabled: true
+      storageClass: ""
+      annotations: { }
+      pvcSize: 500M
