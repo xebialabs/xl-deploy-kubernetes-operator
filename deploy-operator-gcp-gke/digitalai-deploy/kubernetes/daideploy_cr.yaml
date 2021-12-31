@@ -3,7 +3,6 @@ kind: DigitalaiDeploy
 metadata:
   name: dai-xld
 spec:
-  # Default values copied from <project_dir>/helm-charts/digitalai-deploy/values.yaml
   AdminPassword: admin
   HealthPeriodScans: 10
   HealthProbeFailureThreshold: 12
@@ -12,7 +11,7 @@ spec:
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
   ImageRepository: xebialabs/xl-deploy
-  ImageTag: "10.3.3"
+  ImageTag: "10.3.5"
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
   K8sSetup:
@@ -1150,7 +1149,7 @@ spec:
       mountPath: /bitnami/postgresql
       selector: {}
       size: 8Gi
-       # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
+      # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
       storageClass: <Provode Storage Class to be defined for PostgreSQL>
       subPath: ""
     pgHbaConfiguration: ""
@@ -1162,7 +1161,7 @@ spec:
     postgresqlInitdbArgs: ""
     postgresqlInitdbWalDir: ""
     postgresqlMaxConnections: ""
-    postgresqlPassword: ""
+    postgresqlPassword: postgres
     postgresqlPghbaRemoveFilters: ""
     postgresqlPostgresConnectionLimit: ""
     postgresqlPostgresPassword: ""
@@ -1637,6 +1636,4 @@ spec:
     Enabled: false
   tolerations: []
   # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
-  xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
-  
-  
+  xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form> 

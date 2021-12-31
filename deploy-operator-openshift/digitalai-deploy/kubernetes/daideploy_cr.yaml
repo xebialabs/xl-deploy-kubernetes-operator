@@ -3,7 +3,6 @@ kind: DigitalaiDeployOcp
 metadata:
   name: dai-ocp-xld
 spec:
-  # Default values copied from <project_dir>/helm-charts/digitalai-deploy-ocp/values.yaml
   AdminPassword: admin
   HealthPeriodScans: 10
   HealthProbeFailureThreshold: 12
@@ -12,7 +11,7 @@ spec:
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
   ImageRepository: xebialabs/xl-deploy
-  ImageTag: "10.3.3"
+  ImageTag: "10.3.5"
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
   KeystorePassphrase: <Provide store pass for the keystore>
@@ -24,7 +23,7 @@ spec:
     StorageClass: < provide the storageClass for DAI-DEPLOY>
     XldMasterPvcSize: 10Gi
     XldWorkerPvcSize: 10Gi
-   # https://docs.xebialabs.com/v.9.8/deploy/how-to/update-the-xl-deploy-digital-certificate/#get-started
+  # https://docs.xebialabs.com/v.9.8/deploy/how-to/update-the-xl-deploy-digital-certificate/#get-started
   # Convert repository-keystore.jceks files content to base64
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
   RepositoryKeystore: <Provide repositoryKeystore in base64 encoded form>
@@ -711,7 +710,7 @@ spec:
     postgresqlInitdbArgs: ""
     postgresqlInitdbWalDir: ""
     postgresqlMaxConnections: ""
-    postgresqlPassword: ""
+    postgresqlPassword: postgres
     postgresqlPghbaRemoveFilters: ""
     postgresqlPostgresConnectionLimit: ""
     postgresqlPostgresPassword: ""
@@ -1195,7 +1194,5 @@ spec:
   satellite:
     Enabled: false
   tolerations: []
- # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
-  xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
-  
-  
+  # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
+  xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form> 

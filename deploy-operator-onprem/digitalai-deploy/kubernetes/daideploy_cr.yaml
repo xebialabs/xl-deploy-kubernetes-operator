@@ -3,7 +3,6 @@ kind: DigitalaiDeploy
 metadata:
   name: dai-xld
 spec:
-  # Default values copied from <project_dir>/helm-charts/digitalai-deploy/values.yaml
   AdminPassword: admin
   HealthPeriodScans: 10
   HealthProbeFailureThreshold: 12
@@ -12,10 +11,11 @@ spec:
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
   ImageRepository: xebialabs/xl-deploy
-  ImageTag: "10.3"
+  ImageTag: "10.3.5"
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
-  Platform: PlainK8s
+  K8sSetup:
+    Platform: PlainK8s
   KeystorePassphrase: <Provide store pass for the keystore>
   Persistence:
     AccessMode: ReadWriteOnce
@@ -25,10 +25,10 @@ spec:
     StorageClass: < provide the storageClass for DAI-DEPLOY>
     XldMasterPvcSize: 10Gi
     XldWorkerPvcSize: 10Gi
-  # https://docs.xebialabs.com/v.9.8/deploy/how-to/update-the-xl-deploy-digital-certificate/#get-started
+  # https://docs.xebialabs.com/v.10.2/deploy/how-to/changing-passwords-in-xl-deploy/
   # Convert repository-keystore.jceks files content to base64
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
-  RepositoryKeystore:  <Provide repositoryKeystore in base64 encoded form>
+  RepositoryKeystore: <Provide repositoryKeystore in base64 encoded form>
   UseExistingDB:
     Enabled: false
     # If you want to use an existing database, set 'postgresql.install' to 'false' and 'UseExistingDB.Enabled' to 'true'.
@@ -237,7 +237,7 @@ spec:
       nginx.ingress.kubernetes.io/session-cookie-name: SESSION_XLD
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
     hosts:
-    -  <Provode DNS name for accessing UI of Digital.ai Deploy>
+    - <Provode DNS name for accessing UI of Digital.ai Deploy>
     path: /
   keycloak:
     affinity: |
@@ -1149,7 +1149,7 @@ spec:
       mountPath: /bitnami/postgresql
       selector: {}
       size: 8Gi
-   # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
+      # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
       storageClass: <Provode Storage Class to be defined for PostgreSQL>
       subPath: ""
     pgHbaConfiguration: ""
@@ -1161,7 +1161,7 @@ spec:
     postgresqlInitdbArgs: ""
     postgresqlInitdbWalDir: ""
     postgresqlMaxConnections: ""
-    postgresqlPassword: ""
+    postgresqlPassword: postgres
     postgresqlPghbaRemoveFilters: ""
     postgresqlPostgresConnectionLimit: ""
     postgresqlPostgresPassword: ""
@@ -1635,7 +1635,5 @@ spec:
   satellite:
     Enabled: false
   tolerations: []
-# Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
-  xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
-  
-  
+  # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
+  xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form> 
