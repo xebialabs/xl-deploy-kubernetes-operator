@@ -684,7 +684,7 @@ spec:
     clusterDomain: cluster.local
     clustering:
       addressType: hostname
-      forceBoot: false
+      forceBoot: true
       rebalance: false
     common:
       exampleValue: common-chart
@@ -867,7 +867,7 @@ spec:
     podAnnotations: {}
     podAntiAffinityPreset: soft
     podLabels: {}
-    podManagementPolicy: OrderedReady
+    podManagementPolicy: Parallel
     podSecurityContext:
       fsGroup: 1001
       runAsUser: 1001
