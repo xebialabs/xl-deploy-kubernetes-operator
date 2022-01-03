@@ -1,0 +1,45 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+  name: golang.v0.0.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: DigitalaiDeploy is the Schema for the digitalaideploys API
+      displayName: Digitalai Deploy
+      kind: DigitalaiDeploy
+      name: digitalaideploys.xld.digital.ai
+      version: v1alpha1
+  description: Digital.ai Deploy Kubernetes Operator
+  displayName: xl-deploy-kubernetes-operator
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: null
+    strategy: ""
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - Digital.ai Deploy
+  links:
+  - name: Golang
+    url: https://golang.domain
+  maturity: alpha
+  provider:
+    name: On Premise
+    url: https://github.com/xebialabs/xl-deploy-kubernetes-operator.git
+  version: 0.0.0
