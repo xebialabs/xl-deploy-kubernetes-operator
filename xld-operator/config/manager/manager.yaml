@@ -29,8 +29,7 @@ spec:
         - /manager
         args:
         - --leader-elect
-        image: acierto/controller:0.0.1
-        imagePullPolicy: IfNotPresent
+        image: controller:latest
         name: manager
         securityContext:
           allowPrivilegeEscalation: false
