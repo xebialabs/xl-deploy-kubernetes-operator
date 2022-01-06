@@ -1645,4 +1645,5 @@ spec:
       enabled: true
       storageClass: < provide the storageClass for DAI-DEPLOY>
       annotations: { }
-      pvcSize: 500M 
+      pvcSize: 500M
+    migrateFromEmbedded: false
