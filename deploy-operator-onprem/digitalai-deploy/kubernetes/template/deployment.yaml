@@ -31,7 +31,7 @@ spec:
         - "--metrics-bind-address=127.0.0.1:8080"
         - "--leader-elect"
         - "--leader-election-id=xld-operator-controller-manager"
-        image: xldevdocker/deploy-operator:1.3.0
+        image: acierto/deploy-operator:1.0.12
         livenessProbe:
           httpGet:
             path: /readyz
