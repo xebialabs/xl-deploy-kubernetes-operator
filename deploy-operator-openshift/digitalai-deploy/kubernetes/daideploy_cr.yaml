@@ -877,7 +877,7 @@ spec:
     clustering:
       addressType: hostname
       enabled: true
-      forceBoot: false
+      forceBoot: true
       partitionHandling: autoheal
       rebalance: false
     command: []
@@ -1110,7 +1110,7 @@ spec:
     podAnnotations: {}
     podAntiAffinityPreset: soft
     podLabels: {}
-    podManagementPolicy: OrderedReady
+    podManagementPolicy: Parallel
     podSecurityContext:
       enabled: true
       fsGroup: 1001
@@ -1195,4 +1195,4 @@ spec:
     Enabled: false
   tolerations: []
   # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
-  xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form> 
+  xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
