@@ -376,7 +376,7 @@ spec:
           pathType: Prefix
       servicePort: http
       tls: []
-    install: true
+    install: false
     lifecycleHooks: ""
     livenessProbe: |
       httpGet:
@@ -989,7 +989,7 @@ spec:
     accessTokenUri: null
     clientId: null
     clientSecret: null
-    enabled: true
+    enabled: false
     external: false
     issuer: null
     keyRetrievalUri: null
