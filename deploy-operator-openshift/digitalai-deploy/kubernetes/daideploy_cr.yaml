@@ -183,7 +183,7 @@ spec:
       - hosts:
         - example.com
         secretName: ""
-    install: true
+    install: false
     lifecycleHooks: ""
     livenessProbe: |
       httpGet:
@@ -538,7 +538,7 @@ spec:
     accessTokenUri: null
     clientId: null
     clientSecret: null
-    enabled: true
+    enabled: false
     external: false
     issuer: null
     keyRetrievalUri: null
@@ -704,8 +704,12 @@ spec:
     pgHbaConfiguration: ""
     postgresqlConfiguration: {}
     postgresqlDataDir: /bitnami/postgresql/data
-    postgresqlDbUserConnectionLimit: null    
-    postgresqlMaxConnections: 500
+    postgresqlDatabase: ""
+    postgresqlDbUserConnectionLimit: ""
+    postgresqlExtendedConf: {}
+    postgresqlInitdbArgs: ""
+    postgresqlInitdbWalDir: ""
+    postgresqlMaxConnections: ""
     postgresqlPassword: postgres
     postgresqlPghbaRemoveFilters: ""
     postgresqlPostgresConnectionLimit: ""
@@ -873,7 +877,7 @@ spec:
     clustering:
       addressType: hostname
       enabled: true
-      forceBoot: false
+      forceBoot: true
       partitionHandling: autoheal
       rebalance: false
     command: []
@@ -949,6 +953,7 @@ spec:
       enabled: false
     extraConfiguration: |
       load_definitions = /app/xld-load_definition.json
+      raft.wal_max_size_bytes = 1048576
     extraContainerPorts: []
     extraDeploy: []
     extraEnvVars: []
@@ -1015,7 +1020,7 @@ spec:
       pullSecrets: []
       registry: docker.io
       repository: bitnami/rabbitmq
-      tag: 3.9.8-debian-10-r6
+      tag: 3.9.8-debian-10-r0
     ingress:
       annotations: {}
       enabled: false
@@ -1106,7 +1111,7 @@ spec:
     podAnnotations: {}
     podAntiAffinityPreset: soft
     podLabels: {}
-    podManagementPolicy: OrderedReady
+    podManagementPolicy: Parallel
     podSecurityContext:
       enabled: true
       fsGroup: 1001
@@ -1204,5 +1209,5 @@ spec:
       enabled: true
       storageClass: < provide the storageClass for DAI-DEPLOY>
       annotations: { }
-      pvcSize: 500M 
+      pvcSize: 500M
     migrateFromEmbedded: false

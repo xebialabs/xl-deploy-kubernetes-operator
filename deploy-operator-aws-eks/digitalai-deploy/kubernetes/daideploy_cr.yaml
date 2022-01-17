@@ -376,7 +376,7 @@ spec:
           pathType: Prefix
       servicePort: http
       tls: []
-    install: true
+    install: false
     lifecycleHooks: ""
     livenessProbe: |
       httpGet:
@@ -989,7 +989,7 @@ spec:
     accessTokenUri: null
     clientId: null
     clientSecret: null
-    enabled: true
+    enabled: false
     external: false
     issuer: null
     keyRetrievalUri: null
@@ -1324,7 +1324,7 @@ spec:
     clustering:
       addressType: hostname
       enabled: true
-      forceBoot: false
+      forceBoot: true
       partitionHandling: autoheal
       rebalance: false
     command: []
@@ -1398,7 +1398,9 @@ spec:
       command:
       - sleep
       enabled: false
-    extraConfiguration: "load_definitions = /app/xld-load_definition.json \n"
+    extraConfiguration: |
+      load_definitions = /app/xld-load_definition.json
+      raft.wal_max_size_bytes = 1048576
     extraContainerPorts: []
     extraDeploy: []
     extraEnvVars: []
@@ -1556,7 +1558,7 @@ spec:
     podAnnotations: {}
     podAntiAffinityPreset: soft
     podLabels: {}
-    podManagementPolicy: OrderedReady
+    podManagementPolicy: Parallel
     podSecurityContext:
       enabled: true
       fsGroup: 1001
