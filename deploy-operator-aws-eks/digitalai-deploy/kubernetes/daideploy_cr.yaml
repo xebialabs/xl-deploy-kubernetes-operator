@@ -1155,8 +1155,12 @@ spec:
     pgHbaConfiguration: ""
     postgresqlConfiguration: {}
     postgresqlDataDir: /bitnami/postgresql/data
-    postgresqlDbUserConnectionLimit: null
-    postgresqlMaxConnections: 500
+    postgresqlDatabase: ""
+    postgresqlDbUserConnectionLimit: ""
+    postgresqlExtendedConf: {}
+    postgresqlInitdbArgs: ""
+    postgresqlInitdbWalDir: ""
+    postgresqlMaxConnections: ""
     postgresqlPassword: postgres
     postgresqlPghbaRemoveFilters: ""
     postgresqlPostgresConnectionLimit: ""
