@@ -17,7 +17,7 @@ spec:
   KeystorePassphrase: <Provide store pass for the keystore>
   Persistence:
     AccessMode: ReadWriteOnce
-    Annotations: {}
+    Annotations: { }
     Enabled: true
     # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
     StorageClass: < provide the storageClass for DAI-DEPLOY>
@@ -44,496 +44,8 @@ spec:
     # XLD_TASK_QUEUE_USERNAME:
   XldMasterCount: 3
   XldWorkerCount: 3
-  affinity: {}
-  keycloak:
-    affinity: |
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                {{- include "keycloak.selectorLabels" . | nindent 10 }}
-              matchExpressions:
-                - key: app.kubernetes.io/component
-                  operator: NotIn
-                  values:
-                    - test
-            topologyKey: kubernetes.io/hostname
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  {{- include "keycloak.selectorLabels" . | nindent 12 }}
-                matchExpressions:
-                  - key: app.kubernetes.io/component
-                    operator: NotIn
-                    values:
-                      - test
-              topologyKey: failure-domain.beta.kubernetes.io/zone
-    args: []
-    autoscaling:
-      behavior:
-        scaleDown:
-          policies:
-          - periodSeconds: 300
-            type: Pods
-            value: 1
-          stabilizationWindowSeconds: 300
-      enabled: false
-      labels: {}
-      maxReplicas: 10
-      metrics:
-      - resource:
-          name: cpu
-          target:
-            averageUtilization: 80
-            type: Utilization
-        type: Resource
-      minReplicas: 3
-    clusterDomain: cluster.local
-    command: []
-    enableServiceLinks: true
-    extraContainers: ""
-    extraEnv: |
-      - name: PROXY_ADDRESS_FORWARDING
-        value: "true"
-      - name: KEYCLOAK_USER
-        value: admin
-      - name: KEYCLOAK_PASSWORD
-        value: admin
-      - name: JGROUPS_DISCOVERY_PROTOCOL
-        value: dns.DNS_PING
-      - name: JGROUPS_DISCOVERY_PROPERTIES
-        value: 'dns_query={{ include "keycloak.serviceDnsName" . }}'
-      - name: CACHE_OWNERS_COUNT
-        value: "2"
-      - name: CACHE_OWNERS_AUTH_SESSIONS_COUNT
-        value: "2"
-      - name: JAVA_OPTS
-        value: >-
-          -XX:+UseContainerSupport
-          -XX:MaxRAMPercentage=50.0
-          -Djava.net.preferIPv4Stack=true
-          -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS
-          -Djava.awt.headless=true
-      - name: DB_VENDOR
-        value: postgres
-      - name: DB_ADDR
-        value: {{ .Release.Name }}-postgresql
-      - name: DB_PORT
-        value: "5432"
-      - name: DB_DATABASE
-        value: keycloak
-      - name: DB_USER
-        value: keycloak
-      - name: DB_PASSWORD
-        value: keycloak
-      - name: KEYCLOAK_IMPORT
-        value: /realm/digitalai-platform-realm.json
-    extraEnvFrom: ""
-    extraInitContainers: ""
-    extraPorts: []
-    extraServiceMonitor:
-      annotations: {}
-      enabled: false
-      interval: 10s
-      labels: {}
-      namespace: ""
-      namespaceSelector: {}
-      path: /auth/realms/master/metrics
-      port: http
-      scrapeTimeout: 10s
-    extraVolumeMounts: |
-      - name: realm-config
-        mountPath: "/realm/"
-        readOnly: true
-    extraVolumes: |
-      - name: realm-config
-        configMap:
-          name: {{ .Release.Name }}-realm
-    fullnameOverride: ""
-    global: {}
-    hostAliases: []
-    image:
-      pullPolicy: IfNotPresent
-      repository: docker.io/jboss/keycloak
-      tag: ""
-    imagePullSecrets: []
-    ingress:
-      annotations: {}
-      console:
-        annotations: {}
-        enabled: false
-        ingressClassName: ""
-        rules:
-        - host: '{{ .Release.Name }}.keycloak.example.com'
-          paths:
-          - path: /auth/admin/
-            pathType: Prefix
-      enabled: false
-      ingressClassName: ""
-      labels: {}
-      rules:
-      - host: '{{ .Release.Name }}.keycloak.example.com'
-        paths:
-        - path: /
-          pathType: Prefix
-      servicePort: http
-      tls:
-      - hosts:
-        - example.com
-        secretName: ""
-    install: false
-    lifecycleHooks: ""
-    livenessProbe: |
-      httpGet:
-        path: /auth/
-        port: http
-      initialDelaySeconds: 0
-      timeoutSeconds: 5
-    nameOverride: ""
-    networkPolicy:
-      enabled: false
-      extraFrom: []
-      labels: {}
-    nodeSelector: {}
-    pgchecker:
-      image:
-        pullPolicy: IfNotPresent
-        repository: docker.io/busybox
-        tag: 1.32
-      resources:
-        limits:
-          cpu: 20m
-          memory: 32Mi
-        requests:
-          cpu: 20m
-          memory: 32Mi
-      securityContext:
-        allowPrivilegeEscalation: false
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-    podAnnotations: {}
-    podDisruptionBudget: {}
-    podLabels: {}
-    podManagementPolicy: Parallel
-    podSecurityContext:
-      fsGroup: 1000
-    postgresql:
-      audit:
-        clientMinMessages: error
-        logConnections: false
-        logDisconnections: false
-        logHostname: false
-        logLinePrefix: ""
-        logTimezone: ""
-        pgAuditLog: ""
-        pgAuditLogCatalog: "off"
-      common:
-        exampleValue: common-chart
-        global:
-          postgresql: {}
-      commonAnnotations: {}
-      containerSecurityContext:
-        enabled: true
-        runAsUser: 1001
-      customLivenessProbe: {}
-      customReadinessProbe: {}
-      customStartupProbe: {}
-      enabled: false
-      extraDeploy: []
-      extraEnv: []
-      global:
-        postgresql: {}
-      image:
-        debug: false
-        pullPolicy: IfNotPresent
-        registry: docker.io
-        repository: bitnami/postgresql
-        tag: 11.11.0-debian-10-r31
-      ldap:
-        baseDN: ""
-        bind_password: null
-        bindDN: ""
-        enabled: false
-        port: ""
-        prefix: ""
-        scheme: ""
-        search_attr: ""
-        search_filter: ""
-        server: ""
-        suffix: ""
-        tls: {}
-        url: ""
-      livenessProbe:
-        enabled: true
-        failureThreshold: 6
-        initialDelaySeconds: 30
-        periodSeconds: 10
-        successThreshold: 1
-        timeoutSeconds: 5
-      metrics:
-        enabled: false
-        extraEnvVars: {}
-        image:
-          pullPolicy: IfNotPresent
-          registry: docker.io
-          repository: bitnami/postgres-exporter
-          tag: 0.9.0-debian-10-r6
-        livenessProbe:
-          enabled: true
-          failureThreshold: 6
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 5
-        prometheusRule:
-          additionalLabels: {}
-          enabled: false
-          namespace: ""
-          rules: []
-        readinessProbe:
-          enabled: true
-          failureThreshold: 6
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 5
-        securityContext:
-          enabled: false
-          runAsUser: 1001
-        service:
-          annotations:
-            prometheus.io/port: "9187"
-            prometheus.io/scrape: "true"
-          loadBalancerIP: null
-          type: ClusterIP
-        serviceMonitor:
-          additionalLabels: {}
-          enabled: false
-      networkPolicy:
-        allowExternal: true
-        enabled: false
-        explicitNamespacesSelector: {}
-      persistence:
-        accessModes:
-        - ReadWriteOnce
-        annotations: {}
-        enabled: true
-        mountPath: /bitnami/postgresql
-        selector: {}
-        size: 8Gi
-        subPath: ""
-      postgresqlDataDir: /bitnami/postgresql/data
-      postgresqlDatabase: keycloak
-      postgresqlDbUserConnectionLimit: null
-      postgresqlMaxConnections: null
-      postgresqlPassword: keycloak
-      postgresqlPghbaRemoveFilters: null
-      postgresqlPostgresConnectionLimit: null
-      postgresqlSharedPreloadLibraries: pgaudit
-      postgresqlStatementTimeout: null
-      postgresqlTcpKeepalivesCount: null
-      postgresqlTcpKeepalivesIdle: null
-      postgresqlTcpKeepalivesInterval: null
-      postgresqlUsername: keycloak
-      primary:
-        affinity: {}
-        annotations: {}
-        extraInitContainers: []
-        extraVolumeMounts: []
-        extraVolumes: []
-        labels: {}
-        nodeAffinityPreset:
-          key: ""
-          type: ""
-          values: []
-        nodeSelector: {}
-        podAffinityPreset: ""
-        podAnnotations: {}
-        podAntiAffinityPreset: soft
-        podLabels: {}
-        priorityClassName: ""
-        service: {}
-        sidecars: []
-        tolerations: []
-      primaryAsStandBy:
-        enabled: false
-      psp:
-        create: false
-      rbac:
-        create: false
-      readReplicas:
-        affinity: {}
-        annotations: {}
-        extraInitContainers: []
-        extraVolumeMounts: []
-        extraVolumes: []
-        labels: {}
-        nodeAffinityPreset:
-          key: ""
-          type: ""
-          values: []
-        nodeSelector: {}
-        persistence:
-          enabled: true
-        podAffinityPreset: ""
-        podAnnotations: {}
-        podAntiAffinityPreset: soft
-        podLabels: {}
-        priorityClassName: ""
-        resources: {}
-        service: {}
-        sidecars: []
-        tolerations: []
-      readinessProbe:
-        enabled: true
-        failureThreshold: 6
-        initialDelaySeconds: 5
-        periodSeconds: 10
-        successThreshold: 1
-        timeoutSeconds: 5
-      replication:
-        applicationName: my_application
-        enabled: false
-        numSynchronousReplicas: 0
-        password: repl_password
-        readReplicas: 1
-        synchronousCommit: "off"
-        user: repl_user
-      resources:
-        requests:
-          cpu: 250m
-          memory: 256Mi
-      securityContext:
-        enabled: true
-        fsGroup: 1001
-      service:
-        annotations: {}
-        port: 5432
-        type: ClusterIP
-      serviceAccount:
-        enabled: false
-      shmVolume:
-        chmod:
-          enabled: true
-        enabled: true
-      startupProbe:
-        enabled: false
-        failureThreshold: 10
-        initialDelaySeconds: 30
-        periodSeconds: 15
-        successThreshold: 1
-        timeoutSeconds: 5
-      tls:
-        certCAFilename: null
-        certFilename: ""
-        certKeyFilename: ""
-        certificatesSecret: ""
-        crlFilename: null
-        enabled: false
-        preferServerCiphers: true
-      updateStrategy:
-        type: RollingUpdate
-      volumePermissions:
-        enabled: false
-        image:
-          pullPolicy: Always
-          registry: docker.io
-          repository: bitnami/bitnami-shell
-          tag: "10"
-        securityContext:
-          runAsUser: 0
-    priorityClassName: ""
-    prometheusRule:
-      annotations: {}
-      enabled: false
-      labels: {}
-      rules: []
-    rbac:
-      create: false
-      rules: []
-    readinessProbe: |
-      httpGet:
-        path: /auth/realms/master
-        port: http
-      initialDelaySeconds: 30
-      timeoutSeconds: 1
-    replicas: 1
-    resources: {}
-    restartPolicy: Always
-    route:
-      annotations: {}
-      enabled: true
-      host: <Provode DNS name for accessing UI of keycloak>
-      labels: {}
-      path: /
-      tls:
-        enabled: true
-        insecureEdgeTerminationPolicy: Redirect
-        termination: edge
-    secrets: {}
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 1000
-    service:
-      annotations: {}
-      externalTrafficPolicy: Cluster
-      extraPorts: []
-      httpManagementPort: 9990
-      httpPort: 80
-      httpsPort: 8443
-      labels: {}
-      loadBalancerIP: ""
-      loadBalancerSourceRanges: []
-      sessionAffinity: ""
-      sessionAffinityConfig: {}
-      type: ClusterIP
-    serviceAccount:
-      annotations: {}
-      create: true
-      imagePullSecrets: []
-      labels: {}
-      name: ""
-    serviceMonitor:
-      annotations: {}
-      enabled: false
-      interval: 10s
-      labels: {}
-      namespace: ""
-      namespaceSelector: {}
-      path: /metrics
-      port: http-management
-      scrapeTimeout: 10s
-    startupProbe: |
-      httpGet:
-        path: /auth/
-        port: http
-      initialDelaySeconds: 30
-      timeoutSeconds: 1
-      failureThreshold: 60
-      periodSeconds: 5
-    startupScripts:
-      keycloak.cli: |
-        {{- .Files.Get "scripts/keycloak.cli" }}
-    statefulsetAnnotations: {}
-    statefulsetLabels: {}
-    terminationGracePeriodSeconds: 60
-    test:
-      enabled: false
-      image:
-        pullPolicy: IfNotPresent
-        repository: docker.io/unguiculus/docker-python3-phantomjs-selenium
-        tag: v1
-      podSecurityContext:
-        fsGroup: 1000
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-    tolerations: []
-    topologySpreadConstraints: null
-  nodeSelector: {}
+  affinity: { }
+  nodeSelector: { }
   oidc:
     accessTokenUri: null
     clientId: null
@@ -561,7 +73,7 @@ spec:
     common:
       exampleValue: common-chart
       global:
-        imagePullSecrets: []
+        imagePullSecrets: [ ]
         imageRegistry: ""
         postgresql:
           existingSecret: ""
@@ -571,28 +83,28 @@ spec:
           replicationPassword: ""
           servicePort: ""
         storageClass: ""
-    commonAnnotations: {}
+    commonAnnotations: { }
     configurationConfigMap: ""
     containerSecurityContext:
       enabled: false
       runAsUser: 1001
-    customLivenessProbe: {}
-    customReadinessProbe: {}
-    customStartupProbe: {}
+    customLivenessProbe: { }
+    customReadinessProbe: { }
+    customStartupProbe: { }
     diagnosticMode:
       args:
-      - infinity
+        - infinity
       command:
-      - sleep
+        - sleep
       enabled: false
     existingSecret: ""
     extendedConfConfigMap: ""
-    extraDeploy: []
-    extraEnv: []
+    extraDeploy: [ ]
+    extraEnv: [ ]
     extraEnvVarsCM: ""
     fullnameOverride: ""
     global:
-      imagePullSecrets: []
+      imagePullSecrets: [ ]
       imageRegistry: ""
       postgresql:
         existingSecret: ""
@@ -605,12 +117,12 @@ spec:
     image:
       debug: false
       pullPolicy: IfNotPresent
-      pullSecrets: []
+      pullSecrets: [ ]
       registry: docker.io
       repository: bitnami/postgresql
       tag: 11.13.0-debian-10-r67
     initdbPassword: ""
-    initdbScripts: {}
+    initdbScripts: { }
     initdbScriptsConfigMap: ""
     initdbScriptsSecret: postgresql-init-sql-xld
     initdbUser: ""
@@ -629,7 +141,7 @@ spec:
       suffix: ""
       tls: ""
       url: ""
-    lifecycleHooks: {}
+    lifecycleHooks: { }
     livenessProbe:
       enabled: true
       failureThreshold: 6
@@ -638,12 +150,12 @@ spec:
       successThreshold: 1
       timeoutSeconds: 5
     metrics:
-      customMetrics: {}
+      customMetrics: { }
       enabled: false
-      extraEnvVars: []
+      extraEnvVars: [ ]
       image:
         pullPolicy: IfNotPresent
-        pullSecrets: []
+        pullSecrets: [ ]
         registry: docker.io
         repository: bitnami/postgres-exporter
         tag: 0.10.0-debian-10-r95
@@ -655,10 +167,10 @@ spec:
         successThreshold: 1
         timeoutSeconds: 5
       prometheusRule:
-        additionalLabels: {}
+        additionalLabels: { }
         enabled: false
         namespace: ""
-        rules: []
+        rules: [ ]
       readinessProbe:
         enabled: true
         failureThreshold: 6
@@ -666,7 +178,7 @@ spec:
         periodSeconds: 10
         successThreshold: 1
         timeoutSeconds: 5
-      resources: {}
+      resources: { }
       securityContext:
         enabled: false
         runAsUser: 1001
@@ -677,36 +189,36 @@ spec:
         loadBalancerIP: ""
         type: ClusterIP
       serviceMonitor:
-        additionalLabels: {}
+        additionalLabels: { }
         enabled: false
         interval: ""
-        metricRelabelings: []
+        metricRelabelings: [ ]
         namespace: ""
-        relabelings: []
+        relabelings: [ ]
         scrapeTimeout: ""
     nameOverride: ""
     networkPolicy:
       allowExternal: true
       enabled: false
-      explicitNamespacesSelector: {}
+      explicitNamespacesSelector: { }
     persistence:
       accessModes:
-      - ReadWriteOnce
-      annotations: {}
+        - ReadWriteOnce
+      annotations: { }
       enabled: true
       existingClaim: ""
       mountPath: /bitnami/postgresql
-      selector: {}
+      selector: { }
       size: 8Gi
       # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
       storageClass: <Provode Storage Class to be defined for PostgreSQL>
       subPath: ""
     pgHbaConfiguration: ""
-    postgresqlConfiguration: {}
+    postgresqlConfiguration: { }
     postgresqlDataDir: /bitnami/postgresql/data
     postgresqlDatabase: ""
     postgresqlDbUserConnectionLimit: ""
-    postgresqlExtendedConf: {}
+    postgresqlExtendedConf: { }
     postgresqlInitdbArgs: ""
     postgresqlInitdbWalDir: ""
     postgresqlMaxConnections: ""
@@ -721,29 +233,29 @@ spec:
     postgresqlTcpKeepalivesInterval: ""
     postgresqlUsername: postgres
     primary:
-      affinity: {}
-      annotations: {}
-      extraInitContainers: []
-      extraPodSpec: {}
-      extraVolumeMounts: []
-      extraVolumes: []
-      labels: {}
+      affinity: { }
+      annotations: { }
+      extraInitContainers: [ ]
+      extraPodSpec: { }
+      extraVolumeMounts: [ ]
+      extraVolumes: [ ]
+      labels: { }
       nodeAffinityPreset:
         key: ""
         type: ""
-        values: []
-      nodeSelector: {}
+        values: [ ]
+      nodeSelector: { }
       podAffinityPreset: ""
-      podAnnotations: {}
+      podAnnotations: { }
       podAntiAffinityPreset: soft
-      podLabels: {}
+      podLabels: { }
       priorityClassName: ""
       service:
         clusterIP: ""
         nodePort: ""
         type: ""
-      sidecars: []
-      tolerations: []
+      sidecars: [ ]
+      tolerations: [ ]
     primaryAsStandBy:
       enabled: false
       primaryHost: ""
@@ -753,33 +265,33 @@ spec:
     rbac:
       create: false
     readReplicas:
-      affinity: {}
-      annotations: {}
-      extraInitContainers: []
-      extraPodSpec: {}
-      extraVolumeMounts: []
-      extraVolumes: []
-      labels: {}
+      affinity: { }
+      annotations: { }
+      extraInitContainers: [ ]
+      extraPodSpec: { }
+      extraVolumeMounts: [ ]
+      extraVolumes: [ ]
+      labels: { }
       nodeAffinityPreset:
         key: ""
         type: ""
-        values: []
-      nodeSelector: {}
+        values: [ ]
+      nodeSelector: { }
       persistence:
         enabled: true
       podAffinityPreset: ""
-      podAnnotations: {}
+      podAnnotations: { }
       podAntiAffinityPreset: soft
-      podLabels: {}
+      podLabels: { }
       priorityClassName: ""
-      resources: {}
+      resources: { }
       service:
         clusterIP: ""
         nodePort: ""
         type: ""
-      sidecars: []
-      tolerations: []
-      topologySpreadConstraints: []
+      sidecars: [ ]
+      tolerations: [ ]
+      topologySpreadConstraints: [ ]
     readinessProbe:
       enabled: true
       failureThreshold: 6
@@ -806,11 +318,11 @@ spec:
       enabled: false
       fsGroup: 1001
     service:
-      annotations: {}
+      annotations: { }
       clusterIP: ""
       externalTrafficPolicy: Cluster
       loadBalancerIP: ""
-      loadBalancerSourceRanges: []
+      loadBalancerSourceRanges: [ ]
       nodePort: ""
       port: 5432
       type: ClusterIP
@@ -847,7 +359,7 @@ spec:
       enabled: false
       image:
         pullPolicy: IfNotPresent
-        pullSecrets: []
+        pullSecrets: [ ]
         registry: docker.io
         repository: bitnami/bitnami-shell
         tag: 10-debian-10-r227
@@ -855,8 +367,8 @@ spec:
         runAsUser: auto
   rabbitmq:
     advancedConfiguration: ""
-    affinity: {}
-    args: []
+    affinity: { }
+    args: [ ]
     auth:
       erlangCookie: DEPLOYRABBITMQCLUSTER
       existingErlangSecret: ""
@@ -880,14 +392,14 @@ spec:
       forceBoot: true
       partitionHandling: autoheal
       rebalance: false
-    command: []
+    command: [ ]
     common:
       exampleValue: common-chart
       global:
-        imagePullSecrets: []
+        imagePullSecrets: [ ]
         imageRegistry: ""
         storageClass: ""
-    commonAnnotations: {}
+    commonAnnotations: { }
     communityPlugins: ""
     configuration: |-
       {{- if not .Values.loadDefinition.enabled -}}
@@ -941,22 +453,22 @@ spec:
       total_memory_available_override_value = {{ include "rabbitmq.toBytes" .Values.resources.limits.memory }}
       vm_memory_high_watermark.{{ .Values.memoryHighWatermark.type }} = {{ .Values.memoryHighWatermark.value }}
       {{- end }}
-    containerSecurityContext: {}
-    customLivenessProbe: {}
-    customReadinessProbe: {}
-    customStartupProbe: {}
+    containerSecurityContext: { }
+    customLivenessProbe: { }
+    customReadinessProbe: { }
+    customStartupProbe: { }
     diagnosticMode:
       args:
-      - infinity
+        - infinity
       command:
-      - sleep
+        - sleep
       enabled: false
     extraConfiguration: |
       load_definitions = /app/xld-load_definition.json
       raft.wal_max_size_bytes = 1048576
-    extraContainerPorts: []
-    extraDeploy: []
-    extraEnvVars: []
+    extraContainerPorts: [ ]
+    extraDeploy: [ ]
+    extraEnvVars: [ ]
     extraEnvVarsCM: ""
     extraEnvVarsSecret: ""
     extraPlugins: rabbitmq_jms_topic_exchange
@@ -1006,40 +518,40 @@ spec:
             ]
           }
     extraSecretsPrependReleaseName: false
-    extraVolumeMounts: []
-    extraVolumes: []
+    extraVolumeMounts: [ ]
+    extraVolumes: [ ]
     fullnameOverride: ""
     global:
-      imagePullSecrets: []
+      imagePullSecrets: [ ]
       imageRegistry: ""
       storageClass: ""
-    hostAliases: []
+    hostAliases: [ ]
     image:
       debug: false
       pullPolicy: IfNotPresent
-      pullSecrets: []
+      pullSecrets: [ ]
       registry: docker.io
       repository: bitnami/rabbitmq
       tag: 3.9.8-debian-10-r0
     ingress:
-      annotations: {}
+      annotations: { }
       enabled: false
-      extraHosts: []
-      extraTls: []
+      extraHosts: [ ]
+      extraTls: [ ]
       hostname: rabbitmq.local
       ingressClassName: ""
       path: /
       pathType: ImplementationSpecific
-      secrets: []
+      secrets: [ ]
       selfSigned: false
       tls: false
-    initContainers: []
+    initContainers: [ ]
     install: true
     kubeVersion: ""
     ldap:
       enabled: false
       port: "389"
-      servers: []
+      servers: [ ]
       tls:
         enabled: false
       user_dn_pattern: cn=${username},dc=example,dc=org
@@ -1066,31 +578,31 @@ spec:
         prometheus.io/port: '{{ .Values.service.metricsPort }}'
         prometheus.io/scrape: "true"
       prometheusRule:
-        additionalLabels: {}
+        additionalLabels: { }
         enabled: false
         namespace: ""
-        rules: []
+        rules: [ ]
       serviceMonitor:
-        additionalLabels: {}
+        additionalLabels: { }
         enabled: false
         honorLabels: false
         interval: 30s
         namespace: ""
         path: ""
-        podTargetLabels: {}
-        relabellings: []
+        podTargetLabels: { }
+        relabellings: [ ]
         scrapeTimeout: ""
-        targetLabels: {}
+        targetLabels: { }
     nameOverride: ""
     networkPolicy:
-      additionalRules: []
+      additionalRules: [ ]
       allowExternal: true
       enabled: false
     nodeAffinityPreset:
       key: ""
       type: ""
-      values: []
-    nodeSelector: {}
+      values: [ ]
+    nodeSelector: { }
     onlineSchedulers: ""
     pdb:
       create: false
@@ -1098,19 +610,19 @@ spec:
       minAvailable: 1
     persistence:
       accessMode: ReadWriteOnce
-      annotations: {}
+      annotations: { }
       enabled: true
       existingClaim: ""
-      selector: {}
+      selector: { }
       size: 8Gi
       # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
       storageClass: <Storage Class to be defined for RabbitMQ>
-      volumes: []
+      volumes: [ ]
     plugins: rabbitmq_management rabbitmq_peer_discovery_k8s
     podAffinityPreset: ""
-    podAnnotations: {}
+    podAnnotations: { }
     podAntiAffinityPreset: soft
-    podLabels: {}
+    podLabels: { }
     podManagementPolicy: Parallel
     podSecurityContext:
       enabled: true
@@ -1128,23 +640,23 @@ spec:
       timeoutSeconds: 20
     replicaCount: 3
     resources:
-      limits: {}
-      requests: {}
+      limits: { }
+      requests: { }
     schedulerName: ""
     service:
-      annotations: {}
-      annotationsHeadless: {}
+      annotations: { }
+      annotationsHeadless: { }
       distNodePort: ""
       distPort: 25672
       distPortName: dist
       epmdNodePort: ""
       epmdPortName: epmd
-      externalIPs: []
+      externalIPs: [ ]
       externalTrafficPolicy: Cluster
-      extraPorts: []
-      labels: {}
+      extraPorts: [ ]
+      labels: { }
       loadBalancerIP: ""
-      loadBalancerSourceRanges: []
+      loadBalancerSourceRanges: [ ]
       managerNodePort: ""
       managerPort: 15672
       managerPortEnabled: true
@@ -1164,25 +676,25 @@ spec:
       automountServiceAccountToken: true
       create: true
       name: ""
-    sidecars: []
-    statefulsetLabels: {}
+    sidecars: [ ]
+    statefulsetLabels: { }
     terminationGracePeriodSeconds: 120
-    tolerations: []
-    topologySpreadConstraints: []
+    tolerations: [ ]
+    topologySpreadConstraints: [ ]
     ulimitNofiles: "65536"
     updateStrategyType: RollingUpdate
     volumePermissions:
       enabled: true
       image:
         pullPolicy: IfNotPresent
-        pullSecrets: []
+        pullSecrets: [ ]
         registry: docker.io
         repository: bitnami/bitnami-shell
         tag: 10-debian-10-r226
       resources:
-        limits: {}
-        requests: {}
-  resources: {}
+        limits: { }
+        requests: { }
+  resources: { }
   route:
     Enabled: true
     annotations:
@@ -1190,10 +702,10 @@ spec:
       haproxy.router.openshift.io/disable_cookies: "false"
       haproxy.router.openshift.io/rewrite-target: /
     hosts:
-    - <Provode DNS name for accessing UI of Digital.ai Deploy>
+      - <Provode DNS name for accessing UI of Digital.ai Deploy>
     path: /
   satellite:
     Enabled: false
-  tolerations: []
+  tolerations: [ ]
   # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
   xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
