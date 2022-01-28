@@ -1154,7 +1154,7 @@ spec:
   xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
   CentralConfigEncryptKey: <Provide the encryption key to be used for central configuration>
   centralConfiguration:
-    replicas: 3
+    replicas: 1
     image:
       repository: xebialabsunsupported/central-configuration
       tag: 10.4.0-1210.113
