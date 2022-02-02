@@ -165,7 +165,7 @@ tasks {
         }
     }
 
-    register<Exec>("syncToDistServer") {
+    register("syncToDistServer") {
         dependsOn(syncTasks)
     }
 
