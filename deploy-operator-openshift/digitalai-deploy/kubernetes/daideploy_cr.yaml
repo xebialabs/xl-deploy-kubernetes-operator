@@ -222,7 +222,7 @@ spec:
     postgresqlExtendedConf: { }
     postgresqlInitdbArgs: ""
     postgresqlInitdbWalDir: ""
-    postgresqlMaxConnections: ""
+    postgresqlMaxConnections: "300"
     postgresqlPassword: postgres
     postgresqlPghbaRemoveFilters: ""
     postgresqlPostgresConnectionLimit: ""
