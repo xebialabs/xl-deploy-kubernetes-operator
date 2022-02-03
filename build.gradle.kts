@@ -41,10 +41,10 @@ apply(plugin = "com.xebialabs.dependency")
 group = "ai.digital.deploy.operator"
 project.defaultTasks = listOf("build")
 
-val explicitVersion = if (project.hasProperty("release.version")) project.property("release.version") else null
-
-val releasedVersion = "22.0.0-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
-project.extra.set("releasedVersion", explicitVersion ?: releasedVersion)
+val releasedVersion = System.getenv()["RELEASE_EXPLICIT"] ?: "22.0.0-${
+    LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))
+}"
+project.extra.set("releasedVersion", releasedVersion)
 
 repositories {
     mavenLocal()
@@ -153,7 +153,9 @@ tasks {
             if (project.hasProperty("versionToSync")) {
                 val versionToSync = project.property("versionToSync")
                 val command =
-                    "ssh xebialabs@nexus1.xebialabs.cyso.net rsync --update -raz -i --include='*.zip' " + "--exclude='*' /opt/sonatype-work/nexus/storage/releases/ai/digital/deploy/operator/deploy-operator-${provider}/$versionToSync/ " + "xldown@dist.xebialabs.com:/var/www/dist.xebialabs.com/customer/operator/deploy"
+                    "ssh xebialabs@nexus1.xebialabs.cyso.net rsync --update -raz -i --include='*.zip' " +
+                            "--exclude='*' /opt/sonatype-work/nexus/storage/releases/ai/digital/deploy/operator/deploy-operator-${provider}/$versionToSync/ " +
+                            "xldown@dist.xebialabs.com:/var/www/dist.xebialabs.com/customer/operator/deploy"
                 commandLine(command.split(" "))
             } else {
                 commandLine("echo",
