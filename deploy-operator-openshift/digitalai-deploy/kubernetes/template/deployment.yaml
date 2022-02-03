@@ -18,20 +18,20 @@ spec:
       - name: kube-rbac-proxy
         image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
         args:
-        - "--secure-listen-address=0.0.0.0:8443"
-        - "--upstream=http://127.0.0.1:8080/"
-        - "--logtostderr=true"
-        - "--v=10"
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=10
         ports:
         - containerPort: 8443
           name: https
       - name: manager
         args:
-        - "--health-probe-bind-address=:8081"
-        - "--metrics-bind-address=127.0.0.1:8080"
-        - "--leader-elect"
-        - "--leader-election-id=xld-operator-controller-manager"
-        image: xldevdocker/deploy-operator:22.0.0-125.1420-openshift
+        - --health-probe-bind-address=:8081
+        - --metrics-bind-address=127.0.0.1:8080
+        - --leader-elect
+        - --leader-election-id=xld-operator-controller-manager
+        image: xldevdocker/deploy-operator:22.0.0-127.941-openshift
         livenessProbe:
           httpGet:
             path: /readyz
