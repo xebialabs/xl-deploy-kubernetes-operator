@@ -1157,8 +1157,8 @@ spec:
   centralConfiguration:
     replicas: 1
     image:
-      repository: xebialabsunsupported/central-configuration
-      tag: 10.4.0-1210.113
+      repository: xebialabs/central-configuration
+      tag: 22.1.0
       pullPolicy: "Always"
       #    pullSecret:
     persistence:

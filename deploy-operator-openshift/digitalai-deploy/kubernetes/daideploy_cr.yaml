@@ -715,7 +715,7 @@ spec:
     replicas: 1
     image:
       repository: xebialabs/central-configuration
-      tag: 10.4.0
+      tag: 22.1.0
       pullPolicy: "Always"
       #    pullSecret:
     persistence:
