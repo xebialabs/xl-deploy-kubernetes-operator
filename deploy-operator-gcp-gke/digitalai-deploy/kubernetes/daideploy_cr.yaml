@@ -10,7 +10,8 @@ spec:
   HealthProbesLivenessTimeout: 60
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
-  ImageRepository: xebialabs/xl-deploy
+  ServerImageRepository: xebialabs/xl-deploy
+  WorkerImageRepository: xebialabs/deploy-task-engine
   ImageTag: "10.3.5"
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
@@ -1160,7 +1161,7 @@ spec:
     postgresqlExtendedConf: {}
     postgresqlInitdbArgs: ""
     postgresqlInitdbWalDir: ""
-    postgresqlMaxConnections: ""
+    postgresqlMaxConnections: "300"
     postgresqlPassword: postgres
     postgresqlPghbaRemoveFilters: ""
     postgresqlPostgresConnectionLimit: ""
