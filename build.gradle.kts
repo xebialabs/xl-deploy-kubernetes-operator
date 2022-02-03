@@ -41,10 +41,10 @@ apply(plugin = "com.xebialabs.dependency")
 group = "ai.digital.deploy.operator"
 project.defaultTasks = listOf("build")
 
-val definedOperatorVersion = System.getenv()["OPERATOR_VERSION"]
+val explicitVersion = System.getenv()["RELEASE_EXPLICIT"]
 
 val releasedVersion = "22.0.0-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
-project.extra.set("releasedVersion", definedOperatorVersion ?: releasedVersion)
+project.extra.set("releasedVersion", explicitVersion ?: releasedVersion)
 
 repositories {
     mavenLocal()
