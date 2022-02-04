@@ -184,7 +184,7 @@ spec:
       - hosts:
         - example.com
         secretName: ""
-    install: false
+    install: true
     lifecycleHooks: ""
     livenessProbe: |
       httpGet:
@@ -539,7 +539,7 @@ spec:
     accessTokenUri: null
     clientId: null
     clientSecret: null
-    enabled: false
+    enabled: true
     external: false
     issuer: null
     keyRetrievalUri: null
@@ -609,7 +609,7 @@ spec:
       pullSecrets: [ ]
       registry: docker.io
       repository: bitnami/postgresql
-      tag: 11.13.0-debian-10-r67
+      tag: 11.13.0-debian-10-r73
     initdbPassword: ""
     initdbScripts: { }
     initdbScriptsConfigMap: ""
@@ -647,7 +647,7 @@ spec:
         pullSecrets: [ ]
         registry: docker.io
         repository: bitnami/postgres-exporter
-        tag: 0.10.0-debian-10-r95
+        tag: 0.10.0-debian-10-r101
       livenessProbe:
         enabled: true
         failureThreshold: 6
@@ -851,7 +851,7 @@ spec:
         pullSecrets: [ ]
         registry: docker.io
         repository: bitnami/bitnami-shell
-        tag: 10-debian-10-r227
+        tag: 10-debian-10-r233
       securityContext:
         runAsUser: auto
   rabbitmq:
@@ -1021,7 +1021,7 @@ spec:
       pullSecrets: [ ]
       registry: docker.io
       repository: bitnami/rabbitmq
-      tag: 3.9.8-debian-10-r0
+      tag: 3.9.8-debian-10-r6
     ingress:
       annotations: { }
       enabled: false
