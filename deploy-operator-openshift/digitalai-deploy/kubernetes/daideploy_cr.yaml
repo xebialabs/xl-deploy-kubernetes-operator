@@ -609,7 +609,7 @@ spec:
       pullSecrets: [ ]
       registry: docker.io
       repository: bitnami/postgresql
-      tag: 11.13.0-debian-10-r73
+      tag: 11.13.0-debian-10-r67
     initdbPassword: ""
     initdbScripts: { }
     initdbScriptsConfigMap: ""
@@ -647,7 +647,7 @@ spec:
         pullSecrets: [ ]
         registry: docker.io
         repository: bitnami/postgres-exporter
-        tag: 0.10.0-debian-10-r101
+        tag: 0.10.0-debian-10-r95
       livenessProbe:
         enabled: true
         failureThreshold: 6
