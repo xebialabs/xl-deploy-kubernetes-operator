@@ -31,7 +31,7 @@ spec:
         - --metrics-bind-address=127.0.0.1:8080
         - --leader-elect
         - --leader-election-id=xld-operator-controller-manager
-        image: acierto/deploy-operator:22.0.0-302.1507-openshift
+        image: acierto/deploy-operator:22.0.0-207.1438-openshift
         livenessProbe:
           httpGet:
             path: /readyz
