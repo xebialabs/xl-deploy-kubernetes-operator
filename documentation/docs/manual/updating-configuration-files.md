@@ -4,6 +4,13 @@ sidebar_position: 6
 
 # Updating configuration files on Deploy
 
+## Prerequisites
+
+- Linux environment 
+- The kubectl command-line tool 
+- The yq command-line tool ([Use the latest binary](https://github.com/mikefarah/yq/releases))
+- Access to a Kubernetes cluster with installed Deploy
+
 ## Example how to update deployit.conf for Deploy master and worker
 
 Get current deployit.conf file from the master node:
@@ -42,6 +49,11 @@ Get all statefulsets (master statefulset will be suffixed with `-master`):
 ❯ kubectl get sts -o name
 ```
 
+:::note
+If you create additional configuration like in following lines note that in during next upgrade process you need create custom image like described
+[in the section](#upgrade-process-if-you-have-updated-files-with-config-maps)
+:::
+
 Change the statefulset for the master server by adding volume mounts and volumes:
 ```shell
 ❯ kubectl get statefulset.apps/dai-xld-digitalai-deploy-master -o yaml \
@@ -68,7 +80,7 @@ Restart Deploy masters:
 Latest Deploy workers does not have `conf/deployit.conf` files, so it is not needed to do following step, all versions below 10.3 require it.
 :::
 
-Change the statefulset for the master worker by adding volume mounts and volumes:
+Change the statefulset for the worker by adding volume mounts and volumes:
 ```shell
 ❯ kubectl get statefulset.apps/dai-xld-digitalai-deploy-worker -o yaml \
     | yq eval '.spec.template.spec.containers[0].volumeMounts += {
@@ -88,7 +100,7 @@ Change the statefulset for the master worker by adding volume mounts and volumes
 Restart Deploy workers:
 ```shell
 ❯ kubectl get pod
-❯ kubectl delete pod dai-xld-digitalai-deploy-master-0
+❯ kubectl delete pod dai-xld-digitalai-deploy-worker-0
 ```
 
 ## Update configuration file generic example for Deploy
@@ -96,8 +108,17 @@ Restart Deploy workers:
 You can use following way to update any configuration file on the Deploy in the `centralConfiguration` or in the `conf` directory.
 
 :::note
-The files in `centralConfiguration` need to be updated on all master nodes. The files are not needed on worker nodes.
-The files in `conf` need to be updated on all master and worker nodes (if they exist on the worker node for the specific version).
+The files in `centralConfiguration` need to be updated for master nodes. The files are not needed on worker nodes.
+
+The files in `conf` (like from the previous example `conf/deployit.conf`) need to be updated for master and worker nodes (if they exist on the worker node for the specific version).
+:::
+
+:::note
+In the following example, we are changing the template file from the `central-conf`, not the direct configuration file from the `centralConfiguration`.
+The reason for that is in that way we are able to change environment variables in the container via deploy CR. Those variables are used during the startup of the pod.
+to evaluate template placeholders to the target file in the `centralConfiguration` folder.
+
+Please note, for Deploy, the files from the `default-conf` directory are only evaluated in the same way if there is no already such file in the conf directory.  
 :::
 
 Get info to list deploy master and worker pod names and statefulsets:
@@ -111,9 +132,9 @@ Setup environment vals:
 ```shell
 export PRODUCT=deploy
 export POD_NAME=dai-xld-digitalai-deploy-master-0
-export CONFIG_FILE=deployit.conf
+export CONFIG_FILE=deploy-repository.yaml.template
 export CONFIG_FILE_DASH=${CONFIG_FILE//./-}
-export PATH_TO_CONFIG_FILE=/opt/xebialabs/xl-$PRODUCT-server/default/$CONFIG_FILE
+export PATH_TO_CONFIG_FILE=/opt/xebialabs/xl-$PRODUCT-server/central-conf/$CONFIG_FILE
 export STATEFUL_SET_NAME=statefulset.apps/dai-xld-digitalai-deploy-master
 ```
 
@@ -134,7 +155,15 @@ cat config-patch-${CONFIG_FILE}.yaml.template > config-patch-${CONFIG_FILE}.yaml
 sed -e 's/^/     /' $CONFIG_FILE >> config-patch-${CONFIG_FILE}.yaml
 ```
 
-Edit the YAML file and add your custom changes to it: `config-patch-${CONFIG_FILE}.yaml`
+Edit the YAML file and add your custom changes to it: `config-patch-${CONFIG_FILE}.yaml`:
+```shell
+vi config-patch-${CONFIG_FILE}.yaml
+```
+
+:::note
+If you create an additional configuration like in the following lines note that during the next upgrade process you need to create a custom image like described
+[in the section](#upgrade-process-if-you-have-updated-files-with-config-maps)
+:::
 
 Create config map on cluster and use it:
 ```shell
