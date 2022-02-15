@@ -1158,7 +1158,6 @@ spec:
     replicas: 1
     image:
       repository: xebialabs/central-configuration
-      #    pullSecret:
     persistence:
       annotations: { }
       pvcSize: 500M
