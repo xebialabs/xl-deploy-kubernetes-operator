@@ -1,0 +1,27 @@
+apiVersion: xl-deploy/v1
+kind: Infrastructure
+spec:
+  - name: k8s-infra
+    type: core.Directory
+    children:
+    - name: xld
+      type: k8s.Master
+      apiServerURL: < Update using server info from the kubeconfig file >
+      skipTLS: true
+      debug: true
+      caCert: |-
+        -----BEGIN CERTIFICATE-----
+
+        -----END CERTIFICATE-----
+      tlsCert: |-
+        -----BEGIN CERTIFICATE-----
+
+        -----END CERTIFICATE-----
+      tlsPrivateKey: |-
+        -----BEGIN RSA PRIVATE KEY-----
+        
+        -----END RSA PRIVATE KEY-----
+      children:
+        - name: default
+          type: k8s.Namespace
+          namespaceName: default
