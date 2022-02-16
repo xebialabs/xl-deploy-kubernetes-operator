@@ -12,10 +12,8 @@ spec:
   ImagePullPolicy: Always
   ImageRepository: xebialabs/xl-deploy
   ImageTag: "10.3.3"
-  # Secrets must be manually created in the namespace
-  # ImagePullSecret: xlDeploy
   K8sSetup:
-    Platform: PlainK8s
+    Platform: GoogleGKE
   KeystorePassphrase: <Provide store pass for the keystore>
   Persistence:
     AccessMode: ReadWriteOnce
@@ -25,7 +23,7 @@ spec:
     StorageClass: < provide the storageClass for DAI-DEPLOY>
     XldMasterPvcSize: 10Gi
     XldWorkerPvcSize: 10Gi
-  # https://docs.xebialabs.com/v.10.2/deploy/how-to/changing-passwords-in-xl-deploy/
+  # https://docs.xebialabs.com/v.9.8/deploy/how-to/update-the-xl-deploy-digital-certificate/#get-started
   # Convert repository-keystore.jceks files content to base64
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
   RepositoryKeystore: <Provide repositoryKeystore in base64 encoded form>
@@ -443,10 +441,10 @@ spec:
     updateStrategy: {}
   nodeSelector: {}
   oidc:
+    enabled: false
     accessTokenUri: null
     clientId: null
     clientSecret: null
-    enabled: false
     issuer: null
     keyRetrievalUri: null
     logoutUri: null
