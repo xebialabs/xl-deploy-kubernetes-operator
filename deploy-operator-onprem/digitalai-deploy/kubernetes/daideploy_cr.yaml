@@ -15,7 +15,7 @@ spec:
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
   K8sSetup:
-    Platform: AWSEKS
+    Platform: PlainK8s
   KeystorePassphrase: <Provide store pass for the keystore>
   Persistence:
     AccessMode: ReadWriteOnce
@@ -25,7 +25,7 @@ spec:
     StorageClass: < provide the storageClass for DAI-DEPLOY>
     XldMasterPvcSize: 10Gi
     XldWorkerPvcSize: 10Gi
-  # https://docs.xebialabs.com/v.9.8/deploy/how-to/update-the-xl-deploy-digital-certificate/#get-started
+  # https://docs.xebialabs.com/v.10.2/deploy/how-to/changing-passwords-in-xl-deploy/
   # Convert repository-keystore.jceks files content to base64
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
   RepositoryKeystore: <Provide repositoryKeystore in base64 encoded form>
@@ -443,10 +443,10 @@ spec:
     updateStrategy: {}
   nodeSelector: {}
   oidc:
-    enabled: false
     accessTokenUri: null
     clientId: null
     clientSecret: null
+    enabled: false
     issuer: null
     keyRetrievalUri: null
     logoutUri: null
@@ -926,4 +926,4 @@ spec:
     Enabled: false
   tolerations: []
   # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
-  xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
+  xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form> 
