@@ -10,9 +10,9 @@ spec:
   HealthProbesLivenessTimeout: 60
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
-  ServerImageRepository: xebialabs/xl-deploy
-  WorkerImageRepository: xebialabs/deploy-task-engine
-  ImageTag: "22.0"
+  ServerImageRepository: xebialabsunsupported/xl-deploy
+  WorkerImageRepository: xebialabsunsupported/deploy-task-engine
+  ImageTag: "22.1.0-222.113"
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
   KeystorePassphrase: <Provide store pass for the keystore>
