@@ -12,7 +12,7 @@ spec:
   ImagePullPolicy: Always
   ServerImageRepository: xebialabsunsupported/xl-deploy
   WorkerImageRepository: xebialabsunsupported/deploy-task-engine
-  ImageTag: "22.1.0-222.113"
+  ImageTag: "22.1.0-224.113"
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
   K8sSetup:
@@ -151,11 +151,11 @@ spec:
         extraPorts: []
         healthCheckNodePort: 0
         httpPorts:
-        - port: 80
-          targetPort: http
+          - port: 80
+            targetPort: http
         httpsPorts:
-        - port: 443
-          targetPort: https
+          - port: 443
+            targetPort: https
         labels: {}
         loadBalancerIP: ""
         loadBalancerSourceRanges: []
@@ -238,7 +238,7 @@ spec:
       nginx.ingress.kubernetes.io/session-cookie-name: SESSION_XLD
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
     hosts:
-    - <Provode DNS name for accessing UI of Digital.ai Deploy>
+      - <Provode DNS name for accessing UI of Digital.ai Deploy>
     path: /
   keycloak:
     affinity: |
@@ -270,20 +270,20 @@ spec:
       behavior:
         scaleDown:
           policies:
-          - periodSeconds: 300
-            type: Pods
-            value: 1
+            - periodSeconds: 300
+              type: Pods
+              value: 1
           stabilizationWindowSeconds: 300
       enabled: false
       labels: {}
       maxReplicas: 10
       metrics:
-      - resource:
-          name: cpu
-          target:
-            averageUtilization: 80
-            type: Utilization
-        type: Resource
+        - resource:
+            name: cpu
+            target:
+              averageUtilization: 80
+              type: Utilization
+          type: Resource
       minReplicas: 3
     clusterDomain: cluster.local
     command: []
@@ -363,18 +363,18 @@ spec:
         enabled: false
         ingressClassName: ""
         rules:
-        - host: '{{ .Release.Name }}.keycloak.example.com'
-          paths:
-          - path: /auth/admin/
-            pathType: Prefix
+          - host: '{{ .Release.Name }}.keycloak.example.com'
+            paths:
+              - path: /auth/admin/
+                pathType: Prefix
       enabled: true
       ingressClassName: ""
       labels: {}
       rules:
-      - host: <Provode DNS name for accessing UI of keycloak>
-        paths:
-        - path: /
-          pathType: Prefix
+        - host: <Provode DNS name for accessing UI of keycloak>
+          paths:
+            - path: /
+              pathType: Prefix
       servicePort: http
       tls: []
     install: true
@@ -512,7 +512,7 @@ spec:
         explicitNamespacesSelector: {}
       persistence:
         accessModes:
-        - ReadWriteOnce
+          - ReadWriteOnce
         annotations: {}
         enabled: true
         mountPath: /bitnami/postgresql
@@ -755,9 +755,9 @@ spec:
       allowPrivilegeEscalation: true
       capabilities:
         add:
-        - NET_BIND_SERVICE
+          - NET_BIND_SERVICE
         drop:
-        - ALL
+          - ALL
       enabled: true
       runAsUser: 1001
     customLivenessProbe: {}
@@ -832,7 +832,7 @@ spec:
         location /healthz {
           return 200;
         }
-  
+
         location / {
           return 404;
         }
@@ -1033,9 +1033,9 @@ spec:
     customStartupProbe: {}
     diagnosticMode:
       args:
-      - infinity
+        - infinity
       command:
-      - sleep
+        - sleep
       enabled: false
     existingSecret: ""
     extendedConfConfigMap: ""
@@ -1143,7 +1143,7 @@ spec:
       explicitNamespacesSelector: {}
     persistence:
       accessModes:
-      - ReadWriteOnce
+        - ReadWriteOnce
       annotations: {}
       enabled: true
       existingClaim: ""
@@ -1399,9 +1399,9 @@ spec:
     customStartupProbe: {}
     diagnosticMode:
       args:
-      - infinity
+        - infinity
       command:
-      - sleep
+        - sleep
       enabled: false
     extraConfiguration: |
       load_definitions = /app/xld-load_definition.json
