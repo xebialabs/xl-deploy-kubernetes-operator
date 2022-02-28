@@ -737,7 +737,9 @@ spec:
     customLivenessProbe: {}
     customReadinessProbe: {}
     customStartupProbe: {}
-    extraConfiguration: "load_definitions = /app/xld-load_definition.json \n"
+    extraConfiguration: |
+      load_definitions = /app/xld-load_definition.json
+      raft.wal_max_size_bytes = 1048576
     extraContainerPorts: []
     extraEnvVars: []
     extraPlugins: rabbitmq_jms_topic_exchange
