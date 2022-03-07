@@ -683,7 +683,7 @@ spec:
       loadBalancerSourceRanges: []
       sessionAffinity: ""
       sessionAffinityConfig: {}
-      type: ClusterIP
+      type: LoadBalancer
     serviceAccount:
       annotations: {}
       create: true
