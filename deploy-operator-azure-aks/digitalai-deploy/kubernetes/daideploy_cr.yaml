@@ -12,7 +12,7 @@ spec:
   ImagePullPolicy: Always
   ServerImageRepository: xebialabsunsupported/xl-deploy
   WorkerImageRepository: xebialabsunsupported/deploy-task-engine
-  ImageTag: "22.1.0-307.113"
+  ImageTag: "22.1.0-308.113"
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
   K8sSetup:
@@ -683,7 +683,7 @@ spec:
       loadBalancerSourceRanges: []
       sessionAffinity: ""
       sessionAffinityConfig: {}
-      type: ClusterIP
+      type: LoadBalancer
     serviceAccount:
       annotations: {}
       create: true
