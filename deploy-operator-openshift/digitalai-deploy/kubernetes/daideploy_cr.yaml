@@ -1198,7 +1198,6 @@ spec:
   tolerations: []
   # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
   xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
-  CentralConfigEncryptKey: <Provide the encryption key to be used for central configuration>
   centralConfiguration:
     replicas: 1
     image:
