@@ -1,0 +1,98 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+buildscript {
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+        ["releases", "public"].forEach { r ->
+            maven {
+                url = uri("${project.property("nexusBaseUrl")}/repositories/${r}")
+                credentials {
+                    username = project.property("nexusUserName").toString()
+                    password = project.property("nexusPassword").toString()
+                }
+            }
+        }
+    }
+}
+
+apply plugin: "integration.server"
+apply plugin: "java"
+
+def projectProperties = new Properties()
+file("${rootDir}/gradle.properties").withInputStream { InputStream s ->
+    projectProperties.load(s)
+}
+
+dependencyManagement {
+    importConf "com.xebialabs.xl-platform:xl-reference:$xlPlatformVersion"
+    importConf "ai.digital.deploy.task-engine:deploy-task-engine-reference:$deployTaskEngineVersion"
+    importConf "com.xebialabs.deployit:xld-reference:$xlDeployVersion"
+}
+
+
+sourceCompatibility = projectProperties['languageLevel']
+targetCompatibility = projectProperties['languageLevel']
+
+sourceSets {
+    test {
+        resources {
+            srcDir "src/test/jython"
+        }
+    }
+}
+
+configurations.all {
+    exclude(group: 'com.xebialabs.deployit', module: 'appserver-api-impl')
+}
+
+dependencies {
+
+//    runtimeOnly "org.javassist:javassist"
+
+    testImplementation fileTree(dir: "$rootDir/core/build/integration-server/xl-deploy-${deployCliVersion}-cli/lib", include: '*.jar')
+    testImplementation "com.xebialabs.xl-platform.test-utils:py-modules:$testUtilsVersion"
+    testImplementation "ai.digital.deploy.xld-core:xld-utils"
+    testImplementation "com.xebialabs.deployit.engine:remote-booter"
+    testImplementation "com.xebialabs.deployit:server-api"
+    testImplementation "com.xebialabs.deployit.plugins:xld-stitch-core:${xldStitchCoreVersion}"
+//    testImplementation "com.oracle.database.jdbc:ojdbc11:21.1.0.0"
+//    testImplementation "ai.digital.deploy.engine:export-cis"
+    testImplementation "com.google.guava:guava"
+    testImplementation "com.xebialabs.deployit:appserver-core"
+//    testImplementation "com.xebialabs.restito:restito"
+//    testImplementation "com.xebialabs.xl-platform:maven-resolver"
+//    testImplementation "de.schlichtherle.truezip:truezip-driver-file"
+//    testImplementation "de.schlichtherle.truezip:truezip-driver-tar"
+//    testImplementation "de.schlichtherle.truezip:truezip-driver-zip"
+//    testImplementation "de.schlichtherle.truezip:truezip-file"
+//    testImplementation "de.schlichtherle.truezip:truezip-kernel"
+    testImplementation "junit:junit"
+    testImplementation "org.hamcrest:hamcrest-core"
+    testImplementation "org.springframework:spring-core"
+    testImplementation "org.testng:testng"
+    testImplementation "args4j:args4j"
+    testImplementation "jline:jline"
+    testImplementation "ai.digital.deploy:deploy-cli:$deployCliVersion"
+}
+
+def testsToRunRegExpPattern = hasProperty("testsToRunRegExpPattern") ? testsToRunRegExpPattern : ".*\\.py"
+
+afterEvaluate {
+    tasks.withType(Test) { task ->
+        task.configure {
+            testLogging {
+                exceptionFormat = "full"
+                showExceptions = true
+                showCauses = true
+                events = [TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.STARTED]
+            }
+
+            inputs.dir(project.file("${projectDir}/src/test/jython"))
+            maxHeapSize = "1024m"
+            systemProperties["DeployitIntegrationTest.testsToRunRegExpPattern"] = testsToRunRegExpPattern
+        }
+    }
+}
+
+apply from: "$rootDir/integration-tests/core/base-test-configuration.gradle"

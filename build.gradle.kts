@@ -46,11 +46,19 @@ val releasedVersion = System.getenv()["RELEASE_EXPLICIT"] ?: "22.0.0-${
 }"
 project.extra.set("releasedVersion", releasedVersion)
 
-repositories {
-    mavenLocal()
-    gradlePluginPortal()
-    maven {
-        url = uri("https://plugins.gradle.org/m2/")
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        arrayOf("releases", "public", "thirdparty").forEach { r ->
+            maven {
+                url = uri("${project.property("nexusBaseUrl")}/repositories/${r}")
+                credentials {
+                    username = project.property("nexusUserName").toString()
+                    password = project.property("nexusPassword").toString()
+                }
+            }
+        }
     }
 }
 
