@@ -12,7 +12,7 @@ spec:
   ImagePullPolicy: Always
   ServerImageRepository: xebialabsunsupported/xl-deploy
   WorkerImageRepository: xebialabsunsupported/deploy-task-engine
-  ImageTag: "22.1.0-308.113"
+  ImageTag: "22.2.0-314.113"
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
   K8sSetup:
@@ -1640,3 +1640,11 @@ spec:
   tolerations: []
   # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
   xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
+  centralConfiguration:
+    replicas: 1
+    image:
+      repository: xebialabs/central-configuration
+    persistence:
+      annotations: {}
+      pvcSize: 500M
+    migrateFromEmbedded: "false"
