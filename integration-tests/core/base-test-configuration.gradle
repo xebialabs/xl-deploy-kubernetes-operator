@@ -6,15 +6,17 @@ def getTestProperties() {
     def xlDeployWorkerStartDockerRepository = project.hasProperty("xlDeployWorkerStartDockerRepository") ? project.xlDeployWorkerStartDockerRepository : xlDeployStartDockerRepository
     def xlDeployUpgradeDockerRepository = project.hasProperty("xlDeployUpgradeDockerRepository") ? project.xlDeployUpgradeDockerRepository : "xebialabsunsupported"
     def xlDeployStartVersion = project.hasProperty("xlDeployStartVersion") ? project.xlDeployStartVersion : xlDeployVersion
-    def xlDeployUpgradeVersion = project.hasProperty("xlDeployUpgradeVersion") ? project.xlDeployUpgradeVersion : null
+    def xlDeployUpgradeVersion = project.hasProperty("xlDeployUpgradeVersion") ? project.xlDeployUpgradeVersion : xlDeployVersion
     def operatorImage = project.hasProperty("operatorImage") ? project.operatorImage : null
     def operatorPackageVersion = project.hasProperty("operatorPackageVersion") ? project.operatorPackageVersion : null
     def operatorStartBranch = project.hasProperty("operatorStartBranch") ? project.operatorStartBranch : null
+    def operatorUpgradeUseZip = project.hasProperty("operatorUpgradeUseZip") ? Boolean.valueOf(project.operatorUpgradeUseZip as String) : true
     def operatorUpgradeBranch = project.hasProperty("operatorUpgradeBranch") ? project.operatorUpgradeBranch : null
     def opBlueprintBranch = project.hasProperty("opBlueprintBranch") ? project.opBlueprintBranch as String : null
     def xlCliVersion = project.hasProperty("xlCliVersion") ? project.xlCliVersion as String : null
     def xlCliPath = project.hasProperty("xlCliPath") ? project.xlCliPath as String : null
     def cliNightly = project.hasProperty("cliNightly") ? Boolean.valueOf(project.cliNightly as String) : true
+    def deployUpgraderVersion = project.hasProperty("deployUpgraderVersion") ? project.deployUpgraderVersion as String : null
     def keycloakUrl = project.hasProperty("keycloakUrl") ? project.keycloakUrl as String : null
 
     [
@@ -24,6 +26,7 @@ def getTestProperties() {
         operatorImage                      : operatorImage,
         operatorPackageVersion             : operatorPackageVersion,
         operatorStartBranch                : operatorStartBranch,
+        operatorUpgradeUseZip              : operatorUpgradeUseZip,
         operatorUpgradeBranch              : operatorUpgradeBranch,
         xlDeployStartDockerRepository      : xlDeployStartDockerRepository,
         xlDeployWorkerStartDockerRepository: xlDeployWorkerStartDockerRepository,
@@ -33,6 +36,7 @@ def getTestProperties() {
         xlCliVersion                       : xlCliVersion,
         xlCliPath                          : xlCliPath,
         cliNightly                         : cliNightly,
+        deployUpgraderVersion              : deployUpgraderVersion,
         keycloakUrl                        : keycloakUrl,
     ]
 }
@@ -194,9 +198,19 @@ afterEvaluate {
         operatorBasedUpgradeDeployCluster {
             imageRepositoryName = testProperties.xlDeployUpgradeDockerRepository
             imageTargetVersion = testProperties.xlDeployUpgradeVersion
-            operatorBranch = testProperties.operatorUpgradeBranch
-            opBlueprintBranch = testProperties.opBlueprintBranch
-            keycloakUrl = testProperties.keycloakUrl
+            useOperatorZip = testProperties.operatorUpgradeUseZip
+            if (testProperties.deployUpgraderVersion) {
+                deployUpgraderVersion = testProperties.deployUpgraderVersion
+            }
+            if (testProperties.operatorUpgradeBranch) {
+                operatorBranch = testProperties.operatorUpgradeBranch
+            }
+            if (testProperties.opBlueprintBranch) {
+                opBlueprintBranch = testProperties.opBlueprintBranch
+            }
+            if (testProperties.keycloakUrl) {
+                keycloakUrl = testProperties.keycloakUrl
+            }
         }
     }
 
