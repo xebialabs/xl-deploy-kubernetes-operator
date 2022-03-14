@@ -41,7 +41,7 @@ apply(plugin = "com.xebialabs.dependency")
 group = "ai.digital.deploy.operator"
 project.defaultTasks = listOf("build")
 
-val releasedVersion = System.getenv()["RELEASE_EXPLICIT"] ?: "22.0.0-${
+val releasedVersion = System.getenv()["RELEASE_EXPLICIT"] ?: "22.2.0-${
     LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))
 }"
 project.extra.set("releasedVersion", releasedVersion)
@@ -167,7 +167,7 @@ tasks {
                 commandLine(command.split(" "))
             } else {
                 commandLine("echo",
-                    "You have to specify which version you want to sync, ex. ./gradlew syncToDistServer -PversionToSync=22.0.0")
+                    "You have to specify which version you want to sync, ex. ./gradlew syncToDistServer -PversionToSync=22.2.0")
             }
         }
     }
