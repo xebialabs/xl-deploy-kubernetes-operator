@@ -108,9 +108,9 @@ deployIntegrationServer {
                     setupTestProperties(it, testProperties)
                 }
                 azureAks {
-                    name = 'vp-azure-aks-test-cluster'
+                    name = 'azure-aks-test-cluster'
                     clusterNodeCount = 3
-                    location = 'westeurope'
+                    location = 'northcentralus'
                     setupTestProperties(it, testProperties)
                 }
                 gcpGke {
@@ -144,15 +144,15 @@ deployIntegrationServer {
             version = testProperties.xlDeployStartVersion
             overlays = serverOverlays
         }
-//        server02 {
-//        }
+        server02 {
+        }
     }
     workers {
         worker01 {
             dockerImage = "${testProperties.xlDeployWorkerStartDockerRepository}/deploy-task-engine"
         }
-//        worker02 {
-//        }
+        worker02 {
+        }
     }
 }
 
