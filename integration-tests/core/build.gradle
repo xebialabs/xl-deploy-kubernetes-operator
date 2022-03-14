@@ -47,26 +47,14 @@ configurations.all {
 }
 
 dependencies {
-
-//    runtimeOnly "org.javassist:javassist"
-
     testImplementation fileTree(dir: "$rootDir/core/build/integration-server/xl-deploy-${deployCliVersion}-cli/lib", include: '*.jar')
     testImplementation "com.xebialabs.xl-platform.test-utils:py-modules:$testUtilsVersion"
     testImplementation "ai.digital.deploy.xld-core:xld-utils"
     testImplementation "com.xebialabs.deployit.engine:remote-booter"
     testImplementation "com.xebialabs.deployit:server-api"
     testImplementation "com.xebialabs.deployit.plugins:xld-stitch-core:${xldStitchCoreVersion}"
-//    testImplementation "com.oracle.database.jdbc:ojdbc11:21.1.0.0"
-//    testImplementation "ai.digital.deploy.engine:export-cis"
     testImplementation "com.google.guava:guava"
     testImplementation "com.xebialabs.deployit:appserver-core"
-//    testImplementation "com.xebialabs.restito:restito"
-//    testImplementation "com.xebialabs.xl-platform:maven-resolver"
-//    testImplementation "de.schlichtherle.truezip:truezip-driver-file"
-//    testImplementation "de.schlichtherle.truezip:truezip-driver-tar"
-//    testImplementation "de.schlichtherle.truezip:truezip-driver-zip"
-//    testImplementation "de.schlichtherle.truezip:truezip-file"
-//    testImplementation "de.schlichtherle.truezip:truezip-kernel"
     testImplementation "junit:junit"
     testImplementation "org.hamcrest:hamcrest-core"
     testImplementation "org.springframework:spring-core"
