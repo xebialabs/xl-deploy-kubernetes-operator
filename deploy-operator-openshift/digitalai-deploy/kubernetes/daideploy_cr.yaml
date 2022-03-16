@@ -12,7 +12,15 @@ spec:
   ImagePullPolicy: Always
   ServerImageRepository: xebialabsunsupported/xl-deploy
   WorkerImageRepository: xebialabsunsupported/deploy-task-engine
+<<<<<<< HEAD
   ImageTag: "22.1.0-315.452"
+=======
+  ImageTag: "22.2.0-315.113"
+  ## xebialabs/tiny-tools image version
+  ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
+  TinyToolsImageRepository: "xebialabs/tiny-tools"
+  TinyToolsImageTag: "22.2.0"
+>>>>>>> d101a3a... ENG-9236 Refresh xebialabs/tiny-tools image version (#40)
   # Secrets must be manually created in the namespace
   # ImagePullSecret: xlDeploy
   KeystorePassphrase: <Provide store pass for the keystore>
