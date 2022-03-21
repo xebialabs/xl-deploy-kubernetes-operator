@@ -9,7 +9,7 @@ sidebar_position: 7
 - Linux environment
 - The kubectl command-line tool
 - The yq command-line tool ([Use the latest binary](https://github.com/mikefarah/yq/releases))
-- Access to a Kubernetes cluster with installed Release
+- Access to a Kubernetes cluster with installed deploy
 
 ## Adding truststore file generic example for Deploy.
 * Add certificate to truststore (XLDTruststore.jks)
