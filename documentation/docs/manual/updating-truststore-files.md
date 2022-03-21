@@ -17,6 +17,7 @@ sidebar_position: 7
      keytool -import -alias exampleCert -file exampleCert.cer -keystore XLDTruststore.jks
      ```
 * Create secret yaml "xld-trust-store_secret.yaml"
+  * cat XLDTruststore.jsk | base64
   * ```yaml
      apiVersion: v1
      kind: Secret
