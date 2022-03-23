@@ -1647,7 +1647,7 @@ spec:
   centralConfiguration:
     replicas: 1
     image:
-      repository: xebialabs/central-configuration
+      repository: xebialabsunsupported/central-configuration
     persistence:
       annotations: {}
       pvcSize: 500M
