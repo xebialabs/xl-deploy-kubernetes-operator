@@ -46,10 +46,12 @@ rules:
   - "*"
   apiGroups:
   - "apps"
+  - "batch"
   resources:
   - "deployments"
   - "statefulsets"
   - "daemonsets"
+  - "jobs"
 - verbs:
   - "*"
   apiGroups:
