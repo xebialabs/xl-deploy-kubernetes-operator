@@ -12,6 +12,10 @@ spec:
   ImagePullPolicy: Always
   ImageRepository: xebialabs/xl-deploy
   ImageTag: "10.3.3"
+  ## xebialabs/tiny-tools image version
+  ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
+  TinyToolsImageRepository: "xebialabs/tiny-tools"
+  TinyToolsImageTag: "22.2.0"
   K8sSetup:
     Platform: GoogleGKE
   KeystorePassphrase: <Provide store pass for the keystore>
