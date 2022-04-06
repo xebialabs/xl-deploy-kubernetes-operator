@@ -16,7 +16,7 @@ sidebar_position: 8
 
 Setup custom namespace on Kubernetes cluster, `custom-namespace-1` for example:
 ```shell
-❯ kubectl kubectl create namespace custom-namespace-1
+❯ kubectl create namespace custom-namespace-1
 ```
 
 ### Update the deploy operator package to support custom namespace
@@ -102,7 +102,7 @@ After setup, you can continue with standard deployment of the Deploy to the Kube
 
 Setup custom namespace on Kubernetes cluster, `custom-namespace-2` for example:
 ```shell
-❯ kubectl kubectl create namespace custom-namespace-2
+❯ kubectl create namespace custom-namespace-2
 ```
 
 ### Update the deploy operator package to support custom namespace
