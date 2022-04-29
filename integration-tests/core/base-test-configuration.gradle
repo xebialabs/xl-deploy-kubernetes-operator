@@ -20,6 +20,7 @@ def getTestProperties() {
     def deployUpgraderVersion = project.hasProperty("deployUpgraderVersion") ? project.deployUpgraderVersion as String : null
     def keycloakUrl = project.hasProperty("keycloakUrl") ? project.keycloakUrl as String : null
     def ingressType = project.hasProperty("ingressType") ? project.ingressType as String : null
+    def deploySuffix = project.hasProperty("deploySuffix") ? project.deploySuffix as String : null
 
     [
         activeProviderName                 : activeProviderName,
@@ -43,6 +44,7 @@ def getTestProperties() {
         deployUpgraderVersion              : deployUpgraderVersion,
         keycloakUrl                        : keycloakUrl,
         ingressType                        : ingressType,
+        deploySuffix                        : deploySuffix,
     ]
 }
 
@@ -89,6 +91,7 @@ deployIntegrationServer {
             operator {
                 activeProviderName = testProperties.activeProviderName
                 doCleanup = testProperties.doCleanup
+                deploySuffix = testProperties.deploySuffix
                 if (testProperties.xlCliVersion) {
                     xlCliVersion = testProperties.xlCliVersion
                 }

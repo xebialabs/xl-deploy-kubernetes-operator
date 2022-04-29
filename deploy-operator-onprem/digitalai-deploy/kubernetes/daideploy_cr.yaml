@@ -874,7 +874,7 @@ spec:
       name: nginx
       parameters: {}
     initContainers: []
-    install: true
+    install: false
     kind: Deployment
     lifecycle: {}
     livenessProbe:
