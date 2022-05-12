@@ -21,6 +21,6 @@ spec:
       accessKey: <Update the AWS accessKey details >
       accessSecret: <Update the AWS accessSecret details >
       children:
-        - name: default
+        - name: digitalai
           type: k8s.Namespace
-          namespaceName: default
+          namespaceName: digitalai

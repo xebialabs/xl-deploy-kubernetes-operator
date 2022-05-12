@@ -10,6 +10,6 @@ spec:
       openshiftToken: < The authentication token to connect to OpenShift cluster >
       verifyCertificates: false
       children:
-        - name: default
+        - name: digitalai
           type: openshift.Project
-          projectName: default
+          projectName: digitalai
