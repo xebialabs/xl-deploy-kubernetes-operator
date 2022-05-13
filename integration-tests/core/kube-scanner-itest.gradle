@@ -1,0 +1,6 @@
+deployIntegrationServer {
+    kubeScanner {
+        awsRegion = "us-east-1"
+        command =  ["-v", "3", "logtostrerr"]
+    }
+}

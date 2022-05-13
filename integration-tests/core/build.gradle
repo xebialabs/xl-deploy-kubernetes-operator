@@ -84,3 +84,6 @@ afterEvaluate {
 }
 
 apply from: "$rootDir/integration-tests/core/base-test-configuration.gradle"
+if (project.hasProperty("kubeScanItest")) {
+    apply from: "$rootDir/integration-tests/core/kube-scanner-itest.gradle"
+}
