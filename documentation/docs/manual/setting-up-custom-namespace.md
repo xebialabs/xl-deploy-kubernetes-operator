@@ -143,3 +143,15 @@ digitalaideploys.xld.digital.ai                  2022-03-31T19:03:30Z
 
 - `? Enter path to the operator package.`
 For this answer you need specify path to the unzipped operator package
+
+## Troubleshooting
+
+If keycloak pod is not starting on OpenShift cluster and you can see this error for keycloak StatefulSet:
+
+`Warning FailedCreate 2m11s (x3 over 2m11s) statefulset-controller create Pod dai-ocp-xlr-cn1502-k-0 in StatefulSet dai-ocp-xlr-cn1502-k failed error: pods "dai-ocp-xlr-cn1502-k-0" is forbidden: unable to validate against any security context constraint: [provider "anyuid": Forbidden: not usable by user or serviceaccount`
+
+then you have to add security constraint context for your custom namespace:
+```shell
+oc adm policy add-scc-to-group anyuid system:serviceaccounts:<custom-namespace>
+```
+
