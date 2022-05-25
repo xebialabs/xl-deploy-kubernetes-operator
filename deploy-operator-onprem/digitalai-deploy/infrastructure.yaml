@@ -22,6 +22,6 @@ spec:
         
         -----END RSA PRIVATE KEY-----
       children:
-        - name: default
+        - name: digitalai
           type: k8s.Namespace
-          namespaceName: default
+          namespaceName: digitalai
