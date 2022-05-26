@@ -130,7 +130,7 @@ deployIntegrationServer {
                 }
                 gcpGke {
                     name = 'gcp-gke-test-cluster'
-                    storageClass = 'standard-rwx'
+                    storageClass = 'standard-rwo'
                     accountName = 'gcp-gke-test-cluster@apollo-playground.iam.gserviceaccount.com'
                     projectName = 'apollo-playground'
                     regionZone = 'us-central1-a'
@@ -154,6 +154,7 @@ deployIntegrationServer {
     servers {
         server01 {
             dockerImage = "${testProperties.xlDeployStartDockerRepository}/xl-deploy"
+            centralConfigDockerImage = "${testProperties.xlDeployStartDockerRepository}/central-configuration"
             pingRetrySleepTime = 10
             pingTotalTries = 120
             version = testProperties.xlDeployStartVersion
