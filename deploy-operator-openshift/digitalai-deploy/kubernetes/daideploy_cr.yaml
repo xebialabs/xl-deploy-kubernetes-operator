@@ -10,8 +10,8 @@ spec:
   HealthProbesLivenessTimeout: 60
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
-  ImageRepository: xebialabs/xl-deploy
-  ImageTag: "10.3.3"
+  ImageRepository: xebialabsunsupported/xl-deploy
+  ImageTag: "10.3.0-304.113"
   ## xebialabs/tiny-tools image version
   ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
   TinyToolsImageRepository: "xebialabs/tiny-tools"
@@ -177,7 +177,7 @@ spec:
     nodeSelector: {}
     persistence:
       accessModes:
-      - ReadWriteOnce
+        - ReadWriteOnce
       annotations: {}
       enabled: true
       existingClaim: null
@@ -539,7 +539,7 @@ spec:
       haproxy.router.openshift.io/disable_cookies: "false"
       haproxy.router.openshift.io/rewrite-target: /
     hosts:
-    - <Provode DNS name for accessing UI of Digital.ai Deploy>
+      - <Provode DNS name for accessing UI of Digital.ai Deploy>
     path: /
   satellite:
     Enabled: false
