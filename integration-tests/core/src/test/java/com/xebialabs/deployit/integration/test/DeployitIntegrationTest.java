@@ -286,7 +286,7 @@ public class DeployitIntegrationTest {
             options.setUsername("admin");
             options.setPassword("admin");
             options.setSocketTimeout(10000 * 20); // 20 times the default
-            options.setExtensionFolderName(cliRuntime + "/ext");
+//            options.setExtensionFolderName(cliRuntime + "/ext");
 
             logger.info("Connecting with the next options: contextRoot=" + contextRoot +
                     ",integrationTestPort=" + integrationTestPort + ",sslEnabled=" + props.isSslEnabled());

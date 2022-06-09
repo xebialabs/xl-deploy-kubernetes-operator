@@ -51,7 +51,6 @@ dependencies {
     testImplementation "com.xebialabs.xl-platform.test-utils:py-modules:$testUtilsVersion"
     testImplementation "ai.digital.deploy.xld-core:xld-utils"
     testImplementation "com.xebialabs.deployit.engine:remote-booter"
-    testImplementation "com.xebialabs.deployit:server-api"
     testImplementation "com.xebialabs.deployit.plugins:xld-stitch-core:${xldStitchCoreVersion}"
     testImplementation "com.google.guava:guava"
     testImplementation "com.xebialabs.deployit:appserver-core"
