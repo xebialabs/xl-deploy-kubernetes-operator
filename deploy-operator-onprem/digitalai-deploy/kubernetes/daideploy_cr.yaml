@@ -1024,7 +1024,7 @@ spec:
         postgresql:
           existingSecret: ""
           postgresqlDatabase: ""
-          postgresqlPassword: ""
+          postgresqlPassword: "postgres"
           postgresqlUsername: ""
           replicationPassword: ""
           servicePort: ""
