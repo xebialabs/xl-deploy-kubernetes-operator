@@ -11,7 +11,7 @@ spec:
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
   ImageRepository: xebialabs/xl-deploy
-  ImageTag: "10.3.3"
+  ImageTag: "10.2.16"
   ## xebialabs/tiny-tools image version
   ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
   TinyToolsImageRepository: "xebialabs/tiny-tools"
@@ -133,11 +133,11 @@ spec:
         externalTrafficPolicy: Local
         healthCheckNodePort: 0
         httpPorts:
-        - port: 80
-          targetPort: http
+          - port: 80
+            targetPort: http
         httpsPorts:
-        - port: 443
-          targetPort: https
+          - port: 443
+            targetPort: https
         labels: {}
         loadBalancerIP: ""
         loadBalancerSourceRanges: []
@@ -213,7 +213,7 @@ spec:
       nginx.ingress.kubernetes.io/session-cookie-name: SESSION_XLD
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
     hosts:
-    - <Provode DNS name for accessing UI of Digital.ai Deploy>
+      - <Provode DNS name for accessing UI of Digital.ai Deploy>
     path: /xl-deploy(/|$)(.*)
   nginx-ingress-controller:
     addHeaders: {}
@@ -239,9 +239,9 @@ spec:
       allowPrivilegeEscalation: true
       capabilities:
         add:
-        - NET_BIND_SERVICE
+          - NET_BIND_SERVICE
         drop:
-        - ALL
+          - ALL
       enabled: true
       runAsUser: 1001
     customLivenessProbe: {}
@@ -571,7 +571,7 @@ spec:
     nodeSelector: {}
     persistence:
       accessModes:
-      - ReadWriteOnce
+        - ReadWriteOnce
       annotations: {}
       enabled: true
       existingClaim: null
