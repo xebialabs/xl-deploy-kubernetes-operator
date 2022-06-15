@@ -146,12 +146,44 @@ For this answer you need specify path to the unzipped operator package
 
 ## Troubleshooting
 
-If keycloak pod is not starting on OpenShift cluster and you can see this error for keycloak StatefulSet:
+If keycloak pod is not starting on OpenShift cluster, and you can see this error for keycloak StatefulSet:
 
-`Warning FailedCreate 2m11s (x3 over 2m11s) statefulset-controller create Pod dai-ocp-xlr-cn1502-k-0 in StatefulSet dai-ocp-xlr-cn1502-k failed error: pods "dai-ocp-xlr-cn1502-k-0" is forbidden: unable to validate against any security context constraint: [provider "anyuid": Forbidden: not usable by user or serviceaccount`
+`Warning FailedCreate 2m11s (x3 over 2m11s) statefulset-controller create Pod dai-ocp-xld-cn1502-k-0 in StatefulSet dai-ocp-xld-cn1502-k failed error: pods "dai-ocp-xld-cn1502-k-0" is forbidden: unable to validate against any security context constraint: [provider "anyuid": Forbidden: not usable by user or serviceaccount`
 
-then you have to add security constraint context for your custom namespace:
+then you have to add security constraint context for your custom namespace using any of these 3 options:
+1. Using oc command.
+    * oc version above , Client Version: 4.7.5, Server Version: 4.9.21.
+```shell
+[sishwarya@localhost bin] $ oc version
+Client Version: 4.7.5
+Server Version: 4.9.21
+Kubernetes Version: v1.22.3+fdba464
+```
 ```shell
 oc adm policy add-scc-to-group anyuid system:serviceaccounts:<custom-namespace>
 ```
-
+2. Using the kubectl-create, create the clusterRole_anyuid.yaml file with below content.
+```yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: 'system:openshift:scc:anyuid'
+subjects:
+  - kind: Group
+    apiGroup: rbac.authorization.k8s.io
+    name: 'system:serviceaccounts:<custom-namespace>'
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: 'system:openshift:scc:anyuid'
+```
+```shell
+[sishwarya@localhost openshift] $ kubectl create -f clusterRole_anyuid.yaml 
+clusterrolebinding.rbac.authorization.k8s.io/system:openshift:scc:anyuid created
+[sishwarya@localhost openshift] $ kubectl get ClusterRoleBinding system:openshift:scc:anyuid
+NAME                          ROLE                                      AGE
+system:openshift:scc:anyuid   ClusterRole/system:openshift:scc:anyuid   87s
+```
+3. Using the openshift Dashboard.
+* Create the ClusterRoleBinding via Dashboard.
+  ![Anyuids ClusterRoleBinding](pics/anyuidClusterRoleBinding.png)
