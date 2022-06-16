@@ -473,7 +473,7 @@ spec:
     route:
       annotations: {}
       enabled: true
-      host: <Provode DNS name for accessing UI of keycloak>
+      host: <Provide DNS name for accessing UI of keycloak>
       labels: {}
       path: /
       tls:
@@ -1197,7 +1197,7 @@ spec:
       haproxy.router.openshift.io/disable_cookies: "false"
       haproxy.router.openshift.io/rewrite-target: /
     hosts:
-      - <Provode DNS name for accessing UI of Digital.ai Deploy>
+      - <Provide DNS name for accessing UI of Digital.ai Deploy>
     path: /
   satellite:
     Enabled: false
