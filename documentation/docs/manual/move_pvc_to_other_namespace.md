@@ -172,10 +172,10 @@ Edit file `pvc-data-dir-dai-xld-digitalai-deploy-master-0-nsxld.yaml`:
 - `metadata.annotations.pv.kubernetes.io/bound-by-controller`
 
 2. Rename following lines by adding namespace name:
-- `metadata.name` from data-dir-dai-xld-digitalai-deploy-master-0 to dai-xld-nsxld-digitalai-deploy-master-0
+- `metadata.name` from data-dir-dai-xld-digitalai-deploy-master-0 to data-dir-dai-xld-nsxld-digitalai-deploy-master-0
 - `metadata.labels.release` from dai-xld to dai-xld-nsxld
 - `metadata.annotations.meta.helm.sh/release-namespace` from default to nsxld
-- `metadata.annotations.meta.helm.sh/release-name` from dai-xlr to dai-xld-nsxld
+- `metadata.annotations.meta.helm.sh/release-name` from dai-xld to dai-xld-nsxld
   The renaming rule is to replace any occurrence of `dai-xld` with `dai-xld-{{custom_namespace_name}}`
 
 Create those PVCs, but inside the Namespace “nsxld”:
@@ -237,7 +237,7 @@ spec:
   volumes:
     - name: reports-dir
       persistentVolumeClaim:
-        claimName: dai-xld-nsxld-digitalai-deploy-master-0
+        claimName: data-dir-dai-xld-nsxld-digitalai-deploy-master-0
 ```
 Update the claimName with correct name!
 
@@ -358,7 +358,7 @@ spec:
   volumes:
     - name: reports-dir
       persistentVolumeClaim:
-        claimName: dai-xld-nsxld-digitalai-deploy-worker-0
+        claimName: data-dir-dai-xld-nsxld-digitalai-deploy-worker-0
 ```
 Update the claimName with correct name!
 
@@ -416,7 +416,7 @@ spec:
 ❯ kubectl apply -f pod-dai-xld-worker-pv-access-default.yaml -n default
 ```
 
-5. Copy data from one pod to
+5. Copy data from one pod
 ```shell
 ❯ kubectl exec -n default dai-xld-worker-pv-access-default -- tar cf - \
     /opt/xebialabs/xl-deploy-server/work \
@@ -440,21 +440,24 @@ spec:
 
 Following option will reuse PV in the new namespace, rollback of the option is more complicated. 
 
-Delete all the current PVCs in the namespace `default` if they still exist (on older version from 22.2 dai-xlr-digitalai-release PVC will not exist):
+Delete all the current PVCs in the namespace `default`
 ```
-❯ kubectl delete pvc dai-xlr-digitalai-release -n default
+❯ kubectl delete pvc data-dir-dai-xld-digitalai-deploy-master-0 -n default
+❯ kubectl delete pvc data-dir-dai-xld-digitalai-deploy-worker-0 -n default
 ```
 
 See that the related PV Status will be changed from `Bound` to `Released`:
 ```
-❯ kubectl get pv pvc-53564205-6e1e-45f0-9dcf-e21adefa6eaf
-NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                                 STORAGECLASS                                   REASON   AGE
-pvc-53564205-6e1e-45f0-9dcf-e21adefa6eaf   1Gi        RWO            Retain           Released   digitalai/dai-xlr-digitalai-release   vp-azure-aks-test-cluster-file-storage-class            7h36m
+❯ kubectl get pv pvc-1df72d76-7970-43fa-b30f-77b6a0d07239 pvc-3f4052d9-a614-4d0f-a886-a5699dac4d5e -n default
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                                                STORAGECLASS          REASON   AGE
+pvc-1df72d76-7970-43fa-b30f-77b6a0d07239   10Gi       RWO            Retain           Released   default/data-dir-dai-xld-digitalai-deploy-master-0   aws-efs-provisioner            5h55m
+pvc-3f4052d9-a614-4d0f-a886-a5699dac4d5e   10Gi       RWO            Retain           Released   default/data-dir-dai-xld-digitalai-deploy-worker-0   aws-efs-provisioner            5h55m
 ```
 
 Edit each one of the PVs to remove the old references with claim:
 ```
-❯ kubectl edit pv pvc-53564205-6e1e-45f0-9dcf-e21adefa6eaf
+❯ kubectl edit pv pvc-1df72d76-7970-43fa-b30f-77b6a0d07239
+❯ kubectl edit pv pvc-3f4052d9-a614-4d0f-a886-a5699dac4d5e
 ```
 Remove lines like following example:
 ```yaml
@@ -462,115 +465,71 @@ Remove lines like following example:
 claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: dai-xlr-digitalai-release
+    name: data-dir-dai-xld-digitalai-deploy-master-0
     namespace: default
     resourceVersion: "23284462"
     uid: 53564205-6e1e-45f0-9dcf-e21adefa6eaf
 ...
 ```
+```yaml
+...
+claimRef:
+  apiVersion: v1
+  kind: PersistentVolumeClaim
+  name: data-dir-dai-xld-digitalai-deploy-worker-0
+  namespace: default
+  resourceVersion: "34085986"
+  uid: c7a3176c-9721-472b-94a3-dd5132a550a1
+...
+```
 
 Check that there are no references anymore in the CLAIM column:
 ```
-❯ kubectl get pv pvc-53564205-6e1e-45f0-9dcf-e21adefa6eaf
-NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS                                   REASON   AGE
-pvc-53564205-6e1e-45f0-9dcf-e21adefa6eaf   1Gi        RWO            Retain           Available           vp-azure-aks-test-cluster-file-storage-class            8h
+❯ kubectl get pv pvc-1df72d76-7970-43fa-b30f-77b6a0d07239 pvc-3f4052d9-a614-4d0f-a886-a5699dac4d5e -n default
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS          REASON   AGE
+pvc-1df72d76-7970-43fa-b30f-77b6a0d07239   10Gi       RWO            Retain           Available           aws-efs-provisioner            5h58m
+pvc-3f4052d9-a614-4d0f-a886-a5699dac4d5e   10Gi       RWO            Retain           Available           aws-efs-provisioner            5h58m
 ```
 
-#### C.4.OPTION_2.1 Make the copy of the `pvc-dai-xlr-digitalai-release.yaml` for the later reference.
-Edit file `pvc-dai-xlr-digitalai-release.yaml`:
-1. Delete all the lines under section:
+#### C.4.OPTION_2.1 Make the copy of the `pvc-data-dir-dai-xld-digitalai-deploy-master-0.yaml` for the later reference, to the `pvc-data-dir-dai-xld-digitalai-deploy-master-0-nsxld.yaml`.
+Edit file `pvc-data-dir-dai-xld-digitalai-deploy-master-0-nsxld.yaml`:
+1. Delete all the lines under sections:
 - `status`
-- `metadata.namespace`
+- `spec.volumneMode`
+- `spec.volumneName`
 - `metadata.uid`
 - `metadata.resourceVersion`
+- `metadata.namespace`
 - `metadata.creationTimestamp`
 - `metadata.finalizers`
 - `metadata.annotations.pv.kubernetes.io/bind-completed`
 - `metadata.annotations.pv.kubernetes.io/bound-by-controller`
-- `metadata.ownerReferences`
-2. Rename following lines by adding namespace name:
-- `metadata.name` from dai-xlr-digitalai-release to dai-xlr-custom-namespace-1-digitalai-release
-- `metadata.labels.release` from dai-xlr to dai-xlr-custom-namespace-1
-- `metadata.annotations.meta.helm.sh/release-namespace` from default to custom-namespace-1
-- `metadata.annotations.meta.helm.sh/release-name` from dai-xlr to dai-xlr-custom-namespace-1
-  The renaming rule is to replace any occurrence of `dai-xlr` with `dai-xlr-{{custom_namespace_name}}`
 
-Create those PVCs again, but inside the Namespace “custom-namespace-1”:
+2. Rename following lines by adding namespace name:
+- `metadata.name` from data-dir-dai-xld-digitalai-deploy-master-0 to data-dir-dai-xld-nsxld-digitalai-deploy-master-0
+- `metadata.labels.release` from dai-xld to dai-xld-nsxld
+- `metadata.annotations.meta.helm.sh/release-namespace` from default to nsxld
+- `metadata.annotations.meta.helm.sh/release-name` from dai-xld to dai-xld-nsxld
+  The renaming rule is to replace any occurrence of `dai-xld` with `dai-xld-{{custom_namespace_name}}`
+
+Similarly do the above steps for worker and postgresql PVC[data-dir-dai-xld-digitalai-deploy-worker-0, data-dai-xld-postgresql-0].
+Create those PVCs again, but inside the Namespace “nsxld”:
 ```
-❯ kubectl apply -f pvc-dai-xlr-digitalai-release.yaml -n custom-namespace-1
+❯ kubectl apply -f pvc-data-dir-dai-xld-digitalai-deploy-master-0-nsxld.yaml -n nsxld
 persistentvolumeclaim/dai-xlr-custom-namespace-1-digitalai-release created
+❯ kubectl apply -f pvc-data-dir-dai-xld-digitalai-deploy-worker-0-nsxld.yaml -n nsxld
+persistentvolumeclaim/data-dir-dai-xld-nsxld-digitalai-deploy-worker-0 created
+❯ kubectl apply -f pvc-data-dai-xld-postgresql-0-nsxld.yaml -n nsxld
+persistentvolumeclaim/data-dai-xld-nsxld-postgresql-0 created
 ```
 
 Check the PVCs state, which will probably in Pending state, and after some time in Bound state:
 ```
-❯ kubectl get pvc -n custom-namespace-1
-NAME                                           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                                   AGE
-dai-xlr-custom-namespace-1-digitalai-release   Bound    pvc-53564205-6e1e-45f0-9dcf-e21adefa6eaf   1Gi        RWO            vp-azure-aks-test-cluster-file-storage-class   3m33s
-```
-
-#### C.4.OPTION_2.2 On the moved PV for the release you will need to empty some folders, do that with following pod
-1. Put following in file `pod-dai-pv-access-custom-namespace-1.yaml` (don't forget to update custom-namespace-1 with real namespace name):
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: dai-pv-access-custom-namespace-1
-spec:
-  containers:
-    - name: sleeper
-      command: ["sleep", "1d"]
-      image: xebialabs/tiny-tools:22.2.0
-      imagePullPolicy: Always
-      volumeMounts:
-        - mountPath: /opt/xebialabs/xl-release-server/reports
-          name: reports-dir
-          subPath: reports
-        - mountPath: /opt/xebialabs/xl-release-server/work
-          name: reports-dir
-          subPath: work
-        - mountPath: /opt/xebialabs/xl-release-server/conf
-          name: reports-dir
-          subPath: conf
-        - mountPath: /opt/xebialabs/xl-release-server/ext
-          name: reports-dir
-          subPath: ext
-        - mountPath: /opt/xebialabs/xl-release-server/hotfix
-          name: reports-dir
-          subPath: hotfix
-        - mountPath: /opt/xebialabs/xl-release-server/hotfix/lib
-          name: reports-dir
-          subPath: lib
-        - mountPath: /opt/xebialabs/xl-release-server/hotfix/plugins
-          name: reports-dir
-          subPath: plugins
-        - mountPath: /opt/xebialabs/xl-release-server/log
-          name: reports-dir
-          subPath: log
-  restartPolicy: Never
-  volumes:
-    - name: reports-dir
-      persistentVolumeClaim:
-        claimName: dai-xlr-custom-namespace-1-digitalai-release
-```
-2. Start the pod
-```shell
-❯ kubectl apply -f pod-dai-pv-access-custom-namespace-1.yaml -n custom-namespace-1
-```
-3. Empty following folders from the pod:
-- /opt/xebialabs/xl-release-server/work
-- /opt/xebialabs/xl-release-server/conf
-- /opt/xebialabs/xl-release-server/hotfix
-- /opt/xebialabs/xl-release-server/hotfix/lib
-- /opt/xebialabs/xl-release-server/hotfix/plugins
-
-Example for the work folder:
-```shell
-❯ kubectl exec -n custom-namespace-1 -i dai-pv-access-custom-namespace-1 -- sh -c "rm -fr /opt/xebialabs/xl-release-server/conf/*"
-```
-
-4. Delete the pod
-```shell
-❯ kubectl delete pod dai-pv-access-custom-namespace-1 -n custom-namespace-1
+❯ kubectl get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                                    STORAGECLASS          REASON   AGE
+pvc-1df72d76-7970-43fa-b30f-77b6a0d07239   10Gi       RWO            Retain           Bound    nsxld/data-dir-dai-xld-nsxld-digitalai-deploy-worker-0   aws-efs-provisioner            6h39m
+pvc-2ccabe5e-c540-42c4-92c9-08bbac24e306   50Gi       RWO            Retain           Bound    nsxld/data-dai-xld-nsxld-postgresql-0                    aws-efs-provisioner            6h39m
+pvc-3f4052d9-a614-4d0f-a886-a5699dac4d5e   10Gi       RWO            Retain           Bound    nsxld/data-dir-dai-xld-nsxld-digitalai-deploy-master-0   aws-efs-provisioner            6h39m
 ```
 
 Iterate on other PVs (for example you can migrate on the same way DB data if you are not using external Postgres, or if you are doing some other way of DB data migration).
