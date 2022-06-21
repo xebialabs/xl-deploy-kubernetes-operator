@@ -9,7 +9,7 @@ sidebar_position: 14
 - Access to a Kubernetes cluster with installed Deploy in the `default` namespace
 
 Tested with:
-- xl-deploy 10.3.9, 22.1.4
+- xl-deploy 10.3.9
 - xl-cli 22.1.4
 - AWS EKS cluster
 
@@ -102,7 +102,7 @@ pvc-fe787f3c-3036-49fe-a0d9-6f09db5510f2   50Gi       RWO            Retain     
 ```
 
 
-## C.3. Stop everything that is using XLR PVC-s (and other PVC if needed)
+## C.3. Stop everything that is using XLD PVC-s (and other PVC if needed)
 
 :::caution
 Be sure that you did backup of the CR before this step!
@@ -132,11 +132,11 @@ here are steps how to do that:
 ❯ kubectl get roleBinding -n default
 ❯ kubectl delete -n default roleBinding xld-operator-leader-election-rolebinding
 
-# get clusterRoles related to XLR on default namespace and delete them
+# get clusterRoles related to XLD on default namespace and delete them
 ❯ kubectl get clusterRoles
 ❯ kubectl delete clusterRoles xld-operator-manager-role xld-operator-metrics-reader xld-operator-proxy-role
 
-# get clusterRoleBinding related to XLR on default namespace and delete them
+# get clusterRoleBinding related to XLD on default namespace and delete them
 ❯ kubectl get clusterRoleBinding
 ❯ kubectl delete clusterRoleBinding xld-operator-proxy-rolebinding xld-operator-manager-rolebinding
 ```
@@ -516,7 +516,7 @@ Similarly do the above steps for worker and postgresql PVC[data-dir-dai-xld-digi
 Create those PVCs again, but inside the Namespace “nsxld”:
 ```
 ❯ kubectl apply -f pvc-data-dir-dai-xld-digitalai-deploy-master-0-nsxld.yaml -n nsxld
-persistentvolumeclaim/dai-xlr-custom-namespace-1-digitalai-release created
+persistentvolumeclaim/data-dir-dai-xld-nsxld-digitalai-deploy-master-0 created
 ❯ kubectl apply -f pvc-data-dir-dai-xld-digitalai-deploy-worker-0-nsxld.yaml -n nsxld
 persistentvolumeclaim/data-dir-dai-xld-nsxld-digitalai-deploy-worker-0 created
 ❯ kubectl apply -f pvc-data-dai-xld-postgresql-0-nsxld.yaml -n nsxld
