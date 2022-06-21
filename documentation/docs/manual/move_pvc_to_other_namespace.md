@@ -194,37 +194,8 @@ dai-xld-nsxld-digitalai-deploy-master-0   Bound    pvc-fba6fe7c-143e-4af8-b974-0
 dai-xld-nsxld-digitalai-deploy-worker-0   Bound    pvc-88fc1c15-dfab-4495-80df-9baed3af22de   10Gi       RWO            aws-efs-provisioner   28s
 ```
 
-#### C.4.OPTION_1.2 Similar procedure do for the default namespace, because PVC in default namespace was deleted
-Edit file `pvc-dai-xlr-digitalai-release.yaml`:
-1. Delete all the lines under sections:
-- `status`
-- `spec.volumneMode`
-- `spec.volumneName`
-- `metadata.uid`
-- `metadata.resourceVersion`
-- `metadata.ownerReferences`
-- `metadata.namespace`
-- `metadata.creationTimestamp`
-- `metadata.finalizers`
-- `metadata.annotations.pv.kubernetes.io/bind-completed`
-- `metadata.annotations.pv.kubernetes.io/bound-by-controller`
-
-2. Create those PVCs, but inside the Namespace “default”:
-```shell
-❯ kubectl apply -f pvc-dai-xlr-digitalai-release.yaml -n default
-persistentvolumeclaim/dai-xlr-digitalai-release created
-```
-
-3. Check if PVC is bound
-   Check the PVCs state, which will probably in Pending state, and after some time in Bound state:
-```shell
-❯ kubectl get pvc -n default
-NAME                                           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                                   AGE
-dai-xlr-digitalai-release   Bound    pvc-53564205-6e1e-45f0-9dcf-e21adefa6eaf   1Gi        RWO            vp-azure-aks-test-cluster-file-storage-class   3m33s
-```
-
-#### C.4.OPTION_1.3 
-###### C.4.OPTION_1.3 Master - Start following pods
+#### C.4.OPTION_1.2 
+###### C.4.OPTION_1.2 Master - Start following pods
 1. Put following in file `pod-dai-xld-master-pv-access-nsxld.yaml` (don't forget to update nsxld with real namespace name):
 ```yaml
 apiVersion: v1
@@ -345,7 +316,7 @@ spec:
 ```
 
 
-###### C.4.OPTION_1.3 Worker - Start following pods
+###### C.4.OPTION_1.2 Worker - Start following pods
 1. Put following in file `pod-dai-xld-worker-pv-access-nsxld.yaml` (don't forget to update nsxld with real namespace name):
 ```yaml
 apiVersion: v1
