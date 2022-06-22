@@ -64,13 +64,7 @@ pvc-fe787f3c-3036-49fe-a0d9-6f09db5510f2   50Gi       RWO            Delete     
 
 ❯ kubectl patch pv pvc-8055342d-51e2-4d3d-8066-f2efcb16f658 -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
 persistentvolume/pvc-53564205-6e1e-45f0-9dcf-e21adefa6eaf patched
-
-❯ kubectl patch pv pvc-5b6a8575-3017-43c1-92ab-41ee1e0fd3b1 -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
-persistentvolume/pvc-53564205-6e1e-45f0-9dcf-e21adefa6eaf patched
-
-
 ```
-
 
 Export the current PVCs objects because it will be necessary to recreate the PVCs in a later stage:
 ```
@@ -79,8 +73,6 @@ Export the current PVCs objects because it will be necessary to recreate the PVC
 ❯ kubectl get pvc data-dir-dai-xld-digitalai-deploy-worker-0 -n default -o yaml > pvc-data-dir-dai-xld-digitalai-deploy-worker-0.yaml
 
 ❯ kubectl get pvc data-dai-xld-postgresql-0 -n default -o yaml > pvc-data-dai-xld-postgresql-0.yaml
-
-❯ kubectl get pvc data-dai-xld-rabbitmq-0 -n default -o yaml > pvc-data-dai-xld-rabbitmq-0.yaml
 ```
 
 Iterate on all PVs that are connected to the XLD PVCs in the default namespace, list depends on the installed components. 
@@ -443,7 +435,6 @@ Following option will reuse PV in the new namespace, rollback of the option is m
 Delete all the current PVCs in the namespace `default`
 ```
 ❯ kubectl delete pvc data-dir-dai-xld-digitalai-deploy-master-0 -n default
-❯ kubectl delete pvc data-dir-dai-xld-digitalai-deploy-worker-0 -n default
 ```
 
 See that the related PV Status will be changed from `Bound` to `Released`:
@@ -457,7 +448,6 @@ pvc-3f4052d9-a614-4d0f-a886-a5699dac4d5e   10Gi       RWO            Retain     
 Edit each one of the PVs to remove the old references with claim:
 ```
 ❯ kubectl edit pv pvc-1df72d76-7970-43fa-b30f-77b6a0d07239
-❯ kubectl edit pv pvc-3f4052d9-a614-4d0f-a886-a5699dac4d5e
 ```
 Remove lines like following example:
 ```yaml
@@ -512,7 +502,8 @@ Edit file `pvc-data-dir-dai-xld-digitalai-deploy-master-0-nsxld.yaml`:
 - `metadata.annotations.meta.helm.sh/release-name` from dai-xld to dai-xld-nsxld
   The renaming rule is to replace any occurrence of `dai-xld` with `dai-xld-{{custom_namespace_name}}`
 
-Similarly do the above steps for worker and postgresql PVC[data-dir-dai-xld-digitalai-deploy-worker-0, data-dai-xld-postgresql-0].
+Similarly do the above steps for other PVs [eg: Worker, postgresql ]
+
 Create those PVCs again, but inside the Namespace “nsxld”:
 ```
 ❯ kubectl apply -f pvc-data-dir-dai-xld-digitalai-deploy-master-0-nsxld.yaml -n nsxld
@@ -531,9 +522,6 @@ pvc-1df72d76-7970-43fa-b30f-77b6a0d07239   10Gi       RWO            Retain     
 pvc-2ccabe5e-c540-42c4-92c9-08bbac24e306   50Gi       RWO            Retain           Bound    nsxld/data-dai-xld-nsxld-postgresql-0                    aws-efs-provisioner            6h39m
 pvc-3f4052d9-a614-4d0f-a886-a5699dac4d5e   10Gi       RWO            Retain           Bound    nsxld/data-dir-dai-xld-nsxld-digitalai-deploy-master-0   aws-efs-provisioner            6h39m
 ```
-
-Iterate on other PVs (for example you can migrate on the same way DB data if you are not using external Postgres, or if you are doing some other way of DB data migration).
-
 
 ### C.4.OPTION_3 Clone existing PVC to the custom namespace by CSI Volume Cloning
 
