@@ -310,6 +310,7 @@ spec:
 
 ###### C.4.OPTION_1.2 Worker - Start following pods
 1. Put following in file `pod-dai-xld-worker-pv-access-nsxld.yaml` (don't forget to update nsxld with real namespace name):
+if version below 22.0.
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -352,6 +353,50 @@ spec:
       persistentVolumeClaim:
         claimName: data-dir-dai-xld-nsxld-digitalai-deploy-worker-0
 ```
+if xl-deploy version above 22.0
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dai-xld-worker-pv-access-nsxld
+spec:
+  containers:
+    - name: sleeper
+      command: ["sleep", "1d"]
+      image: xebialabs/tiny-tools:22.2.0
+      imagePullPolicy: Always
+      volumeMounts:
+        - name: data-dir
+          mountPath: /opt/xebialabs/deploy-task-engine/work
+          subPath: work
+        - name: data-dir
+          mountPath: /opt/xebialabs/deploy-task-engine/conf
+          subPath: conf
+        - name: data-dir
+          mountPath: /opt/xebialabs/deploy-task-engine/centralConfiguration
+          subPath: centralConfiguration
+        - name: data-dir
+          mountPath: /opt/xebialabs/deploy-task-engine/ext
+          subPath: ext
+        - name: data-dir
+          mountPath: /opt/xebialabs/deploy-task-engine/hotfix/lib
+          subPath: lib
+        - name: data-dir
+          mountPath: /opt/xebialabs/deploy-task-engine/hotfix/plugins
+          subPath: plugins
+        - name: data-dir
+          mountPath: /opt/xebialabs/deploy-task-engine/hotfix/satellite-lib
+          subPath: satellite-lib
+        - name: data-dir
+          mountPath: /opt/xebialabs/deploy-task-engine/log
+          subPath: log
+  restartPolicy: Never
+  volumes:
+    - name: reports-dir
+      persistentVolumeClaim:
+        claimName: data-dir-dai-xld-nsxld-digitalai-deploy-worker-0
+```
+
 Update the claimName with correct name!
 
 2. Start the pod
@@ -408,14 +453,25 @@ spec:
 ❯ kubectl apply -f pod-dai-xld-worker-pv-access-default.yaml -n default
 ```
 
-5. Copy data from one pod
+5. Copy data from one pod.
+ i. if the xl-deploy version is below 22.0
 ```shell
 ❯ kubectl exec -n default dai-xld-worker-pv-access-default -- tar cf - \
     /opt/xebialabs/xl-deploy-server/work \
     /opt/xebialabs/xl-deploy-server/conf \
     | kubectl exec -n nsxld -i dai-xld-worker-pv-access-nsxld -- tar xvf - -C /
 ```
+ ii. if xl-deploy version is above 22.0, copy the file to local directory from pod [dai-xld-worker-pv-access-default] and copy the same file from local directory to pod [dai-xld-worker-pv-access-nsxld]
+```shell
+❯ kubectl cp -n default dai-xld-digitalai-deploy-worker-0:/opt/xebialabs/xl-deploy-server/centralConfiguration /home/sishwarya/SprintTicket/S-84982_ns_xld_migration/B-defaultns-downtime/pv_backup/option1-deploy/nsxld/data/centralConfiguration
 
+❯ kubectl cp -n default dai-xld-digitalai-deploy-worker-0:/opt/xebialabs/xl-deploy-server/work /home/sishwarya/SprintTicket/S-84982_ns_xld_migration/B-defaultns-downtime/pv_backup/option1-deploy/nsxld/data/work
+
+
+❯ kubectl cp /home/sishwarya/SprintTicket/S-84982_ns_xld_migration/B-defaultns-downtime/pv_backup/option1-deploy/nsxld/data/work -n nsxld dai-xld-worker-pv-access-nsxld:/opt/xebialabs/deploy-task-engine/
+
+❯ kubectl cp /home/sishwarya/SprintTicket/S-84982_ns_xld_migration/B-defaultns-downtime/pv_backup/option1-deploy/nsxld/data/centralConfiguration -n nsxld dai-xld-worker-pv-access-nsxld:/opt/xebialabs/deploy-task-engine/ 
+```
 6. Chmod of the moved folder
 ```shell
 ❯ kubectl exec -n nsxld -i dai-xld-worker-pv-access-nsxld -- chmod -R 777 /opt/xebialabs/xl-deploy-server/work/

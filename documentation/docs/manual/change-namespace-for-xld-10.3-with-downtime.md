@@ -197,8 +197,12 @@ Update following files (relative to the provider's directory) with custom namesp
 | xebialabs/dai-deploy/template-generic/proxy-rolebinding.yaml               | metadata.name                                  | nsxld-xld-operator-proxy-rolebinding        |
 | xebialabs/dai-deploy/template-generic/proxy-rolebinding.yaml               | roleRef.name                                   | nsxld-xld-operator-proxy-role               |
 | xebialabs/dai-deploy/template-generic/proxy-rolebinding.yaml               | subjects[0].namespace                          | nsxld                                       |
-| xebialabs/dai-deploy/daideploy_cr.yaml                                    | metadata.name                                   | dai-xld-nsxld                               |
-| xebialabs/dai-deploy/daideploy_cr.yaml                                    | spec.keycloak.install                           | false                                       |
+| xebialabs/dai-deploy/template-generic/postgresql-init-keycloak-db.yaml     | metadata.name                                  | dai-xld-nsxld-postgresql-init-keycloak-db   |
+| xebialabs/dai-deploy/template-generic/postgresql-init-keycloak-db.yaml     | spec.template.metadata.name                    | dai-xld-nsxld-postgresql-init-keycloak-db   |
+| xebialabs/dai-deploy/template-generic/postgresql-init-keycloak-db.yaml     | spec.template.spec.initContainers[0].env.children[0].value| dai-xld-nsxld-postgresql   |
+| xebialabs/dai-deploy/template-generic/postgresql-init-keycloak-db.yaml     | spec.template.spec.containers[0].children[0].env.children[0].value| dai-xld-nsxld-postgresql   |
+| xebialabs/dai-deploy/daideploy_cr.yaml                                     | metadata.name                                   | dai-xld-nsxld                               |
+| xebialabs/dai-deploy/daideploy_cr.yaml                                     | spec.keycloak.install                           | true                                        |
 
 
 In the `xebialabs/dai-deploy/template-generic/deployment.yaml` add `env` section after `spec.template.spec.containers[1].image` (in the same level) in case if it is not available:
