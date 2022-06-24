@@ -15,7 +15,7 @@ Tested with:
 - Aws EKS cluster
 
 If you have already setup of the XLD default namespace it is possible to move the deployment to the custom namespace. Here we will use for example 
-`custom-namespace-1`.
+`nsxld`.
 
 In the example we will use XLD 10.3 that will be upgraded to 22.2.0-621.1206 version with latest 22.2.x operator image xebialabsunsupported/deploy-operator:22.2.0-621.1206 from the 
 [https://hub.docker.com/r/xebialabsunsupported/deploy-operator/tags](https://hub.docker.com/r/xebialabsunsupported/deploy-operator/tags) and latest operator 
@@ -246,7 +246,7 @@ Following changes are in case of usage nginx ingress (default behaviour):
 | xebialabs/dai-deploy/daideploy_cr.yaml | spec.keycloak.ingress.annotations.kubernetes.io/ingress.class     | nginx-dai-xld-nsxld               |
 
 # HAPROXY yet to verify start $$$$$$$$$$$$$$$$$$
-### B.4.b. Update the release operator package to support custom namespace - only in case of Haproxy ingress controller
+### B.4.b. Update the deploy operator package to support custom namespace - only in case of Haproxy ingress controller
 
 :::note
 Note:
@@ -280,7 +280,7 @@ Following changes are in case of usage haproxy ingress:
 
 ### B.5. Update additionally YAML files
 
-Apply all collected changes from the `default` namespace to the CR in the release operator package `xebialabs/dai-deploy/daideploy_cr.yaml`.
+Apply all collected changes from the `default` namespace to the CR in the deploy operator package `xebialabs/dai-deploy/daideploy_cr.yaml`.
 (The best is to compare new CR `xebialabs/dai-deploy/daideploy_cr.yaml` with the one from the `default` namespace)
 
 Check the YAML files, and update them with additional changes. For example CR YAML and update it with any missing custom configuration. 
@@ -290,7 +290,8 @@ If you are using your own database and messaging queue setup, setup it in the sa
 Database in this case of setup can be reused if there is network visibility in the new namespace where you are moving your installation
 
 
-For example you can do now OIDC setup, add the following fields with value under spec tag, for enabling oidc in the `xebialabs/dai-deploy/daideploy_cr.yaml`
+In case, During upgrade if we disabled oidc setup by answer ? Do you want to enable an oidc? No,
+ But u need to add external or enable embedded keycloakFor example you can do now OIDC setup, add the following fields with value under spec tag, for enabling oidc in the `xebialabs/dai-deploy/daideploy_cr.yaml`
 ```
 spec:
   oidc:
@@ -325,6 +326,93 @@ Do the step from [C.3. Stop everything that is using XLD PVC-s](move_pvc_to_othe
 
 There are 3 options from the step from [C.4. Move existing PVC to the custom namespace](move_pvc_to_other_namespace.md#c4-move-existing-pvc-to-the-custom-namespace)
 
+### B.8.1 Do the following changes in master PVCs
+* Create the master pod in custom-namespace [eg: nsxld]
+* Connect to the master pod   
+* Update the following file in centralConfiguration folder.
+    * deploy-repository.yaml.
+      * Point it to correct postgres.  [only required if your using embedded database for deploy]
+         - db-url: jdbc:postgresql://dai-xld-nsxld-postgresql:5432/xld-db
+          
+        ```shell
+        ❯ kubectl exec -it pod/dai-xld-master-pv-access-nsxld -n nsxld -- sh
+        / # cd opt/xebialabs/xl-deploy-server/centralConfiguration
+          /opt/xebialabs/xl-deploy-server/centralConfiguration # cat deploy-repository.yaml
+        xl:
+          repository:
+            artifacts:
+              type: db
+            database:
+              db-driver-classname: org.postgresql.Driver
+              db-password: '{cipher}e1d833b5765a924944a6b5e91a089f8fd86dd29a7c9c5d35a8e73f5a968da3f1'
+              db-url: jdbc:postgresql://dai-xld-nsxld-postgresql:5432/xld-db
+              db-username: xld
+        ```
+    * deploy-task.yaml.
+      * Point it to correct rabbitmq.  [only required if your using embedded rabbitmq for deploy]
+          - jms-url: amqp://dai-xld-nsxld-rabbitmq.nsxld.svc.cluster.local:5672/%2F
+          
+          ```shell
+        ❯ kubectl exec -it pod/dai-xld-master-pv-access-nsxld -n nsxld -- sh
+        / # cd opt/xebialabs/xl-deploy-server/centralConfiguration
+          /opt/xebialabs/xl-deploy-server/centralConfiguration # cat deploy-task.yaml
+          akka:
+            io:
+              dns:
+                resolver: async-dns
+          deploy:
+            task:
+              in-process-worker: false
+              queue:
+                archive-queue-name: xld-archive-queue
+                external:
+                  jms-driver-classname: com.rabbitmq.jms.admin.RMQConnectionFactory
+                  jms-password: '{cipher}9880501a40e7618fa9bb582d84e4b0e296e9f92a43deaaa4ad63bb98ab69c5b3'
+                  jms-url: amqp://dai-xld-nsxld-rabbitmq.nsxld.svc.cluster.local:5672/%2F
+                  jms-username: guest
+                in-process:
+                  maxDiskUsage: 100
+                  shutdownTimeout: 60000
+                name: xld-tasks-queue
+          ```
+    * deploy-server.yaml
+      * If keycloak is enabled. 
+        - Update the property deploy.server.security.auth.provider: oidc, if required change the hostname as well.     
+        ```shell
+        ❯ kubectl exec -it pod/dai-xld-master-pv-access-nsxld -n nsxld -- sh
+        / # cd opt/xebialabs/xl-deploy-server/centralConfiguration
+        /opt/xebialabs/xl-deploy-server/centralConfiguration # cat deploy-server.yaml 
+        deploy.server:
+          hostname: dai-xld-nsxld-digitalai-deploy-master-0.dai-xld-nsxld-digitalai-deploy-master.default.svc.cluster.local
+          license:
+            daysBeforeWarning: 10
+          security:
+            auth:
+              provider: "oidc"
+        ```
+* Update the following file in conf folder.
+        * xld-wrapper.conf.common
+            * Search for jmx_prometheus_javaagent.jar and update it to "jmx_prometheus_javaagent-0.16.1.jar".
+          Note : Either update the value or delete the file [xld-wrapper.conf.common], it will be downloaded automatically with the latest changes during startup.
+  ```shell
+  ❯ kubectl exec -it pod/dai-xld-master-pv-access-nsxld -n nsxld -- sh
+  / # cd opt/xebialabs/xl-deploy-server/conf
+  /opt/xebialabs/xl-deploy-server/conf # rm -rf xld-wrapper.conf.common
+    ```
+### B.8.2 Do the following changes in worker PVCs
+* Create the worker pod in custom-namespace [eg: nsxld].
+* Connect to the worker pod
+* Update the following file in conf folder.
+  * xld-wrapper.conf.common
+  * Search for jmx_prometheus_javaagent.jar and update it to "jmx_prometheus_javaagent-0.16.1.jar".
+  Note : Either update or delete the file [xld-wrapper.conf.common], it will be downloaded automatically with the latest changes during startup.
+    ```shell
+        ❯ kubectl exec -it pod/dai-xld-worker-pv-access-nsxld -n nsxld -- sh
+        / # cd /opt/xebialabs/deploy-task-engine/conf/
+        /opt/xebialabs/deploy-task-engine/conf # rm -rf xld-wrapper.conf.common
+        /opt/xebialabs/deploy-task-engine/conf #
+    ```
+    
 ### B.9. Deploy to the custom namespace
 
 1. We are using here yaml that was result of the upgrade dry-run in the working directory, so we should apply against following file:
@@ -334,7 +422,27 @@ xl apply -f ./xebialabs.yaml
 
 2. Do the step 9, 10 and 11 from the documentation [Step 9—Verify the deployment status](https://docs.xebialabs.com/v.22.1/deploy/how-to/k8s-operator/install-deploy-using-k8s-operator/#step-10verify-if-the-deployment-was-successful-1)
 
+3. Troubleshooting
+   * If cc pod is not initialized, due to below error.
+     ```shell
+Type     Reason            Age                 From                    Message
+  ----     ------            ----                ----                    -------
+Normal   SuccessfulCreate  55s                 statefulset-controller  create Claim data-dir-dai-xld-nsxld-digitalai-deploy-cc-server-0 Pod dai-xld-nsxld-digitalai-deploy-cc-server-0 in StatefulSet dai-xld-nsxld-digitalai-deploy-cc-server success
+Warning  FailedCreate      34s (x13 over 55s)  statefulset-controller  create Pod dai-xld-nsxld-digitalai-deploy-cc-server-0 in StatefulSet dai-xld-nsxld-digitalai-deploy-cc-server failed error: Pod "dai-xld-nsxld-digitalai-deploy-cc-server-0" is invalid: spec.initContainers[0].volumeMounts[0].name: Not found: "source-dir"
 
+      ```
+   * Workaround
+      - Edit the statefulset of dai-xld-nsxld-digitalai-deploy-cc-server
+      ```shell
+      ❯ kubectl edit statefulset.apps/dai-xld-nsxld-digitalai-deploy-cc-server
+     ```
+      - Update the Volume section as below.
+      ```yaml
+         volumes:      
+          - name: source-dir
+            persistentVolumeClaim:
+              claimName: data-dir-dai-xld-nsxld-digitalai-deploy-master-0
+      ```
 ### B.10. Apply any custom changes
 
 If you have any custom changes that you collected previously in the step 3.3, you can apply them again in this step in the same way as before on the `default` namespace.
@@ -343,23 +451,30 @@ Check if PVCs and PVs are reused by the new setup in the custom namespace.
 
 ### B.11. Wrap-up
 
-Wait for all pods to ready and without any errors. 
+Wait for all pods to ready and without any errors.
 
-If you used same host in the new custom namespace to the one that is on the `default` namespace, in that case XLR page is still opening from the `default` 
-namespace. You need in that case apply step 9.a, after that on the configurated host will be available XLR that is from the new custom namespace.
+If you used same host in the new custom namespace to the one that is on the `default` namespace, in that case XLD page is still opening from the `default` 
+namespace. You need in that case apply step 9.a, after that on the configurated host will be available XLD that is from the new custom namespace.
 
-In case of haproxy and one release pod, list of pods should look like following table:
-```
+List of pods should look like following table, if nginx and keycloak is enabled.:
+```shell
+
 │ NAMESPACE↑           NAME                                                          READY     RESTARTS STATUS  │
-│ custom-namespace-1   custom-namespace-1-dai-xlr-haproxy-ingress-7df948c7d7-7xcrt   1/1              0 Running │
-│ custom-namespace-1   dai-xlr-digitalai-release-0                                   1/1              0 Running │
-│ custom-namespace-1   dai-xlr-postgresql-0                                          1/1              0 Running │
-│ custom-namespace-1   dai-xlr-rabbitmq-0                                            1/1              0 Running │
-│ custom-namespace-1   xlr-operator-controller-manager-78ff46dbb8-rq45l              2/2              0 Running │    
+nsxld         dai-xld-nsxld-digitalai-deploy-cc-server-0                        1/1     Running     0          65m|
+nsxld         dai-xld-nsxld-digitalai-deploy-master-0                           1/1     Running     0          14m|
+nsxld         dai-xld-nsxld-digitalai-deploy-worker-0                           1/1     Running     0          15m|
+nsxld         dai-xld-nsxld-keyclo-0                                            1/1     Running     0          67m|
+nsxld         dai-xld-nsxld-nginx-ingress-controller-dbb495ccc-n4x9r            1/1     Running     0          67m|
+nsxld         dai-xld-nsxld-nginx-ingress-controller-default-backend-54cqthz8   1/1     Running     0          67m|
+nsxld         dai-xld-nsxld-postgresql-0                                        1/1     Running     0          67m|
+nsxld         dai-xld-nsxld-postgresql-init-keycloak-db-mmvr5                   0/1     Completed   0          68m|
+nsxld         dai-xld-nsxld-rabbitmq-0                                          1/1     Running     0          67m|
+nsxld         xld-operator-controller-manager-759cb85546-g9489                  2/2     Running     0          68m|
+    
 ```
-Table could have different entries if you nginx or using external postgresql and rabbitmq.
+Table could have different entries if you haproxy or using external postgresql and rabbitmq.
 
-#### B.12 Destroy remains of XLR in default namespace
+#### B.12 Destroy remains of XLD in default namespace
 
 If you are sure that everything is up and running on the new custom namespace, you can destroy remaining setup in the `default` namespace:
 
@@ -367,9 +482,9 @@ If you are sure that everything is up and running on the new custom namespace, y
 # be careful if you would like really to delete all PVC-s and related PV-s, backup before delete
 # get pvcs related to XLR on default namespace and delete them (list of the pvcs depends on what is enabled in the deployment)
 ❯ kubectl get pvc -n default
-❯ kubectl delete -n default pvc data-dai-xlr-rabbitmq-0 ...
+❯ kubectl delete -n default pvc data-dai-xld-rabbitmq-0 ...
 ```
 
-You can also clean up any configmaps or secrets that are in the `default` namespace and related to the XLR.
+You can also clean up any configmaps or secrets that are in the `default` namespace and related to the XLD.
 
-You also delete all PVs that were connected to the XLR installation in the default namespace, and are not migrated and used by the custom namespace.
+You also delete all PVs that were connected to the XLD installation in the default namespace, and are not migrated and used by the custom namespace.
