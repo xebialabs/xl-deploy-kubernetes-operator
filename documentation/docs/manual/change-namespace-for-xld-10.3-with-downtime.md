@@ -327,8 +327,11 @@ Do the step from [C.3. Stop everything that is using XLD PVC-s](move_pvc_to_othe
 There are 3 options from the step from [C.4. Move existing PVC to the custom namespace](move_pvc_to_other_namespace.md#c4-move-existing-pvc-to-the-custom-namespace)
 
 ### B.8.1 Do the following changes in master PVCs
-* Create the master pod in custom-namespace [eg: nsxld]
-* Connect to the master pod   
+* Create the master pod in custom-namespace [eg: nsxld], similar to [C.4.OPTION_1.2 Master - Start following pods](move_pvc_to_other_namespace#c4option_12-master---start-following-pods) 
+* Connect to the master pod in custom-namespace.
+   ```shell
+   ❯ kubectl exec -it dai-xld-master-pv-access-nsxld -n nsxld -- sh
+   ``` 
 * Update the following file in centralConfiguration folder.
     * deploy-repository.yaml.
       * Point it to correct postgres.  [only required if your using embedded database for deploy]
