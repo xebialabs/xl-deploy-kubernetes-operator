@@ -245,13 +245,12 @@ Following changes are in case of usage nginx ingress (default behaviour):
 | xebialabs/dai-deploy/daideploy_cr.yaml | spec.nginx-ingress-controller.ingressClassResource.controllerClass| k8s.io/ingress-nginx-dai-xld-nsxld|
 | xebialabs/dai-deploy/daideploy_cr.yaml | spec.keycloak.ingress.annotations.kubernetes.io/ingress.class     | nginx-dai-xld-nsxld               |
 
-# HAPROXY yet to verify start $$$$$$$$$$$$$$$$$$
 ### B.4.b. Update the deploy operator package to support custom namespace - only in case of Haproxy ingress controller
 
 :::note
 Note:
 To setup haproxy instead of default nginx configuration that is provided in the operator package you need to do following changes in the
-`xebialabs/dai-release/dairelease_cr.yaml`:
+`xebialabs/dai-deploy/daideploy_cr.yaml`:
 - `spec.haproxy-ingress.install = true`
 - `spec.nginx-ingress-controller.install = false`
 - `spec.ingress.path = "/"`
@@ -273,10 +272,8 @@ Following changes are in case of usage haproxy ingress:
 
 | File name                                 | Yaml path                                            | Value to set                       |
 |:------------------------------------------|:-----------------------------------------------------|:-----------------------------------|
-| xebialabs/dai-release/dairelease_cr.yaml  | spec.ingress.annotations.kubernetes.io/ingress.class | haproxy-dai-xlr-custom-namespace-1 |
-| xebialabs/dai-release/dairelease_cr.yaml  | spec.haproxy-ingress.controller.ingressClass         | haproxy-dai-xlr-custom-namespace-1 |
-
-# HAPROXY yet to verify end $$$$$$$$$$$$$$$$$$
+| xebialabs/dai-deploy/daideploy_cr.yaml  | spec.ingress.annotations.kubernetes.io/ingress.class | haproxy-dai-xld-custom-namespace-1 |
+| xebialabs/dai-deploy/daideploy_cr.yaml  | spec.haproxy-ingress.controller.ingressClass         | haproxy-dai-xld-custom-namespace-1 |
 
 ### B.5. Update additionally YAML files
 
@@ -386,7 +383,7 @@ There are 3 options from the step from [C.4. Move existing PVC to the custom nam
         / # cd opt/xebialabs/xl-deploy-server/centralConfiguration
         /opt/xebialabs/xl-deploy-server/centralConfiguration # cat deploy-server.yaml 
         deploy.server:
-          hostname: dai-xld-nsxld-digitalai-deploy-master-0.dai-xld-nsxld-digitalai-deploy-master.default.svc.cluster.local
+          hostname: dai-xld-nsxld-digitalai-deploy-master-0.dai-xld-nsxld-digitalai-deploy-master.nsxld.svc.cluster.local
           license:
             daysBeforeWarning: 10
           security:
