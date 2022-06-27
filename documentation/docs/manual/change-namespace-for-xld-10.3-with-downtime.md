@@ -287,8 +287,10 @@ If you are using your own database and messaging queue setup, setup it in the sa
 Database in this case of setup can be reused if there is network visibility in the new namespace where you are moving your installation
 
 
-In case, During upgrade if we disabled oidc setup by answer ? Do you want to enable an oidc? No,
- But u need to add external or enable embedded keycloakFor example you can do now OIDC setup, add the following fields with value under spec tag, for enabling oidc in the `xebialabs/dai-deploy/daideploy_cr.yaml`
+In case, During upgrade if we disabled oidc setup by answering below question
+- Do you want to enable an oidc? No,
+* But you need to add external oidc configuration.
+    * For example, you can do now OIDC setup, add the following fields with value under spec tag, for enabling oidc in the `xebialabs/dai-deploy/daideploy_cr.yaml`
 ```
 spec:
   oidc:
@@ -334,7 +336,7 @@ There are 3 options from the step from [C.4. Move existing PVC to the custom nam
       * Point it to correct postgres.  [only required if your using embedded database for deploy]
          - db-url: jdbc:postgresql://dai-xld-nsxld-postgresql:5432/xld-db
           
-        ```shell
+      ```shell
         ❯ kubectl exec -it pod/dai-xld-master-pv-access-nsxld -n nsxld -- sh
         / # cd opt/xebialabs/xl-deploy-server/centralConfiguration
           /opt/xebialabs/xl-deploy-server/centralConfiguration # cat deploy-repository.yaml
@@ -347,7 +349,7 @@ There are 3 options from the step from [C.4. Move existing PVC to the custom nam
               db-password: '{cipher}e1d833b5765a924944a6b5e91a089f8fd86dd29a7c9c5d35a8e73f5a968da3f1'
               db-url: jdbc:postgresql://dai-xld-nsxld-postgresql:5432/xld-db
               db-username: xld
-        ```
+      ```
     * deploy-task.yaml.
       * Point it to correct rabbitmq.  [only required if your using embedded rabbitmq for deploy]
           - jms-url: amqp://dai-xld-nsxld-rabbitmq.nsxld.svc.cluster.local:5672/%2F
@@ -424,20 +426,20 @@ xl apply -f ./xebialabs.yaml
 
 3. Troubleshooting
    * If cc pod is not initialized, due to below error.
-     ```shell
+```shell
 Type     Reason            Age                 From                    Message
   ----     ------            ----                ----                    -------
 Normal   SuccessfulCreate  55s                 statefulset-controller  create Claim data-dir-dai-xld-nsxld-digitalai-deploy-cc-server-0 Pod dai-xld-nsxld-digitalai-deploy-cc-server-0 in StatefulSet dai-xld-nsxld-digitalai-deploy-cc-server success
 Warning  FailedCreate      34s (x13 over 55s)  statefulset-controller  create Pod dai-xld-nsxld-digitalai-deploy-cc-server-0 in StatefulSet dai-xld-nsxld-digitalai-deploy-cc-server failed error: Pod "dai-xld-nsxld-digitalai-deploy-cc-server-0" is invalid: spec.initContainers[0].volumeMounts[0].name: Not found: "source-dir"
 
-      ```
+```
    * Workaround
       - Edit the statefulset of dai-xld-nsxld-digitalai-deploy-cc-server
-      ```shell
+     ```shell
       ❯ kubectl edit statefulset.apps/dai-xld-nsxld-digitalai-deploy-cc-server
      ```
       - Update the Volume section as below.
-      ```yaml
+     ```yaml
          volumes:      
           - name: source-dir
             persistentVolumeClaim:
