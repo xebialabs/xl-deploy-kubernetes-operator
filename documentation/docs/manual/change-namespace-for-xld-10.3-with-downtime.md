@@ -9,7 +9,7 @@ sidebar_position: 13
 - Access to a Kubernetes cluster with installed Deploy in the `default` namespace
 
 Tested with:
-- xl-deploy 22.1.4
+- Deploy operator 10.3.9 with embedded database.
 - xl-deploy 10.3.9 upgraded to 22.2.0-621.1206
 - xl-cli 22.2.0-621.1206
 - Aws EKS cluster
@@ -49,7 +49,7 @@ Setup custom namespace on Kubernetes cluster, `nsxld` for example:
 ❯ kubectl create namespace nsxld
 ```
 
-Replace `nsxld` name in this and following steps with your custom namespace name.
+Replace `custom-namespace-1` name in this and following steps with your custom namespace name.
 
 ### B.2. Backup everything on cluster
 
@@ -60,9 +60,9 @@ Replace `nsxld` name in this and following steps with your custom namespace name
     - Secrets
     - CustomResource
     - anything else that was customized
-2. Collect any other change that was done during initial setup according to the 
-[https://docs.xebialabs.com/v.22.1/deploy/how-to/k8s-operator/install-deploy-using-k8s-operator/#installing-deploy-on-amazon-eks](https://docs.xebialabs.com/v.22.1/deploy/how-to/k8s-operator/install-deploy-using-k8s-operator/#installing-deploy-on-amazon-eks)
-3. If you are using your own database and messaging queue setup, do the data backup. 
+2. Collect any other change that was done during initial setup according to the
+   [https://docs.xebialabs.com/v.22.1/deploy/how-to/k8s-operator/install-deploy-using-k8s-operator/#installing-deploy-on-amazon-eks](https://docs.xebialabs.com/v.22.1/deploy/how-to/k8s-operator/install-deploy-using-k8s-operator/#installing-deploy-on-amazon-eks)
+3. If you are using your own database and messaging queue setup, do the data backup.
 
 :::note
 Note:
