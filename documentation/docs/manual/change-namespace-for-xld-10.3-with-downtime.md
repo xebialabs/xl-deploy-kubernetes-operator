@@ -320,7 +320,7 @@ Do the step from [C.2. Be sure to not delete PVs with you actions](move_pvc_to_o
 
 ### B.7. Destroy XLD in default namespace
 
-Do the step from [C.3. Stop everything that is using XLD PVC-s](move_pvc_to_other_namespace.md#c3-stop-everything-that-is-using-xlr-pvc-s-and-other-pvc-if-needed)
+Do the step from [C.3. Stop everything that is using XLD PVC-s](move_pvc_to_other_namespace.md#c3-stop-everything-that-is-using-xld-pvc-s-and-other-pvc-if-needed)
 
 ### B.8. Move existing PVCs to the custom namespace
 
@@ -483,7 +483,7 @@ If you are sure that everything is up and running on the new custom namespace, y
 
 ```shell
 # be careful if you would like really to delete all PVC-s and related PV-s, backup before delete
-# get pvcs related to XLR on default namespace and delete them (list of the pvcs depends on what is enabled in the deployment)
+# get pvcs related to XLD on default namespace and delete them (list of the pvcs depends on what is enabled in the deployment)
 ❯ kubectl get pvc -n default
 ❯ kubectl delete -n default pvc data-dai-xld-rabbitmq-0 ...
 ```
