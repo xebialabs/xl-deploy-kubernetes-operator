@@ -27,6 +27,7 @@ With following steps you will setup XLD in the custom namespace, in **parallel**
 
 :::caution
 Before doing any of the following steps backup everything:
+- [Clean up deploy Work directory](https://docs.xebialabs.com/v.22.1/deploy/concept/the-xl-deploy-work-directory/#clean-up-the-work-directory)
 - database data
 - any custom configuration that was done for the operator setup
 - any volume related to deploy in the default namespace, for example data from the mounted volumes on the master and worker pod:
