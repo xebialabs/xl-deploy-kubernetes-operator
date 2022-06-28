@@ -76,7 +76,7 @@ Scenario 1: You are regenerating the scaffolding due to some changes in underlyi
 
 Scenario 2: You are generating the scaffolding for the first time.
 
-We would disscuss both the scenarios one by one.
+We would discuss both the scenarios one by one.
 
 ### Scenario 1:
 

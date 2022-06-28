@@ -1,0 +1,19 @@
+domain: digital.ai
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: xld-operator
+repo: github.com/xebialabs/xl-deploy-kubernetes-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: digital.ai
+  group: xld
+  kind: DigitalaiDeploy
+  path: github.com/xebialabs/xl-deploy-kubernetes-operator/api/v1alpha1
+  version: v1alpha1
+version: "3"

@@ -1,0 +1,6 @@
+apiVersion: xld.digital.ai/v1alpha1
+kind: DigitalaiDeploy
+metadata:
+  name: digitalaideploy-sample
+spec:
+  # Add fields here

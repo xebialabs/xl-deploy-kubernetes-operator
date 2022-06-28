@@ -1,0 +1,20 @@
+# permissions for end users to view digitalaideploys.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: digitalaideploy-viewer-role
+rules:
+- apiGroups:
+  - xld.digital.ai
+  resources:
+  - digitalaideploys
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - xld.digital.ai
+  resources:
+  - digitalaideploys/status
+  verbs:
+  - get
