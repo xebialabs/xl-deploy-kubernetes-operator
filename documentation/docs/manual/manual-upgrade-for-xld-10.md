@@ -522,11 +522,11 @@ Creating original custom resource file...	\ Generated files successfully helmToO
       :::caution
         Known issue: in 22.1.4
           * Issue 1:
-              * If the Previous installation is using external database for xl-deploy.
+              * If the Previous installation using external database for xl-deploy.
               * When we try to upgrade to latest 22.1.4 with keycloak enabled with embedded database, then we will be end using embedded database for both deploy and keycloak.
                  ".spec.UseExistingDB.enabled", has no effects.
           * Issue 2:
-              * If the Previous installation is using embedded database for xl-deploy.
+              * If the Previous installation using embedded database for xl-deploy.
               * When we try to upgrade to latest 22.1.4 with keycloak enabled with embedded database.
                   * Post upgrade keycloak pod failed to start with below error.
                   Caused by: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "keycloak"
@@ -599,6 +599,10 @@ Creating original custom resource file...	\ Generated files successfully helmToO
 ```
 
 ## 8. Uninstall helm.
+:::caution
+Before doing any of the following steps backup everything:
+- [Clean up deploy Work directory](https://docs.xebialabs.com/v.22.1/deploy/concept/the-xl-deploy-work-directory/#clean-up-the-work-directory)
+:::
 ```shell
  > helm uninstall <release name>
 ```
