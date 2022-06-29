@@ -517,9 +517,29 @@ Creating original custom resource file...	\ Generated files successfully helmToO
             .spec.oidc.rolesClaim:
             .spec.oidc.userAuthorizationUri:
             .spec.oidc..userNameClaim:
-         ```
-      
+         ```      
     * To enable keycloak, with default embedded database.
+      :::caution
+        Known issue: in 22.1.4
+          * Issue 1:
+              * If the Previous installation is using external database for xl-deploy.
+              * When we try to upgrade to latest 22.1.4 with keycloak enabled with embedded database, then we will be end using embedded database for both deploy and keycloak.
+                 ".spec.UseExistingDB.enabled", has no effects.
+          * Issue 2:
+              * If the Previous installation is using embedded database for xl-deploy.
+              * When we try to upgrade to latest 22.1.4 with keycloak enabled with embedded database.
+                  * Post upgrade keycloak pod failed to start with below error.
+                  Caused by: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "keycloak"
+                    * We need to Connect to the pod/dai-xlr-postgresql-0 pod and create the keycloak database.
+                    * kuebctl exec -it pod/dai-xlr-postgresql-0 -- bash
+                    * psql -U postgres
+                    * create database keycloak;
+                    * create user keycloak with encrypted password 'keycloak';
+                    * grant all privileges on database keycloak to keycloak;            
+      :::
+      :::note
+      [Postgres password from previous installation](manual-upgrade-for-xld-10#5-take-backup-of-existing-password).         
+      :::
         ```shell
             .spec.keycloak.install = true
             .spec.oidc.enabled =  true
@@ -528,24 +548,8 @@ Creating original custom resource file...	\ Generated files successfully helmToO
             .spec.postgresql.persistence.storageClass = <storageClass specific to provider>
             .spec.keycloak.ingress.console.rules[0].host = <hosts for keycloak, similar to ingress hosts>
 			.spec.keycloak.ingress.rules[0].host = <hosts for keycloak, similar to ingress hosts>
-         ```
-      If keycloak is enabled, then we will be using default embedded database.
-      :::caution
-      Note:
-      * Post upgrade keycloak pod failed to start with below error.
-      Caused by: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "keycloak"
-      * We need to Connect to the pod/dai-xlr-postgresql-0 pod and create the keycloak database.
-      * kuebctl exec -it pod/dai-xlr-postgresql-0 -- bash
-      * psql -U postgres
-      * create database keycloak;
-      * create user keycloak with encrypted password 'keycloak';
-      * grant all privileges on database keycloak to keycloak;
-
-      :::
-      :::note
-      [Postgres password from previous installation](manual-upgrade-for-xld-10#5-take-backup-of-existing-password).
-      :::
-
+         ```      
+     
 ### iv. To reuse existing claim for postgres/rabbitmq 
 * If the release name is different from "dai-xld" and if we are using embedded database, we need to reuse the existing Claim, for data persistence.
   
