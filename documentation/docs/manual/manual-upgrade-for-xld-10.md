@@ -27,7 +27,8 @@ Before doing any of the following steps backup everything:
     - CustomResource
     - anything else that was customized
 - any volume related to deploy master in the default namespace, for example data from the mounted volumes on deploy master pod:
-    - /opt/xebialabs/xl-deploy-server/export  
+    - /opt/xebialabs/xl-deploy-server/export
+
 - any volume related to deploy worker in the default namespace, for example data from the mounted volumes on deploy worker pod:
     - /opt/xebialabs/xl-deploy-server/work   
 :::
@@ -203,6 +204,19 @@ opt/xebialabs/xl-deploy-server/export/test.txt
 opt/xebialabs/xl-deploy-server/export/content-types/
 
 ```
+:::note
+  With the Latest version 22.1.4 we are not volume mounting the /opt/xebialabs/xl-deploy-server/export folder, if required , we need to do it manually by editing the statefulset of master pod.
+and add the mount path
+
+```shell
+> kubectl edit statefulset.apps/dai-xld-digitalai-deploy-master
+````
+```yaml
+- mountPath: /opt/xebialabs/xl-deploy-server/export
+  name: data-dir
+  subPath: export
+```
+:::
  * Give full Permission to the copied data in new PV.
   ```shell
 > kubectl exec -n default -i pod-data-dir-dai-xld-digitalai-deploy-master-0 -- chmod -R 777 /opt/xebialabs/xl-deploy-server/export
@@ -302,11 +316,11 @@ spec:
       imagePullPolicy: Always
       volumeMounts:
         - mountPath: /opt/xebialabs/xl-deploy-server/work
-          name: export-dir
-          subPath: export           
+          name: data-dir
+          subPath: work           
   restartPolicy: Never
   volumes:
-    - name: export-dir
+    - name: data-dir
       persistentVolumeClaim:
         claimName: data-dir-dai-xld-digitalai-deploy-worker-0
   ```
@@ -487,6 +501,7 @@ Creating original custom resource file...	\ Generated files successfully helmToO
             .spec.keycloak.install = false
             .spec.oidc.enabled =  true
             .spec.oidc.external = true
+      
             ##  update the below fields with external oidc configuration
             .spec.oidc.accessTokenUri:
             .spec.oidc.clientId:
@@ -503,12 +518,16 @@ Creating original custom resource file...	\ Generated files successfully helmToO
             .spec.oidc.userAuthorizationUri:
             .spec.oidc..userNameClaim:
          ```
+      
     * To enable keycloak, with default embedded database.
         ```shell
             .spec.keycloak.install = true
             .spec.oidc.enabled =  true
             .spec.oidc.external = false
             .spec.postgresql.install = true
+            .spec.postgresql.persistence.storageClass = <storageClass specific to provider>
+            .spec.keycloak.ingress.console.rules[0].host = <hosts for keycloak, similar to ingress hosts>
+			.spec.keycloak.ingress.rules[0].host = <hosts for keycloak, similar to ingress hosts>
          ```
       If keycloak is enabled, then we will be using default embedded database.
       :::caution
@@ -528,7 +547,7 @@ Creating original custom resource file...	\ Generated files successfully helmToO
       :::
 
 ### iv. To reuse existing claim for postgres/rabbitmq 
-* If the release name is different from "dai-xlr" and if we are using embedded database, we need to reuse the existing Claim, for data persistence.
+* If the release name is different from "dai-xld" and if we are using embedded database, we need to reuse the existing Claim, for data persistence.
   
   * Update the following field with existing claim.
     
@@ -542,7 +561,7 @@ Creating original custom resource file...	\ Generated files successfully helmToO
   ```
    
   :::note
-   If we are having more than one existing PVC for rabbitmq, we don't use  existingClaim for rabbitmq configuration, instead we can follow the other approach mentioned below for PV reuse.
+   If we are having more than one existing PVC for rabbitmq, we don't use existingClaim for rabbitmq configuration, instead we can follow the other approach mentioned below for PV reuse.
   :::
        
   * Post helm uninstall, we can also edit postgres/rabbitmq PV as follows, to create the new PVC with existing PV.
