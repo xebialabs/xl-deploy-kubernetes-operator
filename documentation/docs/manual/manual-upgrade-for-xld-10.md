@@ -189,7 +189,7 @@ drwxrws--x 2 root 40136 6144 Jun 28 09:55 export
   ```
 
 ### vii. Copy data and Give Persmission.
- * Copy data from xlr-prod-digitalai-release-0 to pod-dai-xlr-digitalai-release
+ * Copy data from xld-production-digitalai-deploy-master-0 to pod-data-dir-dai-xld-digitalai-deploy-master-0
 
 ```shell
 > kubectl exec -n default xld-production-digitalai-deploy-master-0 -- tar cf - /opt/xebialabs/xl-deploy-server/export | kubectl exec -n default -i pod-data-dir-dai-xld-digitalai-deploy-master-0 -- tar xvf - -C /
@@ -297,7 +297,7 @@ pvc-5ad67b27-027c-4636-b2b6-8a1e288c6251   5Gi        RWO            Delete     
 persistentvolume/pvc-5ad67b27-027c-4636-b2b6-8a1e288c6251 patched
 > kubectl get pv pvc-5ad67b27-027c-4636-b2b6-8a1e288c6251
    NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                               STORAGECLASS          REASON   AGE
-   pvc-dad9e7c3-ae1b-4b28-b595-4f4b281a0bf2   5Gi        RWO            Retain           Bound    default/dai-xlr-digitalai-release   aws-efs-provisioner            3m40s
+   pvc-dad9e7c3-ae1b-4b28-b595-4f4b281a0bf2   5Gi        RWO            Retain           Bound    default/data-dir-dai-xld-digitalai-deploy-worker-0   aws-efs-provisioner            3m40s
   ```
 
 ### vi. Start the following pod for accessing the newly created PVC [data-dir-dai-xld-digitalai-deploy-worker-0].
@@ -456,7 +456,7 @@ Creating original custom resource file...	\ Generated files successfully helmToO
 
 ## 6. Do following changes in the xebialabs/dai-deploy/daideploy_cr.yaml, based on the requirement.
 ### i. To update admin password 
- * Default  release admin password is "admin", if we need to update below fields.
+ * Default  deploy admin password is "admin", if we need to update below fields.
 ```shell
     .spec.AdminPassword: <password from previous installation>
 ```
@@ -468,7 +468,7 @@ Creating original custom resource file...	\ Generated files successfully helmToO
     .spec.UseExistingDB.XL_DB_USERNAME: <db username from previous installation>
 ```
 ### iii. To setup haproxy/nginx.
-  * haproxy setup   
+  * To enable haproxy setup   
     ```shell
        .spec.haproxy-ingress.install = true
        .spec.nginx-ingress-controller.install = false
@@ -484,10 +484,22 @@ Creating original custom resource file...	\ Generated files successfully helmToO
        ingress.kubernetes.io/config-backend: |
        option httpchk GET /ha/health HTTP/1.0
     ```
-  * nginx controller
+  * To enable nginx controller
     ```shell
        .spec.haproxy-ingress.install = false
        .spec.nginx-ingress-controller.install = true
+    ```
+  * To enable external nginx or haproxy
+    ```shell
+     * 1.
+       .spec.haproxy-ingress.install = false
+       .spec.nginx-ingress-controller.install = false
+    
+     * 2.  in .spec.ingress.annotations.
+       kubernetes.io/ingress.class: "<external ingress class>"
+    
+     * 3.   
+       .spec.ingress.hosts = <external nginxor haproxy hosts>
     ```
 ### iii. To setup oidc
 * By default keycloak will be enabled as default oidc provider.
@@ -530,26 +542,40 @@ Creating original custom resource file...	\ Generated files successfully helmToO
               * When we try to upgrade to latest 22.1.4 with keycloak enabled with embedded database.
                   * Post upgrade keycloak pod failed to start with below error.
                   Caused by: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "keycloak"
-                    * We need to Connect to the pod/dai-xlr-postgresql-0 pod and create the keycloak database.
-                    * kuebctl exec -it pod/dai-xlr-postgresql-0 -- bash
-                    * psql -U postgres
+                    * We need to Connect to the pod/dai-xld-postgresql-0 pod and create the keycloak database.
+                    * kuebctl exec -it pod/dai-xld-postgresql-0 -- bash
+                    * psql -U postgres  
+                        note : Postgres password from previous installation
                     * create database keycloak;
                     * create user keycloak with encrypted password 'keycloak';
                     * grant all privileges on database keycloak to keycloak;            
       :::
-      :::note
-      [Postgres password from previous installation](manual-upgrade-for-xld-10#5-take-backup-of-existing-password).         
-      :::
+     
         ```shell
             .spec.keycloak.install = true
             .spec.oidc.enabled =  true
             .spec.oidc.external = false
             .spec.postgresql.install = true
             .spec.postgresql.persistence.storageClass = <storageClass specific to provider>
-            .spec.keycloak.ingress.console.rules[0].host = <hosts for keycloak, similar to ingress hosts>
-			.spec.keycloak.ingress.rules[0].host = <hosts for keycloak, similar to ingress hosts>
+            .spec.keycloak.ingress.console.rules[0].host = <hosts for keycloak>
+			.spec.keycloak.ingress.rules[0].host = <hosts for keycloak>
          ```      
-     
+   * To enable keycloak, with external database.
+        ```shell
+                    .spec.keycloak.install = true
+                    .spec.oidc.enabled =  true
+                    .spec.oidc.external = false
+                    .spec.postgresql.install = true
+                    .spec.postgresql.persistence.storageClass = <storageClass specific to provider>
+                    .spec.keycloak.ingress.console.rules[0].host = <hosts for keycloak>
+                    .spec.keycloak.ingress.rules[0].host = <hosts for keycloak>            
+        ```
+        ```
+        We need to set the External DB in .spec.keycloak.extraEnv.        
+        Refer docs for more details : [keycloak-configuration_for_k8s_operator](https://docs.digital.ai/bundle/devops-release-version-v.22.1/page/release/how-to/k8s-operator/keycloak-configuration_for_k8s_operator.html)
+        ```
+        
+
 ### iv. To reuse existing claim for postgres/rabbitmq 
 * If the release name is different from "dai-xld" and if we are using embedded database, we need to reuse the existing Claim, for data persistence.
   
@@ -600,7 +626,7 @@ Creating original custom resource file...	\ Generated files successfully helmToO
 
 ## 8. Uninstall helm.
 :::caution
-Before doing any of the following steps backup everything:
+Before doing helm uninstall, Clean up deploy work directory:
 - [Clean up deploy Work directory](https://docs.xebialabs.com/v.22.1/deploy/concept/the-xl-deploy-work-directory/#clean-up-the-work-directory)
 :::
 ```shell
