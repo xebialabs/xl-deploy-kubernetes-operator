@@ -244,6 +244,12 @@ spec:
     hosts:
       - <Provode DNS name for accessing UI of Digital.ai Deploy>
     path: /
+    # If you want to use TLS configuration uncomment the following lines and provide correct values.
+    # You need to create secret, and provide the name under 'secretName'
+    # tls:
+    #   - secretName: NAME_OF_THE_TLS_SECRET
+    #     hosts:
+    #       - FQDN_MATCH_WITH_CERT_CN
   keycloak:
     affinity: |
       podAntiAffinity:
