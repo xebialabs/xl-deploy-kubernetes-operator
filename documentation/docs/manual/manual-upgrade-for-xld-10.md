@@ -570,11 +570,10 @@ Creating original custom resource file...	\ Generated files successfully helmToO
                     .spec.keycloak.ingress.console.rules[0].host = <hosts for keycloak>
                     .spec.keycloak.ingress.rules[0].host = <hosts for keycloak>            
         ```
-        ```
-        We need to set the External DB in .spec.keycloak.extraEnv.        
-        Refer docs for more details : [keycloak-configuration_for_k8s_operator](https://docs.digital.ai/bundle/devops-release-version-v.22.1/page/release/how-to/k8s-operator/keycloak-configuration_for_k8s_operator.html)
-        ```
         
+     We need to set the External DB in .spec.keycloak.extraEnv.
+    Refer docs for more details : [keycloak-configuration_for_k8s_operator](https://docs.digital.ai/bundle/devops-release-version-v.22.1/page/release/how-to/k8s-operator/keycloak-configuration_for_k8s_operator.html)
+               
 
 ### iv. To reuse existing claim for postgres/rabbitmq 
 * If the release name is different from "dai-xld" and if we are using embedded database, we need to reuse the existing Claim, for data persistence.
