@@ -81,12 +81,13 @@ eg: helm release name : xld-production
    ```shell
    > kubectl get pvc xld-production-digitalai-deploy -o yaml > pvc-xld-production-digitalai-deploy.yaml.
    ```
-
+* Copy the pvc-xld-production-digitalai-deploy.yaml file  to pvc-data-dir-dai-xld-digitalai-deploy-master-0.yaml
+   ```shell
+    > cp pvc-xld-production-digitalai-deploy.yaml pvc-data-dir-dai-xld-digitalai-deploy-master-0.yaml
+   ```
+  
 ### ii. Manually create pvc data-dir-dai-xld-digitalai-deploy-master-0 as mentioned below.
-  * Copy the pvc-xld-production-digitalai-deploy.yaml file  to pvc-data-dir-dai-xld-digitalai-deploy-master-0.yaml
-    ```shell
-     > cp pvc-xld-production-digitalai-deploy.yaml pvc-data-dir-dai-xld-digitalai-deploy-master-0.yaml
-    ```
+ 
   * Delete all the lines under sections:
      ```shell
     status
@@ -142,9 +143,9 @@ pvc-64444985-8e98-406c-984f-1d12449f039f   10Gi       RWO            Retain     
 
 ### vi. Start the following pod for accessing the newly created PVC [data-dir-dai-xld-digitalai-deploy-master-0].
   
-  * Update the pod [pod-data-dir-dai-xld-digitalai-deploy-master-0.yaml] yaml with exact volumes which we mounted in previous installation.
-  
-  ```shell
+* Update the pod [pod-data-dir-dai-xld-digitalai-deploy-master-0.yaml] yaml with exact volumes which we mounted in previous installation.
+
+```shell
 apiVersion: v1
 kind: Pod
 metadata:
@@ -158,35 +159,34 @@ spec:
       volumeMounts:
         - mountPath: /opt/xebialabs/xl-deploy-server/export
           name: export-dir
-          subPath: export           
+          subPath: export
   restartPolicy: Never
   volumes:
     - name: export-dir
       persistentVolumeClaim:
         claimName: data-dir-dai-xld-digitalai-deploy-master-0
-  ```
+```
 
-  * Start the pod
-  ```shell
+* Start the pod
+```shell
 > kubectl apply -f pod-data-dir-dai-xld-digitalai-deploy-master-0.yaml
 pod/pod-data-dir-dai-xld-digitalai-deploy-master-0 created
-  ```
-  ```shell
+ ```
+
+```shell
 > kubectl get pod/pod-data-dir-dai-xld-digitalai-deploy-master-0
 NAME                                             READY   STATUS    RESTARTS   AGE
 pod-data-dir-dai-xld-digitalai-deploy-master-0   1/1     Running   0          30s
-
-  ```
-  * Verify the mouted path is available in newly created PV.
-  ```shell
+```
+* Verify the mouted path is available in newly created PV.
+ ```shell
 > kubectl exec -it pod/pod-data-dir-dai-xld-digitalai-deploy-master-0 -- sh
 / # cd /opt/xebialabs/xl-deploy-server/
 /opt/xebialabs/xl-deploy-server # ls -lrt
 total 4
 drwxrws--x 2 root 40136 6144 Jun 28 09:55 export
-/opt/xebialabs/xl-deploy-server # 
-
-  ```
+/opt/xebialabs/xl-deploy-server #
+ ```
 
 ### vii. Copy data and Give Persmission.
  * Copy data from xld-production-digitalai-deploy-master-0 to pod-data-dir-dai-xld-digitalai-deploy-master-0
@@ -227,8 +227,8 @@ and add the mount path
 total 4
 drwxrwsrwx 3 10001 40133 6144 Jun 28 10:00 export
 /opt/xebialabs/xl-deploy-server # 
-
   ```
+
 ### viii.  Delete the pod.
 ```shell
 > kubectl delete pod/pod-data-dir-dai-xld-digitalai-deploy-master-0
@@ -242,12 +242,13 @@ eg: helm release name : xld-production
    ```shell
    > kubectl get pvc work-dir-xld-production-digitalai-deploy-worker-0 -o yaml > pvc-work-dir-xld-production-digitalai-deploy-worker-0.yaml
    ```
-
-### ii. Manually create pvc data-dir-dai-xld-digitalai-deploy-worker-0 as mentioned below.
 * Copy the pvc-work-dir-xld-production-digitalai-deploy-worker-0.yaml file  to pvc-data-dir-dai-xld-digitalai-deploy-worker-0.yaml
   ```shell
    > cp pvc-work-dir-xld-production-digitalai-deploy-worker-0.yaml pvc-data-dir-dai-xld-digitalai-deploy-worker-0.yaml
   ```
+
+### ii. Manually create pvc data-dir-dai-xld-digitalai-deploy-worker-0 as mentioned below.
+
 * Delete all the lines under sections:
    ```shell
   status
@@ -371,6 +372,7 @@ total 4
 drwxrwsrwx 3 10001 40134 6144 Jun 28 11:13 work
 /opt/xebialabs/xl-deploy-server #
 ```
+
 ### viii.  Delete the pod.
 ```shell
  > kubectl delete pod/pod-data-dir-dai-xld-digitalai-deploy-worker-0
@@ -573,9 +575,14 @@ Creating original custom resource file...	\ Generated files successfully helmToO
         
      We need to set the External DB in .spec.keycloak.extraEnv.
     Refer docs for more details : [keycloak-configuration_for_k8s_operator](https://docs.digital.ai/bundle/devops-release-version-v.22.1/page/release/how-to/k8s-operator/keycloak-configuration_for_k8s_operator.html)
-               
 
-### iv. To reuse existing claim for postgres/rabbitmq 
+### iv. To update the rabbitmq Persistence storageclass.
+
+```shell
+   .spec.rabbitmq.persistence.storageClass: <Storage Class to be defined for RabbitMQ>
+```
+
+### v. To reuse existing claim for postgres/rabbitmq 
 * If the release name is different from "dai-xld" and if we are using embedded database, we need to reuse the existing Claim, for data persistence.
   
   * Update the following field with existing claim.
