@@ -50,6 +50,25 @@ spec:
   XldMasterCount: 3
   XldWorkerCount: 3
   affinity: {}
+  deploy:
+    configurationManagement:
+      centralConfiguration:
+        configuration:
+          enabled: true
+          resetFiles: ## Resets part of the configuration files
+            - xlc-wrapper.conf.common
+      deployMaster:
+        configuration:
+          enabled: true
+          resetFiles: ## Resets part of the configuration files and license
+            - deployit-license.lic
+            - xld-wrapper.conf.common
+      worker:
+        configuration:
+          enabled: true
+          resetFiles: ## Resets part of the configuration files and license
+            - deployit-license.lic
+            - xld-wrapper.conf.common
   keycloak:
     affinity: |
       podAntiAffinity:
