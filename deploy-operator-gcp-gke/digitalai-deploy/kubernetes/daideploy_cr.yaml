@@ -51,11 +51,6 @@ spec:
   affinity: {}
   deploy:
     configurationManagement:
-      centralConfiguration:
-        configuration:
-          enabled: true
-          resetFiles: ## Resets part of the configuration files
-            - xlc-wrapper.conf.common
       master:
         configuration:
           enabled: true
