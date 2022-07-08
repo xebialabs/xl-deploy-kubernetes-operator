@@ -1,7 +1,8 @@
 def getTestProperties() {
     def activeProviderName = project.hasProperty("activeProviderName") ? project.activeProviderName : null
     def destroyClusterOnShutdown = project.hasProperty("destroyClusterOnShutdown") ? Boolean.valueOf(project.destroyClusterOnShutdown as String) : false
-
+    def namespace = project.hasProperty("namespace") ? project.namespace : null
+    def doCleanup = project.hasProperty("doCleanup") ? Boolean.valueOf(project.doCleanup as String) : true
     def xlDeployStartDockerRepository = project.hasProperty("xlDeployStartDockerRepository") ? project.xlDeployStartDockerRepository : "xebialabsunsupported"
     def xlDeployWorkerStartDockerRepository = project.hasProperty("xlDeployWorkerStartDockerRepository") ? project.xlDeployWorkerStartDockerRepository : xlDeployStartDockerRepository
     def xlDeployUpgradeDockerRepository = project.hasProperty("xlDeployUpgradeDockerRepository") ? project.xlDeployUpgradeDockerRepository : "xebialabsunsupported"
@@ -18,9 +19,13 @@ def getTestProperties() {
     def cliNightly = project.hasProperty("cliNightly") ? Boolean.valueOf(project.cliNightly as String) : true
     def deployUpgraderVersion = project.hasProperty("deployUpgraderVersion") ? project.deployUpgraderVersion as String : null
     def keycloakUrl = project.hasProperty("keycloakUrl") ? project.keycloakUrl as String : null
+    def ingressType = project.hasProperty("ingressType") ? project.ingressType as String : null
+    def deploySuffix = project.hasProperty("deploySuffix") ? project.deploySuffix as String : null
 
     [
         activeProviderName                 : activeProviderName,
+        namespace                           : namespace,
+        doCleanup                           : doCleanup,
         destroyClusterOnShutdown           : destroyClusterOnShutdown,
         opBlueprintBranch                  : opBlueprintBranch,
         operatorImage                      : operatorImage,
@@ -38,6 +43,8 @@ def getTestProperties() {
         cliNightly                         : cliNightly,
         deployUpgraderVersion              : deployUpgraderVersion,
         keycloakUrl                        : keycloakUrl,
+        ingressType                        : ingressType,
+        deploySuffix                        : deploySuffix,
     ]
 }
 
@@ -83,6 +90,8 @@ deployIntegrationServer {
         clusterProfiles {
             operator {
                 activeProviderName = testProperties.activeProviderName
+                doCleanup = testProperties.doCleanup
+                deploySuffix = testProperties.deploySuffix
                 if (testProperties.xlCliVersion) {
                     xlCliVersion = testProperties.xlCliVersion
                 }
@@ -94,6 +103,12 @@ deployIntegrationServer {
                 }
                 if (testProperties.xlCliPath) {
                     xlCliPath = testProperties.xlCliPath
+                }
+                if (testProperties.namespace) {
+                    namespace = testProperties.namespace
+                }
+                if (testProperties.ingressType) {
+                    ingressType = testProperties.ingressType
                 }
                 awsEks {
                     name = 'aws-eks-test-cluster'
@@ -139,6 +154,7 @@ deployIntegrationServer {
     servers {
         server01 {
             dockerImage = "${testProperties.xlDeployStartDockerRepository}/xl-deploy"
+            centralConfigDockerImage = "${testProperties.xlDeployStartDockerRepository}/central-configuration"
             pingRetrySleepTime = 10
             pingTotalTries = 120
             version = testProperties.xlDeployStartVersion
