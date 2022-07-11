@@ -6,7 +6,7 @@ spec:
     children:
     - name: xld
       type: k8s.Master
-      apiServerURL: < Update using server info from the kubeconfig file >
+      apiServerURL: <Update using server info from the kubeconfig file>
       skipTLS: true
       debug: true
       caCert: |-
@@ -16,10 +16,18 @@ spec:
         -----END CERTIFICATE-----
       isEKS: true
       useGlobal: true
-      regionName: < Update using  region info from the kubeconfig file
+      regionName: <Update using  region info from the kubeconfig file>
       clusterName: <Update using cluster-name field from the kubeconfig file>
-      accessKey: <Update the AWS accessKey details >
-      accessSecret: <Update the AWS accessSecret details >
+      accessKey: <Update the AWS accessKey details>
+      accessSecret: <Update the AWS accessSecret details>
+      isAssumeRole: <Set to true for assumeRole based access to the cluster>
+      # If 'isAssumeRole' set to 'true', uncomment the following lines and provide the values.
+      # accountId: <Update the AWS account ID>
+      # roleName: <Update the AWS role name>
+      # roleArn: <Update the AWS roleArn for the IAM role>
+      # durationSeconds: <Update the duration in seconds of the role session.(900 to max session duration)>
+      # sessionToken: <Update the session token of the aws temporary credentials>
+      # End of "isAssumeRole" property related fields
       children:
         - name: default
           type: k8s.Namespace
