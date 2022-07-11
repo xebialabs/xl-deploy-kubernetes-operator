@@ -21,7 +21,7 @@ spec:
       accessKey: <Update the AWS accessKey details>
       accessSecret: <Update the AWS accessSecret details>
       isAssumeRole: <Set to true for assumeRole based access to the cluster>
-      # Following fields are required only when "isAssumeRole" property is true
+      # If 'isAssumeRole' set to 'true', uncomment the following lines and provide the values.
       # accountId: <Update the AWS account ID>
       # roleName: <Update the AWS role name>
       # roleArn: <Update the AWS roleArn for the IAM role>
