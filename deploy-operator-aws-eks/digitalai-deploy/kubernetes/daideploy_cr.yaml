@@ -61,6 +61,8 @@ spec:
           enabled: true
           resetFiles: ## Resets part of the configuration files
             - xlc-wrapper.conf.common
+          resetCcFiles:
+            - deploy-server.yaml
       master:
         configuration:
           enabled: true
