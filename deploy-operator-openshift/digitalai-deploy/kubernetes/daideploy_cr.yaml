@@ -59,6 +59,7 @@ spec:
           enabled: true
           resetFiles: ## Resets part of the configuration files
             - xlc-wrapper.conf.common
+            - jmx-exporter.yaml
           resetCcFiles:
             - deploy-server.yaml
       deployMaster:
@@ -66,12 +67,14 @@ spec:
           enabled: true
           resetFiles: ## Resets part of the configuration files and license
             - deployit-license.lic
+            - jmx-exporter.yaml
             - xld-wrapper.conf.common
       worker:
         configuration:
           enabled: true
           resetFiles: ## Resets part of the configuration files and license
             - deployit-license.lic
+            - jmx-exporter.yaml
             - xld-wrapper.conf.common
   keycloak:
     affinity: |
