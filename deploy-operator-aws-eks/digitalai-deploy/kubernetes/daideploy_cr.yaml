@@ -59,7 +59,6 @@ spec:
           enabled: true
           resetFiles: ## Resets part of the configuration files
             - xlc-wrapper.conf.common
-            - jmx-exporter.yaml
           resetCcFiles:
             - deploy-server.yaml
       master:
@@ -68,14 +67,12 @@ spec:
           resetFiles: ## Resets part of the configuration files and license
             - deployit-license.lic
             - xld-wrapper.conf.common
-            - jmx-exporter.yaml
       worker:
         configuration:
           enabled: true
           resetFiles: ## Resets part of the configuration files and license
             - deployit-license.lic
             - xld-wrapper.conf.common
-            - jmx-exporter.yaml
   haproxy-ingress:
     controller:
       affinity: {}
