@@ -28,6 +28,7 @@ In CR file disable Keycloak and update OIDC properties:
     external: true
     issuer: "https://identity.staging.digital.ai/auth/realms/demoaccount"
     redirectUri: "<release url>/login/external-login"
+    postLogoutRedirectUri: "http://xld-gcp-gke-test-cluster-xld-digitalai.endpoints.apollo-playground.cloud.goog/login/external-login"
     rolesClaimName: "realm_access.roles"
     userNameClaimName: preferred_username
     scopes: ["openid"]
