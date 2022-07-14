@@ -30,13 +30,15 @@ spec:
     StorageClass: < provide the storageClass for DAI-DEPLOY>
     XldMasterPvcSize: 10Gi
     XldWorkerPvcSize: 10Gi
-  # https://docs.xebialabs.com/v.9.8/deploy/how-to/update-the-xl-deploy-digital-certificate/#get-started
+  # https://docs.xebialabs.com/v.10.2/deploy/how-to/changing-passwords-in-xl-deploy/
   # Convert repository-keystore.jceks files content to base64
   # ( cat repository-keystore.jceks | base64 -w 0 ) and put the output here
   RepositoryKeystore: <Provide repositoryKeystore in base64 encoded form>
   UseExistingDB:
     Enabled: false
-    # If you want to use an existing database, set 'postgresql.install' to 'false' and 'UseExistingDB.Enabled' to 'true'.
+    # If you want to use an existing database.
+    # Set 'postgresql.install' to 'false', Only when we use existing Database for both Deploy and keycloak.
+    # Set 'UseExistingDB.Enabled' to 'true'.
     # Uncomment the following lines and provide the values.
     # XL_DB_PASSWORD:
     # XL_DB_URL:
@@ -88,7 +90,7 @@ spec:
         repository: quay.io/jcmoraisjr/haproxy-ingress
         tag: v0.13.4
       imagePullSecrets: []
-      ingressClass: haproxy
+      ingressClass: haproxy-dai-xld
       initContainers: []
       kind: Deployment
       lifecycle: {}
@@ -233,7 +235,7 @@ spec:
   ingress:
     Enabled: true
     annotations:
-      kubernetes.io/ingress.class: nginx
+      kubernetes.io/ingress.class: nginx-dai-xld
       nginx.ingress.kubernetes.io/affinity: cookie
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
       nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
@@ -242,7 +244,7 @@ spec:
       nginx.ingress.kubernetes.io/session-cookie-name: SESSION_XLD
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
     hosts:
-      - <Provode DNS name for accessing UI of Digital.ai Deploy>
+      - <Provide DNS name for accessing UI of Digital.ai Deploy>
     path: /
     # If you want to use TLS configuration uncomment the following lines and provide correct values.
     # You need to create secret, and provide the name under 'secretName'
@@ -366,7 +368,7 @@ spec:
     imagePullSecrets: []
     ingress:
       annotations:
-        kubernetes.io/ingress.class: nginx
+        kubernetes.io/ingress.class: nginx-dai-xld
         nginx.ingress.kubernetes.io/ssl-redirect: "false"
       console:
         annotations: {}
@@ -381,7 +383,7 @@ spec:
       ingressClassName: ""
       labels: {}
       rules:
-        - host: <Provode DNS name for accessing UI of keycloak>
+        - host: <Provide DNS name for accessing UI of keycloak>
           paths:
             - path: /
               pathType: Prefix
@@ -854,7 +856,8 @@ spec:
     dhParam: ""
     dnsPolicy: ClusterFirst
     electionID: ingress-controller-leader
-    extraArgs: {}
+    extraArgs:
+      ingress-class: nginx-dai-xld
     extraDeploy: []
     extraEnvVars: []
     extraEnvVarsCM: ""
@@ -874,10 +877,10 @@ spec:
       repository: bitnami/nginx-ingress-controller
       tag: 1.0.4-debian-10-r13
     ingressClassResource:
-      controllerClass: k8s.io/ingress-nginx
+      controllerClass: k8s.io/ingress-nginx-dai-xld
       default: false
       enabled: true
-      name: nginx
+      name: nginx-dai-xld
       parameters: {}
     initContainers: []
     install: true
@@ -1059,7 +1062,7 @@ spec:
       postgresql:
         existingSecret: ""
         postgresqlDatabase: ""
-        postgresqlPassword: ""
+        postgresqlPassword: "postgres"
         postgresqlUsername: ""
         replicationPassword: ""
         servicePort: ""

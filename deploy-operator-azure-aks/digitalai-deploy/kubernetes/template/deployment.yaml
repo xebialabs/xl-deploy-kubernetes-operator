@@ -32,6 +32,11 @@ spec:
         - --leader-elect
         - --leader-election-id=xld-operator-controller-manager
         image: xebialabsunsupported/deploy-operator:22.1.5
+        env:
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         livenessProbe:
           httpGet:
             path: /readyz

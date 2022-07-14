@@ -7,4 +7,4 @@ spec:
     - name: xld
       type: udm.Environment
       members:
-      - ~Infrastructure/k8s-infra/xld/default
+      - ~Infrastructure/k8s-infra/xld/digitalai
