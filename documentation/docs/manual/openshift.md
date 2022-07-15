@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-Internal: Dev Only
+data : Internal Only
 ---
 
 # AWS OpenShift

@@ -1,6 +1,6 @@
 ---
 sidebar_position: 5
-Internal: Dev Only
+data : Internal Only
 ---
 
 # Google Cloud Platform GKE

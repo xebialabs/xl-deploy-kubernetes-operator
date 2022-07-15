@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-Internal: Dev Only
+data : Internal Only
 ---
 
 # Azure AKS
