@@ -1,7 +1,7 @@
 ---
 sidebar_position: 3
+data : Internal Only
 ---
-
 # AWS EKS
 
 Here it will described how to install manually Deploy k8s cluster with help of operator to AWS EKS.
