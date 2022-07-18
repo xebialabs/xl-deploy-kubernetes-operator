@@ -116,10 +116,10 @@ deployIntegrationServer {
                     setupTestProperties(it, testProperties)
                 }
                 awsOpenshift {
-                    apiServerURL = 'https://api.acierto.lnfl.p1.openshiftapps.com:6443'
-                    host = 'router-default.apps.acierto.lnfl.p1.openshiftapps.com'
+                    apiServerURL = 'https://api.apollo-operator.raqx.p1.openshiftapps.com:6443'
+                    host = 'router-default.apps.apollo-operator.raqx.p1.openshiftapps.com'
                     name = 'aws-openshift-test-cluster'
-                    oauthHostName = "oauth-openshift.apps.acierto.lnfl.p1.openshiftapps.com"
+                    oauthHostName = "oauth-openshift.apps.apollo-operator.raqx.p1.openshiftapps.com"
                     setupTestProperties(it, testProperties)
                 }
                 azureAks {
