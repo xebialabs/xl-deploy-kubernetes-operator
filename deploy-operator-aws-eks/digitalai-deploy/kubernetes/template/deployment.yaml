@@ -32,6 +32,7 @@ spec:
         - --leader-elect
         - --leader-election-id=xld-operator-controller-manager
         image: xebialabsunsupported/deploy-operator:10.3.0-722.400
+        imagePullPolicy: Always
         livenessProbe:
           httpGet:
             path: /readyz
