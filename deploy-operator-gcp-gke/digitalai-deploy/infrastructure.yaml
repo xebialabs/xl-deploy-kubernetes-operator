@@ -12,6 +12,6 @@ spec:
       caCert: < Update using caCert info from the kubeconfig file >
       token: < Update using token info from the kubeconfig file >
       children:
-        - name: default
+        - name: digitalai
           type: k8s.Namespace
-          namespaceName: default
+          namespaceName: digitalai

@@ -29,6 +29,6 @@ spec:
       # sessionToken: <Update the session token of the aws temporary credentials>
       # End of "isAssumeRole" property related fields
       children:
-        - name: default
+        - name: digitalai
           type: k8s.Namespace
-          namespaceName: default
+          namespaceName: digitalai
