@@ -32,6 +32,7 @@ spec:
         - --leader-elect
         - --leader-election-id=xld-operator-controller-manager
         image: xebialabsunsupported/deploy-operator:22.1.5-openshift
+        imagePullPolicy: Always
         env:
         - name: WATCH_NAMESPACE
           valueFrom:
