@@ -53,6 +53,14 @@ spec:
   XldWorkerCount: 3
   affinity: {}
   deploy:
+    master:
+      image:
+        # If you want to use a different image tag for master [xl-deploy], other than the tag mentioned in field .spec.ImageTag.
+        tag: "22.2"
+    worker:
+      image:
+        # If you want to use a different image tag for worker [deploy-task-engine], other than the tag mentioned in field .spec.ImageTag.
+        tag: "22.2"
     configurationManagement:
       centralConfiguration:
         configuration:
@@ -1185,6 +1193,3 @@ spec:
   tolerations: []
   # Convert xl-deploy.lic files content to base64 ( cat xl-deploy.lic | base64 -w 0 ) and put the output here
   xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
-  centralConfiguration:
-    image:
-      repository: xebialabs/central-configuration
