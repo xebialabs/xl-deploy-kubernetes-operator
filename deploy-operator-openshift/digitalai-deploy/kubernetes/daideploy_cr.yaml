@@ -54,11 +54,11 @@ spec:
     master:
       image:
         # If you want to use a different image tag for master [xl-deploy], other than the tag mentioned in field .spec.ImageTag.
-        tag: "22.2"
+        tag: "22.0"
     worker:
       image:
         # If you want to use a different image tag for worker [deploy-task-engine], other than the tag mentioned in field .spec.ImageTag.
-        tag: "22.2"
+        tag: "22.0"
     configurationManagement:
       centralConfiguration:
         configuration:
