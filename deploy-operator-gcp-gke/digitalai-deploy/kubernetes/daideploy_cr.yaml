@@ -493,6 +493,7 @@ spec:
     userAuthorizationUri:
     userNameClaimName:
   postgresql:
+    affinity: {}
     audit:
       clientMinMessages: error
       logConnections: false
