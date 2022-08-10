@@ -205,7 +205,7 @@ spec:
     postgresqlDataDir: /bitnami/postgresql/data
     postgresqlDbUserConnectionLimit: null
     postgresqlExtendedConf:
-      listenAddresses: '"*"'
+      listenAddresses: '''*'''
       maxConnections: "500"
     postgresqlMaxConnections: null
     postgresqlPassword: postgres
