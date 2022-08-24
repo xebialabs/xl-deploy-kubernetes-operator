@@ -11,7 +11,7 @@ sidebar_position: 16
 ## 1. Adding the Deploy client
 1. Log into the Identity Service account you want to connect to Deploy using an admin user for that account
 2. Go to Admin > Clients > Add OIDC Client
-3. Give the client a name (e.g. release)
+3. Give the client a name (e.g. deploy)
 4. Scroll down to “Valid Redirect URIs” and add
 ```text
 <deploy url>/login/external-login
