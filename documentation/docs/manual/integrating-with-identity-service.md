@@ -18,7 +18,7 @@ sidebar_position: 16
 ```
 5. Save the client
 
-## 2. Configuring Release
+## 2. Configuring Deploy
 In CR file disable Keycloak and update OIDC properties:
 ```yaml
   oidc:
@@ -33,7 +33,7 @@ In CR file disable Keycloak and update OIDC properties:
     userNameClaimName: preferred_username
     scopes: ["openid"]
 ```
-To find the client id and secret, edit the Release client created above, scroll down to the Credentials section, and copy the values from there.
+To find the client id and secret, edit the Deploy client created above, scroll down to the Credentials section, and copy the values from there.
 
 issuer can be found in the Identity Service Client section, in OIDC config that can be downloaded from there.
 
