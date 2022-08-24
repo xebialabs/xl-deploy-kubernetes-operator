@@ -124,6 +124,8 @@ The final result on GCP console, all should be running (running all with 1 maste
 
 ### Troubleshouting
 
+#### Token expired
+
 If you work for longer period on the same cluster, token that is used is possible to expire. Use following 2 commands to get new token:
 - first one to get new context for the cluster:
 ```shell
@@ -135,6 +137,56 @@ If you work for longer period on the same cluster, token that is used is possibl
 ```
 
 With new access token value update in the xl-deploy that used for operator deployment, on CI `Infrastructure/k8s-infra/xld` property `token`.
+
+#### Getting Error "invalid character 'W' looking for beginning of value" during upgrade
+
+This error is caused by new changes that come with a new kubectl plugin called “gke-gcloud-auth-plugin”. As explained [here](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke) 
+
+> Existing versions of kubectl and custom Kubernetes clients contain provider-specific code to manage authentication between the client and Google Kubernetes Engine. Starting with v1.25, this code will no longer be included as part of the OSS kubectl. GKE users will need to download and use a separate authentication plugin to generate GKE-specific tokens. This new binary, gke-gcloud-auth-plugin, uses the Kubernetes Client-go Credential Plugin mechanism to extend kubectl’s authentication to support GKE. 
+
+Steps to install and start using new plugin (you can also find these steps in the GCP guide linked above):
+
+1. Authentication plugin installation instructions
+   
+   For Windows and OS X 
+   ```shell
+   gcloud components install gke-gcloud-auth-plugin
+   ```
+   
+   For DEB based systems
+   ```shell
+   sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
+   ```
+   
+   For RPM based systems
+   ```shell
+   sudo yum install google-cloud-sdk-gke-gcloud-auth-plugin
+   ```
+   
+   If you are using GCP terminal, this plugin should already be installed. In that case, only the next step is needed.
+   
+2. Run kubectl with the new plugin
+   
+   To have kubectl use the new binary plugin for authentication instead of using the default provider-specific code, use the following steps. 
+
+    1. Set export USE_GKE_GCLOUD_AUTH_PLUGIN=True in ~/.bashrc (or in Environment variables for Windows).
+
+    2. Run the following command: 
+
+       ```shell
+       source ~/.bashrc
+       ```
+
+    3. Update gcloud to the latest version. 
+       
+       ```shell
+        gcloud components update
+        ```
+
+    4. Run the following command: 
+       ```shell
+        gcloud container clusters get-credentials CLUSTER_NAME
+        ```
 
 ## Setting up Google Cloud Endpoints to use Google's DNS
 
