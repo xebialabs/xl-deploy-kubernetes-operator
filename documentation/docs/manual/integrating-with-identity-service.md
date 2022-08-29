@@ -6,7 +6,7 @@ sidebar_position: 16
 
 ## Prerequisites
 - There is an account in the platform to connect to the Deploy instance (https://demoaccount.staging.digital.ai)
-- There is an admin user (role account-admin) in the account that can be used to configure the Deploy client (contact Kraken team)
+- There is an admin user (role `account-admin`) in the account that can be used to configure the Deploy client (contact Kraken team)
 
 ## 1. Adding the Deploy client
 1. Log into the Identity Service account you want to connect to Deploy using an admin user for that account
@@ -37,8 +37,11 @@ To find the client id and secret, edit the Deploy client created above, scroll d
 
 issuer can be found in the Identity Service Client section, in OIDC config that can be downloaded from there.
 
-To check rolesClaimName value, decode the ID token to get the roles path.
+To check rolesClaimName value, decode the ID token.
+[Here](https://docs.xebialabs.com/v.22.2/deploy/concept/deploy-oidc-with-keycloak/#test-public-rest-apis) you can find how to fetch token.
+To Decode ID token you can use this [jwt](https://jwt.io/). RolesClaimName is the roles path from decoded value.
 
 ## 3. Deploy XLD
-1. Deploy XLD and navigate to the Deploy site in the browser. Log in with admin user and add the role from the user in the Identity Service to XLD as a principal. 
+1. Deploy XLD and navigate to the Deploy site in the browser. Log in with `admin` user and add the role(s) from the Identity Service user to XLD as a principal. For example, if you are using user with `account-admin` role, this role should be added as principal. 
+2. Go to Global permissions in XLD and give needed permissions. For admin it will be `admin` and `login` permissions.
 2. Log in to the XLD with user from the Identity Service.
