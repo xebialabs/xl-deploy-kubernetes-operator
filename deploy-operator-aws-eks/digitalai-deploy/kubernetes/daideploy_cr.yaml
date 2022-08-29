@@ -532,19 +532,31 @@ spec:
     watchIngressWithoutClass: false
   nodeSelector: {}
   oidc:
-    accessTokenUri: null
-    clientId: null
-    clientSecret: null
+    accessToken:
+      enable: false
+      issuer:
+      audience:
+      keyRetrievalUri:
+      jwsAlg:
+      secretKey:
+    accessTokenUri:
+    clientId:
+    clientSecret:
+    clientAuthMethod:
     enabled: false
-    external: false
-    issuer: null
-    keyRetrievalUri: null
-    logoutUri: null
-    postLogoutRedirectUri: null
-    redirectUri: null
-    rolesClaimName: null
-    userAuthorizationUri: null
-    userNameClaimName: null
+    idTokenJWSAlg:
+    issuer:
+    keyRetrievalUri:
+    loginMethodDescription:
+    logoutUri:
+    postLogoutRedirectUri:
+    proxyHost:
+    proxyPort:
+    redirectUri:
+    rolesClaimName:
+    scopes:
+    userAuthorizationUri:
+    userNameClaimName:
   postgresql:
     audit:
       clientMinMessages: error
