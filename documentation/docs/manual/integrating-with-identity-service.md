@@ -39,7 +39,7 @@ issuer can be found in the Identity Service Client section, in OIDC config that 
 
 To check rolesClaimName value, decode the ID token.
 [Here](https://docs.xebialabs.com/v.22.2/deploy/concept/deploy-oidc-with-keycloak/#test-public-rest-apis) you can find how to fetch token.
-To Decode ID token you can use this [jwt](https://jwt.io/). RolesClaimName is the roles path from decoded value.
+Use [jwt](https://jwt.io/) to decode ID token. Get the roles path from decoded value - this is rolesClaimName.
 
 ## 3. Deploy XLD
 1. Deploy XLD and navigate to the Deploy site in the browser. Log in with `admin` user and add the role(s) from the Identity Service user to XLD as a principal. For example, if you are using user with `account-admin` role, this role should be added as principal. 
