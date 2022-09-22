@@ -161,7 +161,7 @@ tasks {
             if (project.hasProperty("versionToSync")) {
                 val versionToSync = project.property("versionToSync")
                 val command =
-                    "ssh xebialabs@nexus1.xebialabs.cyso.net rsync --update -raz -i --include='*.zip' " +
+                    "ssh xebialabs@nexus.xebialabs.com rsync --update -raz -i --include='*.zip' " +
                             "--exclude='*' /opt/sonatype-work/nexus/storage/releases/ai/digital/deploy/operator/deploy-operator-${provider}/$versionToSync/ " +
                             "xldown@dist.xebialabs.com:/var/www/dist.xebialabs.com/customer/operator/deploy"
                 commandLine(command.split(" "))
