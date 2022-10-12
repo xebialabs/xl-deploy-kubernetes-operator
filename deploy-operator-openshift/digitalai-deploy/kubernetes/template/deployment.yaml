@@ -31,7 +31,7 @@ spec:
         - --metrics-bind-address=127.0.0.1:8080
         - --leader-elect
         - --leader-election-id=xld-operator-controller-manager
-        image: xebialabs/deploy-operator:10.2.19-openshift
+        image: xebialabsunsupported/deploy-operator:10.2.20-openshift
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
