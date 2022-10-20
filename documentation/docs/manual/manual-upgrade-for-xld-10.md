@@ -2,6 +2,14 @@
 sidebar_position: 15
 ---
 
+:::caution
+This is internal documentation. This document can be used only if it was recommended by the Support Team.
+:::
+
+:::caution
+This setup is deprecated from the 22.3 version.
+:::
+
 #  Manual helm to operator upgrade of xld from version 10 to above 22.1 version. 
 
 ## Prerequisites
@@ -709,4 +717,3 @@ Note:
  * We are using newly created PVC data-dir-dai-xld-digitalai-deploy-worker-0 for xl-deploy worker pod.
 :::
     
-   

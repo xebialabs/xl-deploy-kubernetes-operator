@@ -2,6 +2,14 @@
 sidebar_position: 8
 ---
 
+:::caution
+This is internal documentation. This document can be used only if it was recommended by the Support Team.
+:::
+
+:::caution
+This setup is deprecated from the 22.3 version.
+:::
+
 # Setting up custom namespace
 
 ## Manual setup

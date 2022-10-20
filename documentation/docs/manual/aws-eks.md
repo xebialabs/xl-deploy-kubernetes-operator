@@ -2,6 +2,11 @@
 sidebar_position: 3
 data : Internal Only
 ---
+
+:::caution
+This is internal documentation. This document can be used only if it was recommended by the Support Team.
+:::
+
 # AWS EKS
 
 Here it will described how to install manually Deploy k8s cluster with help of operator to AWS EKS.

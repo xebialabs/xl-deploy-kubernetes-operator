@@ -2,6 +2,14 @@
 sidebar_position: 13
 ---
 
+:::caution
+This is internal documentation. This document can be used only if it was recommended by the Support Team.
+:::
+
+:::caution
+This setup is deprecated from the 22.3 version.
+:::
+
 # B. How to change namespace in case there is deploy already running in the default namespace - with downtime
 
 ## Prerequisites
