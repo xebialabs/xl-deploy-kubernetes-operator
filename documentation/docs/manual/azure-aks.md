@@ -3,6 +3,10 @@ sidebar_position: 4
 data : Internal Only
 ---
 
+:::caution
+This is internal documentation. This document can be used only if it was recommended by the Support Team.
+:::
+
 # Azure AKS
 
 Here it will be described how to install manually Deploy k8s cluster with help of operator to Azure.

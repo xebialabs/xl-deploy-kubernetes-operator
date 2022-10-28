@@ -2,6 +2,14 @@
 sidebar_position: 14
 ---
 
+:::caution
+This is internal documentation. This document can be used only if it was recommended by the Support Team.
+:::
+
+:::caution
+This setup is deprecated from the 22.3 version.
+:::
+
 # C. How to change namespace of the PVC
 
 ## Prerequisites
