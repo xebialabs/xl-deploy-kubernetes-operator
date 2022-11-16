@@ -301,7 +301,12 @@ spec:
                     values:
                       - test
               topologyKey: failure-domain.beta.kubernetes.io/zone
-    args: []
+    args:
+      - "start"
+      - "--import-realm"
+      - "--auto-build"
+      # set this to false only when using with http
+      - "--hostname-strict-https=false"
     autoscaling:
       behavior:
         scaleDown:
@@ -328,10 +333,12 @@ spec:
     extraEnv: |
       - name: PROXY_ADDRESS_FORWARDING
         value: "true"
-      - name: KEYCLOAK_USER
+      - name: KEYCLOAK_ADMIN
         value: admin
-      - name: KEYCLOAK_PASSWORD
+      - name: KEYCLOAK_ADMIN_PASSWORD
         value: admin
+      - name: KC_LOG_LEVEL
+        value: info
       - name: JGROUPS_DISCOVERY_PROTOCOL
         value: dns.DNS_PING
       - name: JGROUPS_DISCOVERY_PROPERTIES
@@ -347,20 +354,26 @@ spec:
           -Djava.net.preferIPv4Stack=true
           -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS
           -Djava.awt.headless=true
-      - name: DB_VENDOR
+      - name: KC_DB
         value: postgres
-      - name: DB_ADDR
+      - name: KC_DB_URL_HOST
         value: {{ .Release.Name }}-postgresql
-      - name: DB_PORT
+      - name: KC_DB_URL_PORT
         value: "5432"
-      - name: DB_DATABASE
+      - name: KC_DB_URL_DATABASE
         value: keycloak
-      - name: DB_USER
+      - name: KC_DB_USERNAME
         value: keycloak
-      - name: DB_PASSWORD
+      - name: KC_DB_PASSWORD
         value: keycloak
-      - name: KEYCLOAK_IMPORT
-        value: /realm/digitalai-platform-realm.json
+      - name: KC_HOSTNAME
+        value: '{{ .Release.Name }}.keycloak.example.com'
+      - name: KC_HTTP_RELATIVE_PATH
+        value: /auth
+      - name: KC_HTTP_ENABLED
+        value: "true"
+      - name: KC_PROXY
+        value: edge
     extraEnvFrom: ""
     extraInitContainers: ""
     extraPorts: []
@@ -376,7 +389,7 @@ spec:
       scrapeTimeout: 10s
     extraVolumeMounts: |
       - name: realm-config
-        mountPath: "/realm/"
+        mountPath: "/opt/keycloak/data/import/"
         readOnly: true
     extraVolumes: |
       - name: realm-config
@@ -387,7 +400,7 @@ spec:
     hostAliases: []
     image:
       pullPolicy: IfNotPresent
-      repository: docker.io/jboss/keycloak
+      repository: quay.io/keycloak/keycloak
       tag: ""
     imagePullSecrets: []
     ingress:
@@ -1214,7 +1227,7 @@ spec:
       selector: {}
       size: 8Gi
       # Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
-      storageClass: <Provode Storage Class to be defined for PostgreSQL>
+      storageClass: <Provide Storage Class to be defined for PostgreSQL>
       subPath: ""
     pgHbaConfiguration: ""
     postgresqlConfiguration: {}
