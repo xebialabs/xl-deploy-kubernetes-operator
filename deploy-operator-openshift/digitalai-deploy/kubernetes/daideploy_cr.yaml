@@ -10,9 +10,9 @@ spec:
   HealthProbesLivenessTimeout: 60
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
-  ServerImageRepository: xebialabsearlyaccess/xl-deploy
-  WorkerImageRepository: xebialabsearlyaccess/deploy-task-engine
-  ImageTag: "23.1.0-beta.6"
+  ServerImageRepository: xebialabsunsupported/xl-deploy
+  WorkerImageRepository: xebialabsunsupported/deploy-task-engine
+  ImageTag: "23.1.0-1214.113"
   ## xebialabs/tiny-tools image version
   ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
   TinyToolsImageRepository: "xebialabs/tiny-tools"
@@ -1257,7 +1257,7 @@ spec:
   centralConfiguration:
     replicas: 1
     image:
-      repository: xebialabsearlyaccess/central-configuration
+      repository: xebialabsunsupported/central-configuration
     persistence:
       annotations: {}
       pvcSize: 500M
