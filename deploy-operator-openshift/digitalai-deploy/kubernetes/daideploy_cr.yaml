@@ -10,9 +10,9 @@ spec:
   HealthProbesLivenessTimeout: 60
   HealthProbesReadinessTimeout: 60
   ImagePullPolicy: Always
-  ServerImageRepository: xebialabsunsupported/xl-deploy
-  WorkerImageRepository: xebialabsunsupported/deploy-task-engine
-  ImageTag: "22.0.0-212.200"
+  ServerImageRepository: xebialabs/xl-deploy
+  WorkerImageRepository: xebialabs/deploy-task-engine
+  ImageTag: "22.0.14"
   ## xebialabs/tiny-tools image version
   ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
   TinyToolsImageRepository: "xebialabs/tiny-tools"
@@ -750,4 +750,4 @@ spec:
   xldLicense: <Provide license file for Digital.ai Deploy should be converted to the base64 form>
   centralConfiguration:
     image:
-      repository: xebialabsunsupported/central-configuration
+      repository: xebialabs/central-configuration
