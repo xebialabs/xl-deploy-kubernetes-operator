@@ -12,7 +12,7 @@ spec:
   ImagePullPolicy: Always
   ServerImageRepository: xebialabsunsupported/xl-deploy
   WorkerImageRepository: xebialabsunsupported/deploy-task-engine
-  ImageTag: "23.3.0-505.113"
+  ImageTag: "23.3.0-508.113"
   ## xebialabs/tiny-tools image version
   ## Ref: https://hub.docker.com/r/xebialabs/tiny-tools/tags
   TinyToolsImageRepository: "xebialabs/tiny-tools"
