@@ -3,11 +3,11 @@ sidebar_position: 5
 data : Internal Only
 ---
 
+# Google Cloud Platform GKE
+
 :::caution
 This is internal documentation. This document can be used only if it was recommended by the Support Team.
 :::
-
-# Google Cloud Platform GKE
 
 Here it will be described how to install manually Deploy k8s cluster with help of operator to GCP GKE.
 

@@ -3,11 +3,12 @@ sidebar_position: 2
 data : Internal Only
 ---
 
+# AWS OpenShift
+
 :::caution
 This is internal documentation. This document can be used only if it was recommended by the Support Team.
 :::
 
-# AWS OpenShift
 
 Here it will described how to install manually Deploy k8s cluster with help of operator to Open Shift. 
 As a tool to work with is taken AWS OpenShift.

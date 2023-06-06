@@ -2,6 +2,8 @@
 sidebar_position: 14
 ---
 
+# How to change namespace of the PVC
+
 :::caution
 This is internal documentation. This document can be used only if it was recommended by the Support Team.
 :::

@@ -2,6 +2,8 @@
 sidebar_position: 13
 ---
 
+# How to change namespace with downtime
+
 :::caution
 This is internal documentation. This document can be used only if it was recommended by the Support Team.
 :::

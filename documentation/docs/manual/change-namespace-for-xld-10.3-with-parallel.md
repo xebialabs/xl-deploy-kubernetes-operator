@@ -2,6 +2,8 @@
 sidebar_position: 12
 ---
 
+# How to change namespace with running previous deploy
+
 :::caution
 This is internal documentation. This document can be used only if it was recommended by the Support Team.
 :::
