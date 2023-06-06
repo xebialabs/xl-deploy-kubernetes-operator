@@ -135,7 +135,7 @@ Here it will described how to install manually Deploy k8s cluster with help of o
 
         ![route 53](./pics/aws-route53.png)
 
-* Go through the process of [scaffolding](../scaffolding.md).
+* Go through the process of scaffolding.
     - Update the xld_v1alpha1_digitalaideploy.yaml file
         - Change StorageClass to what you have. For example, you can use 'gp2', in case of using aws local file system.
             It depends [how you configured it](https://xebialabs.github.io/xl-deploy-kubernetes-helm-chart/docs/installing-storage-class). 

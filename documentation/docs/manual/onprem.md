@@ -47,7 +47,7 @@ where `192.168.59.101` you have to change with the result of `minikube -p k120 i
 
 Then you can use `k120` as a hostname for k8s cluster.
 
-* Go through the process of [scaffolding](../scaffolding.md).
+* Go through the process of scaffolding.
 After following these instructions, you'll get on your filesystem the next structure:
 ```text
 bnechyporenko@Bogdan-Nechyporenko xld % ls -al
