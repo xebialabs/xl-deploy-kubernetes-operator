@@ -31,7 +31,7 @@ spec:
         - --metrics-bind-address=127.0.0.1:8080
         - --leader-elect
         - --leader-election-id=xld-operator-controller-manager
-        image: deploy-operator:24.1.0-1222.113-openshift
+        image: deploy-operator:24.1.0-1226.113-openshift
         imagePullPolicy: Always
         env:
         - name: WATCH_NAMESPACE
